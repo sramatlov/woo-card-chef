@@ -1,0 +1,107 @@
+/**
+ * Woo Card Chef - PDP Product Cross-sells / Related widget styles.
+ *
+ * Product cards themselves come from product-card.css. This file only scopes the
+ * PDP cross-sells / related section, heading, editor/empty states and mobile
+ * scroll behavior.
+ *
+ * @package WC_Product_Card_Elementor
+ * @since 2.6.0
+ */
+
+.elementor-widget-wcpce_product_related {
+	isolation: isolate;
+}
+
+.wcpce-related {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	width: 100%;
+}
+
+.wcpce-related__heading {
+	margin: 0;
+	color: #d45550;
+	font-size: 24px;
+	font-weight: 400;
+	line-height: 1.25;
+}
+
+.wcpce-related__grid {
+	width: 100%;
+}
+
+.elementor-widget-wcpce_product_related .wcpce-related .wc-card__title {
+	font-size: 12px !important;
+	font-weight: 400 !important;
+	line-height: 1.28;
+	min-height: calc(12px * 1.28 * 3);
+}
+
+.elementor-widget-wcpce_product_related .wcpce-related .wc-card__price-sale,
+.elementor-widget-wcpce_product_related .wcpce-related .wc-card__price-current {
+	font-size: 15px !important;
+	font-weight: 500 !important;
+}
+
+.elementor-widget-wcpce_product_related .wcpce-related .wc-card__stock-label {
+	right: 8px;
+	bottom: 8px;
+	max-width: calc(100% - 16px);
+	background: rgba(42, 42, 42, 0.52);
+	font-size: 10px;
+	font-weight: 600;
+	line-height: 1.15;
+	text-align: center;
+	padding: 5px 7px;
+	border-radius: 5px;
+	box-shadow: none;
+}
+
+.wcpce-related__empty,
+.wcpce-related-editor-notice {
+	padding: 14px 16px;
+	border: 1px solid #ececec;
+	border-radius: 8px;
+	background: #ffffff;
+	color: #666666;
+	font-size: 14px;
+	line-height: 1.45;
+}
+
+.wcpce-related-editor-notice {
+	margin-bottom: 12px;
+	border-color: #f1d3d1;
+	background: #fff8f7;
+	color: #8a2d29;
+}
+
+@media (max-width: 767px) {
+	.wcpce-related--mobile-scroll ul.products.wcpce-related__grid,
+	.wcpce-related--mobile-scroll .wcpce-related__grid {
+		display: flex;
+		gap: 12px;
+		overflow-x: auto;
+		overflow-y: hidden;
+		padding-bottom: 4px;
+		scroll-padding-inline: 1px;
+		scroll-snap-type: x proximity;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.wcpce-related--mobile-scroll .wcpce-related__item {
+		flex: 0 0 min(76vw, 240px);
+		min-width: 0;
+		scroll-snap-align: start;
+	}
+
+	.wcpce-related--mobile-scroll .wcpce-related__grid::-webkit-scrollbar {
+		height: 6px;
+	}
+
+	.wcpce-related--mobile-scroll .wcpce-related__grid::-webkit-scrollbar-thumb {
+		background: rgba(0, 0, 0, 0.14);
+		border-radius: 999px;
+	}
+}
