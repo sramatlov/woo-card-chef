@@ -1,0 +1,809 @@
+/**
+ * Woo Card Chef - Frontend styles.
+ *
+ * Class names use BEM (.wc-card__*) and are scoped to avoid collisions with
+ * theme/Elementor product styles. Inline `style="..."` attributes injected by
+ * Elementor controls take precedence via {{WRAPPER}} selectors in the widget.
+ *
+ * @package WC_Product_Card_Elementor
+ */
+
+/* ===== GRID ===== */
+
+/* Contain the widget's stacking context so absolutely positioned elements
+   (badges, stock labels) never escape above site-level elements like a sticky
+   header. isolation: isolate creates a new stacking context without changing
+   any z-index values, so all internal z-index layering stays intact. */
+.elementor-widget-wc_product_card {
+	isolation: isolate;
+}
+
+.wc-card-grid {
+	display: grid;
+	gap: 20px;
+	grid-template-columns: repeat(3, 1fr);
+	align-items: stretch;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+
+.woocommerce ul.products.wc-card-grid,
+ul.products.wc-card-grid {
+	display: grid;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+
+.wc-card-grid.products::before,
+.wc-card-grid.products::after {
+	content: none !important;
+	display: none !important;
+}
+
+.wc-card-grid > .wcpce-grid-item,
+.woocommerce ul.products.wc-card-grid > li.product.wcpce-grid-item {
+	display: block;
+	float: none !important;
+	clear: none !important;
+	width: auto !important;
+	list-style: none;
+	margin: 0 !important;
+	padding: 0;
+	min-width: 0;
+}
+
+/* Grid responsive breakpoints match Elementor's defaults:
+   tablet = 1024px, mobile = 767px. The Elementor responsive column
+   controls use the same breakpoints so they stay in sync. */
+@media (max-width: 1024px) {
+	.wc-card-grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 16px;
+	}
+}
+
+@media (max-width: 767px) {
+	.wc-card-grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 12px;
+	}
+}
+
+.wc-card-grid--empty {
+	grid-template-columns: 1fr;
+	padding: 40px 20px;
+	text-align: center;
+	color: #6b6b6b;
+}
+
+.wc-card-grid--empty > .wcpce-grid-item--empty {
+	width: 100%;
+}
+
+/* ===== ACCESSIBILITY UTILITIES ===== */
+
+/* Visually hidden but readable by screen readers.
+   Used for sr-only price labels (Van/Voor) and other semantic text. */
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* ===== CARD ===== */
+.wc-card-grid .wc-card {
+	display: flex;
+	flex-direction: column;
+	background: #ffffff;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.04);
+	overflow: hidden;
+	text-decoration: none;
+	color: inherit;
+	transition: transform 0.25s ease, box-shadow 0.25s ease;
+	position: relative;
+	height: 100%;
+}
+
+.wc-card-grid .wc-card:hover,
+.wc-card-grid .wc-card:focus-visible {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 16px 36px rgba(0, 0, 0, 0.08);
+}
+
+.wc-card-grid .wc-card--hover-lift:hover,
+.wc-card-grid .wc-card--hover-lift:focus-visible {
+	transform: translateY(-2px) scale(1.015);
+}
+
+/* Dead rule .wc-card:focus-visible removed — <article> has no tabindex so it
+   never receives focus. The focus ring lives on .wc-card__overlay-link below. */
+
+/* Out of stock visual treatment: dims and desaturates the image.
+   We also explicitly block the hover swap interaction for out-of-stock
+   products — the secondary image must never escape the dimmed state on
+   hover, as it would look like the product is available while hovered. */
+.wc-card--out-of-stock .wc-card__image {
+	opacity: 0.55;
+	filter: grayscale(0.3);
+}
+
+/* Note: a dedicated rule for the secondary image at rest on out-of-stock cards
+   was previously needed to override the .wc-card--out-of-stock .wc-card__image
+   opacity (0,2,0) which won against .wc-card__image--secondary (0,1,0). Since
+   v1.0.19 the secondary image carries an inline style="opacity:0" attribute,
+   which wins specificity over any class-based rule, so this dedicated rule was
+   removed as redundant. */
+
+/* Keep the primary image dimmed (not hidden) on hover for out-of-stock cards. */
+.wc-card--out-of-stock:hover .wc-card__media--has-hover-swap .wc-card__image--primary,
+.wc-card--out-of-stock .wc-card__media--has-hover-swap:hover .wc-card__image--primary {
+	opacity: 0.55;
+}
+
+/* Keep the secondary image hidden on hover for out-of-stock cards.
+   Without this rule, the hover swap CSS would make it opacity: 1,
+   making the product look available while hovered.
+   !important is required here because the generic hover rule below uses
+   !important to override the inline style="opacity:0" on the secondary image. */
+.wc-card--out-of-stock:hover .wc-card__media--has-hover-swap .wc-card__image--secondary,
+.wc-card--out-of-stock .wc-card__media--has-hover-swap:hover .wc-card__image--secondary {
+	opacity: 0 !important;
+}
+
+/* ===== MEDIA ===== */
+.wc-card__media {
+	position: relative;
+	background: #ffffff;
+	aspect-ratio: 1 / 1;
+	overflow: hidden;
+}
+
+.wc-card__image {
+	/* width and height use !important to override theme styles that often set
+	   img { width: auto; max-width: 100%; } in their global CSS. We need the
+	   image to fully fill the .wc-card__media container regardless of theme. */
+	width: 100% !important;
+	height: 100% !important;
+	object-fit: contain;
+	/* 8px default — proportionally better at the 240px max-height image area.
+	   Controlled via the Image padding slider in the Style tab. */
+	padding: 8px;
+	transition: transform 0.4s ease, opacity 0.3s ease;
+	position: absolute;
+	inset: 0;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+
+.wc-card__image--secondary {
+	opacity: 0;
+}
+
+/* Hover swap rules.
+   The secondary image carries an inline style="opacity:0" attribute set in the
+   template, which prevents the image flashing visible on first paint before
+   this external CSS is parsed. Inline styles win specificity over class-based
+   rules, so these hover rules must use !important to override the inline value.
+   This is the cleanest fix for the render-order race condition on slow connections. */
+.wc-card:hover .wc-card__media--has-hover-swap .wc-card__image--primary,
+.wc-card__media--has-hover-swap:hover .wc-card__image--primary {
+	opacity: 0;
+}
+
+.wc-card:hover .wc-card__media--has-hover-swap .wc-card__image--secondary,
+.wc-card__media--has-hover-swap:hover .wc-card__image--secondary {
+	opacity: 1 !important;
+}
+
+.wc-card:hover .wc-card__image {
+	transform: scale(1.04);
+}
+
+/* ===== BADGE ===== */
+.wc-card__badge {
+	position: absolute;
+	top: 12px;
+	left: 12px;
+	background: #3EC26D;
+	color: #ffffff;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.01em;
+	padding: 6px 12px;
+	border-radius: 6px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+	/* z-index must exceed the overlay link (z-index 3) so the badge is
+	   always visible and never covered by the overlay on hover. */
+	z-index: 4;
+	white-space: nowrap;
+	line-height: 1.2;
+}
+
+/* Badge position modifier driven by prefix_class on the position select. */
+.wc-card-badge-pos-top-right .wc-card__badge {
+	left: auto;
+	right: 12px;
+}
+
+/* "Nieuw" badge — same position as discount badge (top-left) but Bourgini red.
+   Only shows when no discount badge is active (priority logic in template). */
+.wc-card__badge--nieuw {
+	background: #B4211C;
+}
+
+/* PFAS-vrij badge — bottom-left, muted green with leaf icon.
+   border-radius matches the sale/Nieuw badge (6px) for visual consistency. */
+.wc-card__badge--pfas {
+	/* top: auto overrides the inherited top: 12px from .wc-card__badge,
+	   allowing bottom: 8px to position this badge at the bottom-left corner. */
+	top: auto;
+	left: 8px;
+	bottom: 8px;
+	background: #57664d;
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 10px;
+	padding: 4px 9px;
+	border-radius: 6px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+
+.wc-card__pfas-icon {
+	width: 11px;
+	height: 12px;
+	flex-shrink: 0;
+	color: #ffffff;
+}
+
+/* "Niet meer leverbaar" centered overlay — covers the full image area with a
+   semi-transparent black overlay and centered label text. The card also gets
+   the wc-card--out-of-stock class (dimming + grayscale) via the template. */
+.wc-card__niet-leverbaar-overlay {
+	position: absolute;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.6);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 2;
+}
+
+.wc-card__niet-leverbaar-label {
+	color: #ffffff;
+	font-size: 13px;
+	font-weight: 700;
+	text-align: center;
+	padding: 8px 16px;
+	line-height: 1.3;
+	letter-spacing: 0.02em;
+}
+
+/* ===== BODY ===== */
+.wc-card__body {
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	flex-grow: 1;
+}
+
+@media (max-width: 767px) {
+	.wc-card__body {
+		padding: 14px;
+		gap: 8px;
+	}
+}
+
+/* ===== TITLE ===== */
+.wc-card__title {
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1.4;
+	color: #2a2a2a;
+	margin: 0;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	min-height: calc(15px * 1.4 * 3);
+}
+
+@media (max-width: 767px) {
+	.wc-card__title {
+		font-size: 13.5px;
+		-webkit-line-clamp: 3;
+		min-height: calc(13.5px * 1.4 * 3);
+	}
+}
+
+/* ===== RATING =====
+   The Lipscore rating slot reserves vertical space (min-height) so cards
+   in the same row align cleanly even when some products have no reviews.
+   Lipscore renders into the inner .lipscore-rating-small div client-side.
+   We deliberately do NOT collapse the slot when Lipscore is empty: keeping
+   the reserved space prevents jagged horizontal alignment across cards in
+   the same row. The 14px min-height is barely visible on cards without
+   reviews and worth the trade for layout consistency (per NN/g eye-tracking
+   research on category-grid scanning patterns). */
+.wc-card__rating {
+	min-height: 14px;
+	margin-top: 4px;
+	margin-bottom: 4px;
+	display: flex;
+	align-items: center;
+}
+
+.wc-card__rating .lipscore-rating-small {
+	display: inline-flex;
+	align-items: center;
+	font-size: 10px !important;
+	line-height: 1 !important;
+}
+
+/* ===== PRICE ===== */
+.wc-card__price-block {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.wc-card__price {
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.wc-card__price-regular {
+	font-size: 14px;
+	color: #888888;
+	text-decoration: line-through;
+	font-weight: 400;
+}
+
+.wc-card__price-regular .woocommerce-Price-amount {
+	color: inherit;
+	text-decoration: line-through;
+}
+
+.wc-card__price-sale,
+.wc-card__price-current {
+	font-size: 17px;
+	font-weight: 700;
+	color: #2a2a2a;
+}
+
+.wc-card__price-sale {
+	color: #B4211C;
+}
+
+.wc-card__price-sale .woocommerce-Price-amount,
+.wc-card__price-current .woocommerce-Price-amount {
+	color: inherit;
+	text-decoration: none;
+}
+
+@media (max-width: 767px) {
+	.wc-card__price-regular { font-size: 12px; }
+	.wc-card__price-sale,
+	.wc-card__price-current { font-size: 15px; }
+}
+
+.wc-card__savings {
+	font-size: 12px;
+	font-weight: 600;
+	color: #2a2a2a;
+	letter-spacing: 0.01em;
+}
+
+.wc-card__savings .woocommerce-Price-amount {
+	color: inherit;
+	font-weight: inherit;
+}
+
+@media (max-width: 767px) {
+	.wc-card__savings { font-size: 11px; }
+}
+
+/* ===== SHIPPING PILL ===== */
+.wc-card__shipping {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: #eef8f2;
+	color: #1e7a3a;
+	font-size: 11px;
+	font-weight: 600;
+	/* padding and border-radius are set via Elementor controls.
+	   These values are the CSS fallback when no control value is saved. */
+	padding: 4px 10px;
+	border-radius: 6px;
+	align-self: flex-start;
+}
+
+.wc-card__shipping-icon {
+	/* Default 14px to match USP icon size. Controlled via Elementor
+	   "Shipping pill icon size" slider in the Colors section. */
+	width: 14px;
+	height: 14px;
+}
+
+@media (max-width: 767px) {
+	.wc-card__shipping {
+		font-size: 10.5px;
+		padding: 3px 8px;
+	}
+}
+
+/* ===== USPs =====
+   The USP block reserves vertical space based on the configured slot count
+   (data-usp-slots), so cards in the same row have consistent heights even
+   when some products have fewer USPs filled in. Empty space below the
+   filled USPs is intentional: it preserves horizontal scan alignment of
+   the elements above (price, shipping pill, rating). */
+.wc-card__usps {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-top: 4px;
+}
+
+.wc-card__usps[data-usp-slots="1"] {
+	min-height: calc(13px * 1.4);
+}
+
+.wc-card__usps[data-usp-slots="2"] {
+	min-height: calc((13px * 1.4) * 2 + 6px);
+}
+
+.wc-card__usps[data-usp-slots="3"] {
+	min-height: calc((13px * 1.4) * 3 + 12px);
+}
+
+.wc-card__usp {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	font-size: 13px;
+	line-height: 1.4;
+	color: #5a5a5a;
+	font-weight: 500;
+}
+
+.wc-card__usp-icon {
+	flex-shrink: 0;
+	width: 14px;
+	height: 14px;
+	color: #3EC26D;
+	margin-top: 2px;
+}
+
+@media (max-width: 767px) {
+	.wc-card__usp {
+		font-size: 11.5px;
+		gap: 6px;
+	}
+	.wc-card__usp-icon {
+		width: 12px;
+		height: 12px;
+	}
+
+	/* Mobile reserved heights match the smaller font size. */
+	.wc-card__usps[data-usp-slots="1"] {
+		min-height: calc(11.5px * 1.4);
+	}
+	.wc-card__usps[data-usp-slots="2"] {
+		min-height: calc((11.5px * 1.4) * 2 + 6px);
+	}
+	.wc-card__usps[data-usp-slots="3"] {
+		min-height: calc((11.5px * 1.4) * 3 + 12px);
+	}
+}
+
+/* ===== ELEMENTOR EDITOR PREVIEW HARDENING =====
+   Some themes inject .product styles that fight ours. We boost specificity
+   minimally without going nuclear. */
+.elementor-editor-active .wc-card-grid .wc-card,
+.wc-card-grid .wc-card,
+.woocommerce ul.products.wc-card-grid > li.product.wcpce-grid-item > .wc-card {
+	clear: none !important;
+	float: none !important;
+	margin: 0 !important;
+	padding: 0;
+	width: 100%;
+}
+
+/* ===== OVERLAY LINK AND INTERACTIVE ELEMENTS ===== */
+.wc-card__overlay-link {
+	position: absolute;
+	inset: 0;
+	z-index: 3;
+	text-decoration: none;
+	color: inherit;
+	/* Remove default outline — we apply our own below via :focus-visible. */
+	outline: none;
+	border-radius: inherit;
+}
+
+/* Keyboard focus: draws a visible ring around the full card so keyboard
+   users can see which card is selected. Uses :focus-visible to avoid
+   showing the ring on mouse click (which would be distracting).
+   border-radius inherits from the card so the ring always hugs the card shape
+   regardless of the border-radius Elementor control setting. */
+.wc-card__overlay-link:focus-visible {
+	outline: 2px solid #3EC26D;
+	outline-offset: 4px;
+	border-radius: inherit;
+}
+
+/* Action button and actions wrapper need position:relative to create a
+   stacking context above the overlay link (z-index 3). Badge and stock-label
+   are already position:absolute — do NOT include them here, as adding
+   position:relative would override their absolute positioning and break layout. */
+.wc-card__actions,
+.wc-card__button {
+	position: relative;
+	z-index: 4;
+}
+
+/* Stock label is position:absolute (defined below). It only needs z-index
+   elevation, not a position change. */
+.wc-card__stock-label {
+	position: absolute;
+	right: 12px;
+	bottom: 12px;
+	background: rgba(0, 0, 0, 0.62);
+	color: #ffffff;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1.2;
+	padding: 6px 10px;
+	border-radius: 6px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+	z-index: 4;
+}
+
+/* Note: the stock label always sits bottom-right regardless of the badge
+   position control. Earlier versions had a wc-card-badge-pos-top-right
+   .wc-card__stock-label rule that flipped the stock label to bottom-left
+   when the discount badge was set to top-right — an unintended side-effect.
+   Removed in v1.0.48 because the discount badge and the stock label live in
+   independent corners and shouldn't move together. */
+
+.wc-card__actions {
+	margin-top: auto;
+	padding-top: 4px;
+}
+
+.wc-card__button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 40px;
+	padding: 9px 14px;
+	border-radius: 8px;
+	background: #3EC26D;
+	color: #ffffff !important;
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 1.2;
+	text-decoration: none !important;
+	border: 0;
+	box-shadow: none;
+	transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.wc-card__button:hover,
+.wc-card__button:focus-visible {
+	filter: brightness(0.96);
+	transform: translateY(-1px);
+}
+
+.wc-card-editor-notices {
+	display: grid;
+	gap: 8px;
+	margin-bottom: 14px;
+}
+
+.wc-card-editor-notice {
+	padding: 10px 12px;
+	border-radius: 8px;
+	background: #f4f7fb;
+	border-left: 4px solid #3EC26D;
+	color: #2a2a2a;
+	font-size: 13px;
+	line-height: 1.4;
+}
+
+@media (max-width: 767px) {
+	.wc-card--hide-usps-mobile .wc-card__usps {
+		display: none;
+	}
+
+	.wc-card--no-mobile-hover-swap .wc-card__image--secondary {
+		display: none;
+	}
+
+	.wc-card--no-mobile-hover-swap:hover .wc-card__media--has-hover-swap .wc-card__image--primary,
+	.wc-card--no-mobile-hover-swap .wc-card__media--has-hover-swap:hover .wc-card__image--primary {
+		opacity: 1;
+	}
+
+	.wc-card__stock-label {
+		font-size: 11px;
+		padding: 5px 8px;
+	}
+
+	/* Hide PFAS badge on mobile — too much visual noise on narrow 2-column cards. */
+	.wc-card__badge--pfas {
+		display: none;
+	}
+
+	/* Scale down sale and Nieuw badges on mobile. */
+	.wc-card__badge:not(.wc-card__badge--pfas) {
+		font-size: 11px;
+		padding: 4px 8px;
+	}
+
+	.wc-card__button {
+		min-height: 36px;
+		font-size: 13px;
+	}
+}
+
+/* ===== REDUCED MOTION =====
+   Respects the OS-level "reduce motion" preference (common for users with
+   vestibular disorders or motion sensitivity). Disables all card animations
+   while keeping all visual styles intact. */
+@media (prefers-reduced-motion: reduce) {
+	.wc-card-grid .wc-card,
+	.wc-card__image,
+	.wc-card__button {
+		transition: none !important;
+	}
+
+	.wc-card-grid .wc-card--hover-lift:hover,
+	.wc-card-grid .wc-card--hover-lift:focus-visible {
+		transform: none;
+	}
+
+	.wc-card:hover .wc-card__image {
+		transform: none;
+	}
+
+	.wc-card__button:hover,
+	.wc-card__button:focus-visible {
+		transform: none;
+	}
+
+	/* H11: disable hover-swap crossfade. The secondary image stays hidden
+	   (opacity: 0) and the primary stays visible — no motion, just the
+	   static primary image at all times. */
+	.wc-card:hover .wc-card__media--has-hover-swap .wc-card__image--primary,
+	.wc-card__media--has-hover-swap:hover .wc-card__image--primary {
+		opacity: 1 !important;
+		transform: none;
+	}
+
+	.wc-card:hover .wc-card__media--has-hover-swap .wc-card__image--secondary,
+	.wc-card__media--has-hover-swap:hover .wc-card__image--secondary {
+		opacity: 0 !important;
+	}
+}
+
+/* ===== PAGINATION ===== */
+
+.wcpce-pagination {
+	margin-top: 24px;
+	width: 100%;
+}
+
+.wcpce-pagination__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	justify-content: center;
+}
+
+.wcpce-pagination__item {
+	margin: 0;
+	padding: 0;
+}
+
+.wcpce-pagination .wcpce-page-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 36px;
+	height: 36px;
+	padding: 0 10px;
+	border-radius: 6px;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1;
+	text-decoration: none;
+	transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+	/* Defaults — overridden by Elementor color controls. */
+	background-color: #f0f0f0;
+	color: #2a2a2a;
+}
+
+.wcpce-pagination .wcpce-page-link--current {
+	background-color: #3EC26D;
+	color: #ffffff;
+	cursor: default;
+}
+
+.wcpce-pagination .wcpce-page-link:not(.wcpce-page-link--current):hover {
+	background-color: #d4f0e1;
+	color: #2a2a2a;
+	transform: scale(1.05);
+}
+
+/* Prev / next arrow buttons — transparent, icon-only, never get a background. */
+.wcpce-pagination .wcpce-page-link--prev,
+.wcpce-pagination .wcpce-page-link--next {
+	background: transparent !important;
+	color: #888888;
+	min-width: 32px;
+	padding: 0 4px;
+}
+
+.wcpce-pagination .wcpce-page-link--prev:hover,
+.wcpce-pagination .wcpce-page-link--next:hover {
+	background: transparent !important;
+	color: #2a2a2a;
+	transform: scale(1.15);
+}
+
+/* Dots separator — no hover state, no background. */
+.wcpce-pagination .wcpce-page-link--dots {
+	background: transparent;
+	color: #888888;
+	pointer-events: none;
+	min-width: auto;
+	padding: 0 4px;
+	/* Dots don't scale on hover. */
+	transform: none !important;
+}
+
+@media (max-width: 767px) {
+	.wcpce-pagination .wcpce-page-link {
+		min-width: 32px;
+		height: 32px;
+		font-size: 13px;
+	}
+}
+
+/* ===== ARIA-LIVE REGION ===== */
+
+/* Visually hidden but readable by screen readers.
+   Uses .wcpce-sr-live instead of .sr-only to avoid clashes with themes. */
+.wcpce-sr-live {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
