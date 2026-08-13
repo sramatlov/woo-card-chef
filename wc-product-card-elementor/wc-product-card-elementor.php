@@ -13,7 +13,7 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       woo-card-chef
  * Domain Path:       /languages
- * Requires Plugins:  elementor, woocommerce
+ * Requires Plugins:  woocommerce, elementor
  * Elementor tested up to: 4.1.0
  * Elementor Pro tested up to: 4.0.4
  * WC requires at least: 6.0
