@@ -7,7 +7,7 @@ Requires PHP: 7.4
 Stable tag: 2.6.9
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Requires Plugins: elementor, woocommerce
+Requires Plugins: woocommerce, elementor
 
 A custom Elementor widget suite for WooCommerce product cards and focused product-detail-page blocks in Elementor.
 

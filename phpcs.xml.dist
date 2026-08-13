@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<ruleset name="Woo Card Chef security">
+    <description>Security-focused WordPress checks without enforcing the existing formatting backlog.</description>
+
+    <file>wc-product-card-elementor</file>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+
+    <arg name="extensions" value="php"/>
+    <arg name="parallel" value="8"/>
+    <arg name="colors"/>
+    <arg value="p"/>
+
+    <rule ref="WordPress.Security"/>
+
+    <!-- Mixed line endings are not a security result and would otherwise make PHPCS exit non-zero. -->
+    <rule ref="Internal.LineEndings.Mixed">
+        <severity>0</severity>
+    </rule>
+</ruleset>

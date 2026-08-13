@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<ruleset name="Woo Card Chef PHP compatibility">
+    <description>Verify compatibility with the plugin's supported PHP 7.4+ range.</description>
+
+    <file>wc-product-card-elementor</file>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+
+    <arg name="extensions" value="php"/>
+    <arg name="parallel" value="8"/>
+    <arg name="colors"/>
+    <arg value="p"/>
+    <config name="testVersion" value="7.4-"/>
+
+    <rule ref="PHPCompatibilityWP"/>
+
+    <!-- Mixed line endings are not a compatibility result and would otherwise make PHPCS exit non-zero. -->
+    <rule ref="Internal.LineEndings.Mixed">
+        <severity>0</severity>
+    </rule>
+</ruleset>

@@ -10,13 +10,17 @@ The workflow in `.github/workflows/validate-and-build.yml` will:
 
 - fail when the expected plugin source is missing;
 - run `php -l` on all plugin PHP files with PHP 7.4 and PHP 8.3;
+- audit the locked Composer tooling dependencies for known vulnerabilities;
+- run the WordPress security sniffs without making legacy formatting debt blocking;
+- verify compatibility with PHP 7.4 and newer through PHPCompatibilityWP;
+- run stable WordPress Plugin Check rules for general, security, and performance issues;
 - ensure the plugin header, `WCPCE_VERSION`, and readme stable tag match;
 - read the plugin version from `wc-product-card-elementor/wc-product-card-elementor.php`;
 - build a WordPress-safe install zip with `tools/build_wordpress_plugin_zip.py`;
 - fail if zip entries contain Windows backslashes;
 - upload the install zip as a GitHub Actions artifact.
 
-Action dependencies are pinned to immutable commits. Dependabot checks for GitHub Actions updates every week.
+Action dependencies are pinned to immutable commits. Dependabot checks GitHub Actions and Composer tooling for updates every week.
 
 ## Important
 
@@ -39,4 +43,7 @@ From the repository root:
 ```powershell
 python tools/validate_plugin_metadata.py --plugin-dir wc-product-card-elementor --main-file wc-product-card-elementor.php
 python tools/build_wordpress_plugin_zip.py --source-dir wc-product-card-elementor --destination-zip dist/woo-card-chef-v2.6.9-wordpress-install.zip --plugin-slug wc-product-card-elementor --main-file wc-product-card-elementor.php
+composer install
+composer check
+composer audit --locked
 ```
