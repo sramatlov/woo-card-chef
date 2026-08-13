@@ -2,9 +2,9 @@
 Contributors: s15webdesign
 Tags: woocommerce, elementor, product card, archive, category, lipscore, acf
 Requires at least: 6.0
-Tested up to: 6.7
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.6.9
+Stable tag: 2.6.10
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Requires Plugins: woocommerce, elementor
@@ -117,6 +117,9 @@ Check the "Minimum discount percentage" setting in the Discount Badge controls. 
 Yes. The plugin is generic and only its defaults are tuned to a specific brand palette. Install it on any shop and override colors via the Elementor controls.
 
 == Changelog ==
+
+= 2.6.10 =
+Compatibility metadata release. Records the production-tested stack of WordPress 7.0, WooCommerce 11.0, Elementor 4.2.2, Elementor Pro 4.2.1, and PHP 8.3. No functional plugin behaviour changed.
 
 = 2.6.9 =
 Hotfix: Product Card Grid now shows the customer-facing Dutch empty-state message in Auto mode when a search or archive has no matching products, instead of exposing the technical editor guidance on the frontend.

@@ -2,9 +2,9 @@
 
 ## What it is
 
-Woo Card Chef is a custom Elementor widget plugin for WooCommerce. The current release is **v2.6.9** and it ships eight widgets:
+Woo Card Chef is a custom Elementor widget plugin for WooCommerce. The current release is **v2.6.10** and it ships eight widgets:
 
-1. **Product Card widget** — renders product grids as richly designed product cards on category and archive pages. Replaces the default WooCommerce product loop and the EAEL product grid widget. Since v2.6.9, empty search/archive results always show the configured customer-facing message on the frontend while technical guidance remains editor-only.
+1. **Product Card widget** — renders product grids as richly designed product cards on category and archive pages. Replaces the default WooCommerce product loop and the EAEL product grid widget. Since v2.6.9, empty search/archive results always show the configured customer-facing message on the frontend while technical guidance remains editor-only. v2.6.10 records the current production-tested compatibility matrix without changing frontend behaviour.
 2. **PDP Gallery widget** *(new in v2.0.0)* — replaces the default WooCommerce product image and gallery on the product detail page (PDP) with a slide-based gallery supporting images, YouTube video slides, lightbox, zoom, and a badgebar.
 3. **Price & Promo Block widget** *(new in v2.1.0)* — replaces the default WooCommerce price output on the PDP with a status-aware price block: regular/sale price, struck reference, discount-percentage chip, savings amount, and "Tot -X%" / "Vanaf €X" handling for variable products.
 4. **Product USP / Benefits widget** *(new in v2.2.0)* — renders short PDP-specific benefit lines near the buying area. Content comes from a simple ACF Pro repeater (`pdp_usps > usp_text`) with fallback to short description and product-card USPs; layout and styling live in Elementor.
