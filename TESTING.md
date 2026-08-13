@@ -1,6 +1,6 @@
 # Testing Guide — Woo Card Chef
 
-Woo Card Chef heeft nog geen PHPUnit-, browser- of visual-regression-suite. Iedere wijziging vereist daarom een combinatie van PHP-syntaxcontrole, gerichte widgettests en een staging smoke test.
+Woo Card Chef heeft nog geen PHPUnit-, browser- of visual-regression-suite. De repository automatiseert wel PHP-syntax, securitysniffs, PHP-compatibiliteit, dependency-audit, WordPress Plugin Check, metadata en ZIP-validatie. Iedere gedragswijziging vereist daarnaast gerichte widgettests en een staging smoke test.
 
 ## 1. PHP-syntaxcontrole
 
@@ -14,6 +14,21 @@ Get-ChildItem .\wc-product-card-elementor -Recurse -Filter *.php | ForEach-Objec
 ```
 
 Verwacht resultaat: ieder bestand meldt `No syntax errors detected` en het commando eindigt met exitcode 0.
+
+## Geautomatiseerde repositorycontroles
+
+Voer lokaal uit:
+
+```powershell
+composer install
+composer validate --strict --no-check-publish
+composer audit --locked
+composer check
+python tools/validate_plugin_metadata.py --plugin-dir wc-product-card-elementor --main-file wc-product-card-elementor.php
+python tools/build_wordpress_plugin_zip.py --source-dir wc-product-card-elementor --destination-zip dist/woo-card-chef-test.zip --plugin-slug wc-product-card-elementor --main-file wc-product-card-elementor.php
+```
+
+GitHub Actions herhaalt deze controles op PHP 7.4 en 8.3, voert WordPress Plugin Check in een geïsoleerde WordPress-omgeving uit en publiceert de gevalideerde installatiezip pas wanneer alle voorgaande jobs slagen.
 
 ## 2. Minimale testdata
 

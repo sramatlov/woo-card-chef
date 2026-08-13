@@ -55,6 +55,16 @@ rg -n "2\.6\.[0-9]+" README.md PROJECT_OVERVIEW.md TECHNICAL_SPEC.md ROADMAP.md 
 
 Beoordeel iedere match; changelog- en historie-verwijzingen mogen vanzelfsprekend ouder zijn.
 
+Voer ook de gelockte security- en compatibiliteitscontroles uit:
+
+```powershell
+composer install
+composer validate --strict --no-check-publish
+composer audit --locked
+composer check
+python tools/validate_plugin_metadata.py --plugin-dir wc-product-card-elementor --main-file wc-product-card-elementor.php
+```
+
 ## 4. Regressietest uitvoeren
 
 Volg [`TESTING.md`](TESTING.md). Minimaal verplicht:
@@ -69,22 +79,19 @@ Volg [`TESTING.md`](TESTING.md). Minimaal verplicht:
 
 ## 5. WordPress-veilige install-zip bouwen
 
-Gebruik nooit `Compress-Archive`. Dat kan Windows-backslashes in zipentries zetten, waardoor WordPress de plugin niet als normale update/vervanging behandelt.
-
-Voer vanuit de projectroot uit en pas alleen `$releaseVersion` aan:
+Gebruik bij voorkeur de installatiezip uit een geslaagde `main`-workflow. Voor een lokale controle voer je vanuit de projectroot uit en pas je alleen de versie in de doelnaam aan:
 
 ```powershell
-$releaseVersion = '2.6.9'
-
-powershell -NoProfile -ExecutionPolicy Bypass `
-  -File ".\build-wordpress-plugin-zip.ps1" `
-  -SourceDir ".\wc-product-card-elementor" `
-  -DestinationZip ".\woo-card-chef-v$releaseVersion-install.zip" `
-  -PluginSlug "wc-product-card-elementor" `
-  -MainFile "wc-product-card-elementor.php"
+python tools/build_wordpress_plugin_zip.py `
+  --source-dir wc-product-card-elementor `
+  --destination-zip dist/woo-card-chef-v2.6.9-wordpress-install.zip `
+  --plugin-slug wc-product-card-elementor `
+  --main-file wc-product-card-elementor.php
 ```
 
-De validator moet melden:
+Gebruik nooit `Compress-Archive`. Dat kan Windows-backslashes in zipentries zetten, waardoor WordPress de plugin niet als normale update/vervanging behandelt.
+
+De validator moet bevestigen:
 
 - `PluginSlug`: `wc-product-card-elementor`;
 - `MainFile`: `wc-product-card-elementor/wc-product-card-elementor.php`;
@@ -116,13 +123,20 @@ Test op staging met een database- en bestandenbackup:
 
 ## 7. Releaseartefacten en rollback
 
-- Bewaar de nieuwe gevalideerde zip.
+- Bewaar de nieuwe gevalideerde zip buiten de tijdelijke GitHub-retentieperiode.
 - Bewaar de vorige productiezip als rollbackartefact.
 - Noteer releaseversie, datum, geteste omgeving, browsers en uitgevoerde scenario's.
 - Maak geen release wanneer een verplichte test niet is uitgevoerd of een nieuwe fatal, warning of console-error aanwezig is.
 
 Rollback bestaat uit het terugplaatsen/installeren van de vorige werkende pluginzip en het opnieuw uitvoeren van de minimale smoke test. De plugin heeft geen eigen databasemigraties, maar verwijder of wijzig ACF-/Elementor-data niet tijdens rollback.
 
-## 8. GitHub-status
+## 8. GitHub en productie
 
-De GitHub-repository bevat momenteel alleen een release-workflowscaffold dat pluginbroncode in de repositoryroot verwacht. De lokale projectstructuur bewaart de plugin in `wc-product-card-elementor/`. Breng die layouts eerst expliciet op één lijn voordat GitHub Actions als primaire releasebron wordt gebruikt; tot dat moment is het lokale PowerShell-buildscript leidend.
+1. Publiceer de wijziging als pull request naar `main`.
+2. Controleer dat PHP 7.4/8.3 syntax, security/compatibility, WordPress Plugin Check en metadata/ZIP-build groen zijn.
+3. Los alle open reviewgesprekken op en squash-merge de pull request.
+4. Wacht op de definitieve geslaagde `main`-workflow.
+5. Download het installatieartefact uit die workflow en gebruik exact dat bestand voor staging en productie.
+6. Leg versie, mergecommit, workflowlink, stagingresultaat en uitroldatum vast.
+
+Directe pushes, force-pushes en verwijderen van `main` zijn geblokkeerd. Zie [`MAINTENANCE.md`](MAINTENANCE.md) voor prioriteiten en onderhoudsfrequentie en [`SECURITY.md`](SECURITY.md) voor kwetsbaarheidsmeldingen.

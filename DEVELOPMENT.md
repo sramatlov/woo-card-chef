@@ -11,9 +11,9 @@ Deze handleiding beschrijft hoe een wijziging veilig van idee naar testbare plug
 - Elementor 3.5.0 of hoger.
 - ACF Free en ACF Pro voor tests van alle contentpaden.
 - Optioneel: Lipscore en WBW Product Filter PRO voor integratietests.
-- PowerShell en PHP CLI voor lokale validatie.
+- PHP CLI, Python 3 en Composer 2 voor lokale validatie en de WordPress-veilige zipbuild.
 
-Er hoeft geen Composer- of npm-installatie te worden uitgevoerd. De repository bevat geen gegenereerde frontendbundels.
+Voer `composer install` uit om de gelockte ontwikkeltools te installeren. Composer beheert geen runtimecode voor de plugin en `vendor/` komt niet in de installatiezip. Er is geen npm-buildstap en de repository bevat geen gegenereerde frontendbundels.
 
 ## Werkmap aansluiten op WordPress
 
@@ -64,10 +64,10 @@ wc-product-card-elementor/
 3. Houd de wijziging klein en behoud bestaande Elementor-controlnamen; opgeslagen templates verwijzen naar die keys.
 4. Valideer alle instellingen op de PHP rendergrens. Escape op het laatst mogelijke uitvoerpunt.
 5. Voeg JavaScript alleen toe voor echte interactie en behoud server-rendered inhoud als no-JS-basis.
-6. Voer de tests in [`TESTING.md`](TESTING.md) uit.
+6. Voer `composer check`, de metadata-validator en de relevante tests in [`TESTING.md`](TESTING.md) uit.
 7. Werk relevante documentatie en het changelog in `readme.txt` bij.
 8. Verhoog pas bij een release de drie verplichte versiewaarden: pluginheader, `WCPCE_VERSION` en `Stable tag`.
-9. Bouw uitsluitend via het meegeleverde buildscript en volg de releasechecklist.
+9. Bouw uitsluitend via `tools/build_wordpress_plugin_zip.py` of gebruik het artefact van een geslaagde `main`-workflow en volg de releasechecklist.
 
 ## Versiecontract
 
@@ -111,13 +111,16 @@ De automatische match gebruikt SKU en filterbare MPN-meta-keys. Houd bestandsnam
 Een wijziging is klaar wanneer:
 
 - alle PHP-bestanden zonder syntaxfouten linten;
+- de securitysniffs, PHP-compatibiliteitscontrole, dependency-audit en WordPress Plugin Check slagen;
+- pluginmetadata en install-zip door de repositoryvalidators zijn goedgekeurd;
 - de relevante smoke- en regressietests zijn uitgevoerd;
 - desktop, tablet en mobiel geen onverwachte layoutwijzigingen tonen;
 - keyboard-, focus- en screenreader-attributen intact zijn;
 - zowel normale frontend als Elementor-editor/preview werken;
 - lege, ontbrekende en optionele databronnen veilig afhandelen;
 - changelog en relevante projectdocumentatie overeenkomen met de code;
-- een install- en update-test met de gevalideerde zip is geslaagd.
+- een install- en update-test met de gevalideerde zip is geslaagd;
+- de pull request alle verplichte `main`-controles doorstaat.
 
 ## Geen onderdeel van Woo Card Chef
 
