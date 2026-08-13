@@ -1,6 +1,6 @@
 # Roadmap - Woo Card Chef
 
-## Current version: 2.6.9
+## Current version: 2.6.10
 
 ---
 
@@ -135,6 +135,16 @@ Acceptatiecriteria:
 - bestaande producten met Nieuw/PFAS-vrij blijven zichtbaar na migratie;
 - labelprioriteit voorkomt visuele conflicten met korting, voorraadlabels en niet-leverbaar overlays;
 - frontend output blijft server-side en toegankelijk.
+
+### v2.6.10 - Compatibility metadata sync - Voltooid
+
+Metadata-release na staging- en productievalidatie op de actuele stack.
+
+- WordPress getest tot en met 7.0.4 (`Tested up to: 7.0`).
+- WooCommerce getest tot en met 11.0.1 (`WC tested up to: 11.0`).
+- Elementor 4.2.2 en Elementor Pro 4.2.1 vastgelegd.
+- PHP 8.3 vastgelegd als geteste runtime; minimum PHP 7.4 blijft ongewijzigd.
+- Geen functionele wijzigingen aan widgets of frontend-output.
 
 ### v2.6.9 - Product Card empty-state frontend fix - Voltooid
 

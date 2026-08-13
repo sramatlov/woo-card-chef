@@ -3,9 +3,9 @@
  * Plugin Name:       Woo Card Chef
  * Plugin URI:        https://vaneekerenindustries.nl
  * Description:       Serving clean, customizable WooCommerce product cards and PDP widgets in Elementor, with ACF-powered USPs, media, prices, badges, delivery status and flexible product grids.
- * Version:           2.6.9
+ * Version:           2.6.10
  * Requires at least: 6.0
- * Tested up to:      6.7
+ * Tested up to:      7.0
  * Requires PHP:      7.4
  * Author:            S15 Webdesign
  * Author URI:        https://vaneekerenindustries.nl
@@ -14,10 +14,10 @@
  * Text Domain:       woo-card-chef
  * Domain Path:       /languages
  * Requires Plugins:  woocommerce, elementor
- * Elementor tested up to: 4.1.0
- * Elementor Pro tested up to: 4.0.4
+ * Elementor tested up to: 4.2.2
+ * Elementor Pro tested up to: 4.2.1
  * WC requires at least: 6.0
- * WC tested up to: 10.7
+ * WC tested up to: 11.0
  *
  * @package WC_Product_Card_Elementor
  */
@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants.
-define( 'WCPCE_VERSION', '2.6.9' );
+define( 'WCPCE_VERSION', '2.6.10' );
 define( 'WCPCE_PLUGIN_FILE', __FILE__ );
 define( 'WCPCE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WCPCE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

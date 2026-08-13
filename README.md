@@ -4,7 +4,7 @@
 
 Woo Card Chef is een custom WordPress-plugin met acht Elementor-widgets voor WooCommerce-productkaarten, productarchieven en productdetailpagina's. De plugin is primair gebouwd voor Bourgini.com en houdt productinhoud in WooCommerce/ACF en presentatie in Elementor.
 
-**Huidige versie:** 2.6.9
+**Huidige versie:** 2.6.10
 
 **Pluginmap:** `wc-product-card-elementor/`
 
@@ -27,11 +27,11 @@ Woo Card Chef is een custom WordPress-plugin met acht Elementor-widgets voor Woo
 
 | Component | Minimum | Getest tot en met volgens pluginmetadata |
 |---|---:|---:|
-| WordPress | 6.0 | 6.7 |
+| WordPress | 6.0 | 7.0.4 |
 | PHP | 7.4 | 8.3 via CI |
-| WooCommerce | 6.0 | 10.7 |
-| Elementor | 3.5.0 | 4.1.0 |
-| Elementor Pro | Niet vereist | 4.0.4 |
+| WooCommerce | 6.0 | 11.0.1 |
+| Elementor | 3.5.0 | 4.2.2 |
+| Elementor Pro | Niet vereist | 4.2.1 |
 | ACF / ACF Pro | Optioneel | Zie hieronder |
 
 Elementor en WooCommerce zijn harde afhankelijkheden. ACF is optioneel, maar zonder ACF blijven de productkaartvelden en de expliciete `product_manual`-bron leeg; de automatische PDF-handleidingfallback kan wel blijven werken. ACF Pro is nodig voor de repeaters `pdp_usps` en `pdp_gallery_videos`. Lipscore is optioneel en vult alleen de aanwezige rating-/reviews placeholders.
@@ -56,7 +56,7 @@ composer validate --strict --no-check-publish
 composer audit --locked
 composer check
 python tools/validate_plugin_metadata.py --plugin-dir wc-product-card-elementor --main-file wc-product-card-elementor.php
-python tools/build_wordpress_plugin_zip.py --source-dir wc-product-card-elementor --destination-zip dist/woo-card-chef-v2.6.9-wordpress-install.zip --plugin-slug wc-product-card-elementor --main-file wc-product-card-elementor.php
+python tools/build_wordpress_plugin_zip.py --source-dir wc-product-card-elementor --destination-zip dist/woo-card-chef-v2.6.10-wordpress-install.zip --plugin-slug wc-product-card-elementor --main-file wc-product-card-elementor.php
 ```
 
 Gebruik daarnaast [`TESTING.md`](TESTING.md) voor de handmatige regressiematrix en [`WORDPRESS_PLUGIN_RELEASE_CHECKLIST.md`](WORDPRESS_PLUGIN_RELEASE_CHECKLIST.md) voor iedere release.

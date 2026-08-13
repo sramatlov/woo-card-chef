@@ -198,6 +198,7 @@
 | **v2.6.7** | **Live release: Gallery accessibility hardening. Image alt text falls back to product name, inactive slides use `inert`, and production smoke test passed on Bourgini.com.** |
 | **v2.6.8** | **Patch: Product Accordion manual fallback. If `product_manual` is empty, the widget can auto-match a PDF from the configured manuals directory using SKU/MPN tokens with trailing zeroes stripped.** |
 | **v2.6.9** | **Hotfix: Product Card Grid empty-state correction. Auto-mode frontend requests show the customer-facing Dutch empty message instead of Elementor editor guidance.** |
+| **v2.6.10** | **Compatibility metadata release. Records validation on WordPress 7.0.4, WooCommerce 11.0.1, Elementor 4.2.2, Elementor Pro 4.2.1, and PHP 8.3 without changing plugin behaviour.** |
 
 ## Technical terms — Product Accordion widget (v2.4.0)
 

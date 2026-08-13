@@ -4,11 +4,11 @@
 
 | Dependency | Minimum | Tested up to |
 |---|---|---|
-| WordPress | 6.0 | 6.7 |
-| PHP | 7.4 | 8.2 |
-| WooCommerce | 6.0 | 10.7 |
-| Elementor (free) | 3.5.0 | 4.1.0 |
-| Elementor Pro | — | 4.0.4 |
+| WordPress | 6.0 | 7.0.4 |
+| PHP | 7.4 | 8.3 |
+| WooCommerce | 6.0 | 11.0.1 |
+| Elementor (free) | 3.5.0 | 4.2.2 |
+| Elementor Pro | — | 4.2.1 |
 | ACF / ACF Pro | Any (optional) | Current |
 
 ## Hard dependencies
@@ -72,7 +72,7 @@ wc-product-card-elementor/
 ## Constants
 
 ```php
-WCPCE_VERSION       // e.g. '2.6.9'
+WCPCE_VERSION       // e.g. '2.6.10'
 WCPCE_PLUGIN_FILE   // __FILE__ of main plugin file
 WCPCE_PLUGIN_DIR    // plugin_dir_path()
 WCPCE_PLUGIN_URL    // plugin_dir_url()
