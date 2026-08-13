@@ -1,0 +1,29 @@
+{
+    "name": "sramatlov/woo-card-chef",
+    "description": "Development tooling for the private Woo Card Chef WordPress plugin.",
+    "type": "project",
+    "license": "proprietary",
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "1.2.1",
+        "phpcompatibility/phpcompatibility-wp": "2.1.8",
+        "squizlabs/php_codesniffer": "3.13.6",
+        "wp-coding-standards/wpcs": "3.4.1"
+    },
+    "scripts": {
+        "check": [
+            "@check:security",
+            "@check:compatibility"
+        ],
+        "check:security": "phpcs --standard=phpcs.xml.dist",
+        "check:compatibility": "phpcs --standard=phpcompatibility.xml.dist"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "platform": {
+            "php": "7.4.33"
+        },
+        "sort-packages": true
+    }
+}

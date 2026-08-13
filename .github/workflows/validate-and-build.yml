@@ -60,9 +60,60 @@ jobs:
             php -l "$file"
           done
 
+  code-quality:
+    name: Security and PHP 7.4+ compatibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up PHP and Composer
+        uses: shivammathur/setup-php@b604ade2a87db23f8871b7182e69ec5e75effb45 # v2
+        with:
+          php-version: "8.3"
+          tools: composer:v2
+          coverage: none
+
+      - name: Validate Composer configuration
+        run: composer validate --strict --no-check-publish
+
+      - name: Install locked quality tools
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Audit Composer dependencies
+        run: composer audit --locked --no-interaction
+
+      - name: Run security and compatibility checks
+        run: composer check
+
+  plugin-check:
+    name: WordPress Plugin Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Run stable general, security, and performance checks
+        uses: WordPress/plugin-check-action@10857da14b6c2246d15402b3e69f777edcf8c12e # v1.1.9
+        with:
+          build-dir: ./wc-product-card-elementor
+          categories: |
+            general
+            security
+            performance
+          ignore-warnings: true
+          include-experimental: false
+
   build:
     name: Validate metadata and build install zip
-    needs: php-lint
+    needs:
+      - php-lint
+      - code-quality
+      - plugin-check
     runs-on: ubuntu-latest
     timeout-minutes: 10
 

@@ -8,3 +8,12 @@ updates:
       time: "06:00"
       timezone: Europe/Amsterdam
     open-pull-requests-limit: 5
+
+  - package-ecosystem: composer
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:15"
+      timezone: Europe/Amsterdam
+    open-pull-requests-limit: 5
