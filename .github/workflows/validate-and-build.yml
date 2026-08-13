@@ -2,109 +2,164 @@ name: Validate and build plugin zip
 
 on:
   push:
+    branches:
+      - main
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: plugin-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PLUGIN_DIR: wc-product-card-elementor
+  MAIN_FILE: wc-product-card-elementor.php
+
 jobs:
-  validate:
-    name: PHP lint and WordPress zip
+  php-lint:
+    name: PHP ${{ matrix.php-version }} syntax
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - "7.4"
+          - "8.3"
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Check plugin source exists
-        id: source
+      - name: Require plugin source
         shell: bash
-        run: |
-          if [ -f wc-product-card-elementor.php ]; then
-            echo "present=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "present=false" >> "$GITHUB_OUTPUT"
-            echo "Plugin source is not uploaded yet. Skipping build."
-          fi
+        run: test -f "${PLUGIN_DIR}/${MAIN_FILE}"
 
       - name: Set up PHP
-        if: steps.source.outputs.present == 'true'
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@b604ade2a87db23f8871b7182e69ec5e75effb45 # v2
         with:
-          php-version: "8.3"
+          php-version: ${{ matrix.php-version }}
           tools: none
           coverage: none
 
-      - name: Set up Python
-        if: steps.source.outputs.present == 'true'
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-
       - name: PHP syntax check
-        if: steps.source.outputs.present == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          mapfile -d '' files < <(find . \
-            -type f \
-            -name '*.php' \
-            -not -path './dist/*' \
-            -not -path './vendor/*' \
-            -print0)
+          mapfile -d '' files < <(find "${PLUGIN_DIR}" -type f -name '*.php' -print0)
+
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "No PHP files found in ${PLUGIN_DIR}." >&2
+            exit 1
+          fi
 
           for file in "${files[@]}"; do
             php -l "$file"
           done
 
+  code-quality:
+    name: Security and PHP 7.4+ compatibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up PHP and Composer
+        uses: shivammathur/setup-php@b604ade2a87db23f8871b7182e69ec5e75effb45 # v2
+        with:
+          php-version: "8.3"
+          tools: composer:v2
+          coverage: none
+
+      - name: Validate Composer configuration
+        run: composer validate --strict --no-check-publish
+
+      - name: Install locked quality tools
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Audit Composer dependencies
+        run: composer audit --locked --no-interaction
+
+      - name: Run security and compatibility checks
+        run: composer check
+
+  plugin-check:
+    name: WordPress Plugin Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Run stable general, security, and performance checks
+        uses: WordPress/plugin-check-action@10857da14b6c2246d15402b3e69f777edcf8c12e # v1.1.9
+        with:
+          build-dir: ./wc-product-card-elementor
+          slug: woo-card-chef
+          categories: |
+            general
+            security
+            performance
+          ignore-warnings: true
+          include-experimental: false
+
+  build:
+    name: Validate metadata and build install zip
+    needs:
+      - php-lint
+      - code-quality
+      - plugin-check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.x"
+
+      - name: Validate plugin metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/validate_plugin_metadata.py \
+            --plugin-dir "${PLUGIN_DIR}" \
+            --main-file "${MAIN_FILE}"
+
       - name: Read plugin version
-        if: steps.source.outputs.present == 'true'
         id: plugin
         shell: bash
         run: |
           set -euo pipefail
-          version="$(python - <<'PY'
-          from pathlib import Path
-          import re
-
-          text = Path("wc-product-card-elementor.php").read_text(encoding="utf-8", errors="replace")
-          match = re.search(r"^ \* Version:\s*([^\s]+)", text, re.MULTILINE)
-          if not match:
-              raise SystemExit("Plugin version header not found")
-          print(match.group(1))
-          PY
-          )"
+          version="$(python tools/validate_plugin_metadata.py \
+            --plugin-dir "${PLUGIN_DIR}" \
+            --main-file "${MAIN_FILE}" \
+            --version-only)"
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Build WordPress install zip
-        if: steps.source.outputs.present == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p dist
           python tools/build_wordpress_plugin_zip.py \
-            --source-dir . \
+            --source-dir "${PLUGIN_DIR}" \
             --destination-zip "dist/woo-card-chef-v${{ steps.plugin.outputs.version }}-wordpress-install.zip" \
-            --plugin-slug "wc-product-card-elementor" \
-            --main-file "wc-product-card-elementor.php"
-
-      - name: Inspect zip entries
-        if: steps.source.outputs.present == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          import zipfile
-
-          zip_path = next(Path("dist").glob("*.zip"))
-          with zipfile.ZipFile(zip_path) as archive:
-              for name in archive.namelist()[:20]:
-                  print(name)
-          PY
+            --plugin-slug "${PLUGIN_DIR}" \
+            --main-file "${MAIN_FILE}"
 
       - name: Upload install zip
-        if: steps.source.outputs.present == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: woo-card-chef-v${{ steps.plugin.outputs.version }}-wordpress-install
           path: dist/woo-card-chef-v${{ steps.plugin.outputs.version }}-wordpress-install.zip
           if-no-files-found: error
+          retention-days: 14

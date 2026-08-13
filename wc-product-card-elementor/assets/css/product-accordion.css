@@ -1,0 +1,441 @@
+/* ===== WCPCE PRODUCT ACCORDION — product-accordion.css ===== */
+/* PDP Phase 6. BEM block: .wcpce-accordion                    */
+
+/* ===== BLOCK ===== */
+
+.wcpce-accordion {
+	font-family: inherit;
+}
+
+/* ===== ITEM ===== */
+
+.wcpce-accordion__item {
+	border-bottom: 1px solid #dddddd;
+	border-bottom-color: inherit; /* overridden by Elementor colour control */
+}
+
+/* ===== HEADING (wrapper for the button) ===== */
+
+.wcpce-accordion__heading {
+	margin: 0;
+	padding: 0;
+	font-size: inherit;
+	font-weight: inherit;
+	line-height: inherit;
+}
+
+/* ===== TRIGGER ===== */
+
+.wcpce-accordion__trigger {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 18px;
+	min-width: 0;
+	width: 100%;
+	padding: 24px 0;
+	/* Reset button defaults — Bourgini site-wide button styles require
+	   !important on all interactive states to prevent colour/background bleed. */
+	background: transparent !important;
+	border: 0 !important;
+	border-radius: 0;
+	box-shadow: none !important;
+	cursor: pointer;
+	text-align: left;
+	/* Explicit colour prevents site heading/button colour (red) from bleeding in
+	   via inheritance. Elementor trigger colour control overrides this. */
+	color: #333232 !important;
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	line-height: 1.4;
+	transition: none !important;
+}
+
+.wcpce-accordion__trigger:hover,
+.wcpce-accordion__trigger:focus,
+.wcpce-accordion__trigger:active {
+	background: transparent !important;
+	color: #333232 !important;
+	box-shadow: none !important;
+	text-decoration: none !important;
+	outline: none;
+}
+
+.wcpce-accordion__trigger:focus-visible {
+	outline: 2px solid #d9d9d9;
+	outline-offset: 3px;
+}
+
+/* ===== TRIGGER TEXT ===== */
+
+.wcpce-accordion__trigger-text {
+	flex: 1 1 auto;
+	min-width: 0;
+	max-width: 100%;
+	white-space: normal;
+	overflow-wrap: anywhere;
+	word-break: normal;
+	hyphens: auto;
+}
+
+/* ===== ICON (+ / −) ===== */
+
+/*
+ * The icon is a CSS cross that collapses the vertical arm when open.
+ * Generated content so no markup dependency.
+ * z-index hierarchy: none needed (icon is inline in the trigger flow).
+ */
+.wcpce-accordion__icon {
+	position: relative;
+	flex: 0 0 18px;
+	width: 18px;
+	height: 18px;
+	margin-left: 8px;
+}
+
+.wcpce-accordion__icon::before,
+.wcpce-accordion__icon::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 12px;
+	height: 1px;
+	background: currentColor;
+	border-radius: 1px;
+	transform: translate(-50%, -50%);
+	transition: opacity 0.18s ease;
+}
+
+.wcpce-accordion__icon::after {
+	width: 1px;
+	height: 12px;
+}
+
+.wcpce-accordion__item.is-open .wcpce-accordion__icon::after {
+	opacity: 0;
+}
+
+/* ===== CONTENT PANEL ===== */
+
+/*
+ * Closed panels use the HTML `hidden` attribute (toggled by JS) so they are
+ * removed from the tab order and invisible to screen readers — more reliable
+ * than CSS-only display:none which can still be reached by some AT. The
+ * display:none below handles the visual hiding when `hidden` is set.
+ */
+.wcpce-accordion__content[hidden] {
+	display: none;
+}
+
+.wcpce-accordion__content {
+	display: block;
+	min-width: 0;
+	max-width: 100%;
+	padding: 4px 0 34px 22px;
+	overflow-wrap: break-word;
+}
+
+/* ===== CONTENT TYPOGRAPHY ===== */
+
+.wcpce-accordion__content p {
+	margin: 0 0 18px 0;
+}
+
+.wcpce-accordion__content p:last-child {
+	margin-bottom: 0;
+}
+
+.wcpce-accordion__content ul,
+.wcpce-accordion__content ol {
+	margin: 0 0 18px 0;
+	padding-left: 24px;
+}
+
+.wcpce-accordion__content li {
+	margin: 0 0 6px 0;
+}
+
+.wcpce-accordion__content li:last-child {
+	margin-bottom: 0;
+}
+
+.wcpce-accordion__content a {
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+}
+
+/* ===== SPECIFICATIONS TABLE ===== */
+
+.wcpce-accordion__content .woocommerce-product-attributes {
+	width: 100%;
+	border-collapse: collapse !important;
+	border-spacing: 0 !important;
+	border: 0 !important;
+	background: transparent !important;
+	margin: 8px 0 0 0;
+}
+
+.wcpce-accordion__content .woocommerce-product-attributes tbody,
+.wcpce-accordion__content .woocommerce-product-attributes tr {
+	background: transparent !important;
+}
+
+.wcpce-accordion__content .woocommerce-product-attributes tr {
+	border-bottom: 1px solid #ece8e3;
+}
+
+.wcpce-accordion__content .woocommerce-product-attributes tr:first-child {
+	border-top: 1px solid #ece8e3;
+}
+
+.wcpce-accordion__content .woocommerce-product-attributes th,
+.wcpce-accordion__content .woocommerce-product-attributes td {
+	padding: 16px 0 !important;
+	vertical-align: top;
+	border: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+.wcpce-accordion__content .woocommerce-product-attributes th {
+	width: 65%;
+	padding-right: 28px !important;
+	text-align: left !important;
+	font-weight: 400 !important;
+}
+
+.wcpce-accordion__content .woocommerce-product-attributes td {
+	width: 35%;
+	text-align: left !important;
+	font-weight: 300 !important;
+}
+
+.wcpce-accordion__content .woocommerce-product-attributes-item__value {
+	padding-left: 0 !important;
+}
+
+/* Hide WC's default "Additional information" h2 inside the panel */
+.wcpce-accordion__item--specs #tab-additional_information > h2:first-child,
+.wcpce-accordion__item--specs .wcpce-accordion__content > h2:first-child {
+	display: none !important;
+}
+
+/* ===== LIPSCORE PANEL ===== */
+
+.wcpce-accordion__lipscore-panel .lipscore-review-box {
+	border: 1px solid #d9d6d1 !important;
+	border-radius: 4px !important;
+	background: #f8f7f5 !important;
+}
+
+.wcpce-accordion__lipscore-panel .lipscore-review-content-wrapper {
+	background: transparent !important;
+	padding: 14px 16px 6px !important;
+}
+
+.wcpce-accordion__lipscore-panel .lipscore-review-reply {
+	margin-top: 14px !important;
+	margin-left: 14px !important;
+	padding-left: 14px !important;
+	background: transparent !important;
+	border-left: 2px solid #ddd9d3 !important;
+}
+
+.wcpce-accordion__lipscore-panel .lipscore-review-list-distribution-notice {
+	margin-top: 16px !important;
+}
+
+/* ===== FAQ INNER ACCORDION ===== */
+
+.wcpce-accordion__faq {
+	/* Inherits padding from the outer content panel */
+}
+
+.wcpce-accordion__faq-item {
+	border-bottom: 1px solid #ece8e3;
+}
+
+.wcpce-accordion__faq-item:last-child {
+	border-bottom: 0;
+}
+
+.wcpce-accordion__faq-heading {
+	margin: 0;
+	padding: 0;
+	font-size: inherit;
+	font-weight: inherit;
+	line-height: inherit;
+}
+
+.wcpce-accordion__faq-trigger {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	min-width: 0;
+	width: 100%;
+	padding: 14px 0;
+	background: transparent !important;
+	border: 0 !important;
+	border-radius: 0;
+	box-shadow: none !important;
+	cursor: pointer;
+	text-align: left;
+	color: #333232 !important;
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	line-height: 1.45;
+	white-space: normal;
+	transition: none !important;
+}
+
+.wcpce-accordion__faq-trigger:hover,
+.wcpce-accordion__faq-trigger:focus,
+.wcpce-accordion__faq-trigger:active {
+	background: transparent !important;
+	color: #333232 !important;
+	box-shadow: none !important;
+	text-decoration: none !important;
+	outline: none;
+}
+
+.wcpce-accordion__faq-trigger:focus-visible {
+	outline: 2px solid #d9d9d9;
+	outline-offset: 3px;
+}
+
+/* FAQ icon (dot that becomes a minus) */
+.wcpce-accordion__faq-icon {
+	position: relative;
+	flex: 0 0 16px;
+	min-width: 16px;
+	width: 16px;
+	height: 16px;
+	margin-top: 3px;
+}
+
+.wcpce-accordion__faq-icon::before,
+.wcpce-accordion__faq-icon::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 8px;
+	height: 1px;
+	background: currentColor;
+	border-radius: 1px;
+	transform: translate(-50%, -50%);
+	transition: opacity 0.15s ease;
+}
+
+.wcpce-accordion__faq-icon::after {
+	width: 1px;
+	height: 8px;
+}
+
+.wcpce-accordion__faq-item.is-open .wcpce-accordion__faq-icon::after {
+	opacity: 0;
+}
+
+.wcpce-accordion__faq-question {
+	flex: 1 1 auto;
+	min-width: 0;
+	max-width: 100%;
+	white-space: normal;
+	overflow-wrap: anywhere;
+	word-break: normal;
+	hyphens: auto;
+}
+
+.wcpce-accordion__faq-answer[hidden] {
+	display: none;
+}
+
+.wcpce-accordion__faq-answer {
+	display: block;
+	min-width: 0;
+	max-width: 100%;
+	padding: 0 0 16px 28px;
+	overflow-wrap: break-word;
+}
+
+.wcpce-accordion__faq-answer p {
+	margin: 0;
+}
+
+/* ===== MANUAL DOWNLOAD ===== */
+
+.wcpce-accordion__manual-download {
+	margin: 0;
+}
+
+.wcpce-accordion__manual-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+}
+
+.wcpce-accordion__manual-icon {
+	flex: 0 0 16px;
+	width: 16px;
+	height: 16px;
+}
+
+/* ===== EDITOR NOTICE ===== */
+
+.wcpce-accordion-editor-notice {
+	padding: 12px 16px;
+	background: #f0f4f7;
+	border-left: 3px solid #3EC26D;
+	font-size: 13px;
+	color: #555;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 767px) {
+	.wcpce-accordion__trigger {
+		font-size: 16px;
+		padding: 21px 0;
+		gap: 16px;
+	}
+
+	.wcpce-accordion__content {
+		padding: 2px 0 28px 18px;
+	}
+
+	.wcpce-accordion__content .woocommerce-product-attributes th {
+		width: 50%;
+		padding-right: 24px !important;
+	}
+
+	.wcpce-accordion__content .woocommerce-product-attributes td {
+		width: 50%;
+	}
+
+	.wcpce-accordion__content .woocommerce-product-attributes th,
+	.wcpce-accordion__content .woocommerce-product-attributes td {
+		padding: 14px 0 !important;
+	}
+
+	.wcpce-accordion__lipscore-panel .lipscore-review-content-wrapper {
+		padding: 12px 14px 4px !important;
+	}
+
+	.wcpce-accordion__lipscore-panel .lipscore-review-reply {
+		margin-left: 8px !important;
+		padding-left: 12px !important;
+	}
+
+	.wcpce-accordion__faq-trigger {
+		padding: 12px 0;
+	}
+
+	.wcpce-accordion__faq-answer {
+		padding: 0 0 14px 28px;
+	}
+}

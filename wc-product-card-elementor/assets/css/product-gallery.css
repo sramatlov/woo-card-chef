@@ -1,0 +1,641 @@
+/**
+ * PDP Product Gallery widget styles.
+ *
+ * BEM: .wcpce-gallery__ prefix throughout.
+ * Breakpoints: 767px (mobile), 1024px (tablet) — matches Elementor defaults.
+ * z-index: nav (3) → overlays (4) → lightbox (100000).
+ * Badge styling intentionally matches the product card widget exactly —
+ * same colours, font sizes, padding, border-radius, and leaf icon dimensions.
+ *
+ * @package WC_Product_Card_Elementor
+ * @since 2.0.0
+ */
+
+/* ===== WIDGET WRAPPER ===== */
+
+.wcpce-gallery {
+	position: relative;
+	/* No isolation:isolate here — the lightbox uses position:fixed and must
+	 * escape to the viewport. isolation:isolate creates a stacking context
+	 * that traps fixed children behind other page elements. The card widget
+	 * uses it because its badges must not float above the sticky header;
+	 * the gallery lightbox intentionally must. */
+	width: 100%;
+}
+
+/* ===== EDITOR NOTICES ===== */
+
+.wcpce-gallery-editor-notices {
+	margin-bottom: 12px;
+}
+
+.wcpce-gallery-editor-notice {
+	padding: 10px 14px;
+	background: #fff8e1;
+	border-left: 4px solid #3EC26D;
+	border-radius: 4px;
+	font-size: 13px;
+	color: #333;
+	margin-bottom: 6px;
+}
+
+/* ===== BADGEBAR ===== */
+
+.wcpce-gallery__badgebar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+}
+
+.wcpce-gallery__badgebar--above {
+	margin-bottom: 8px;
+}
+
+.wcpce-gallery__badgebar--below {
+	margin-top: 8px;
+}
+
+/* Badge base — all badges share the same height so they align in the badgebar.
+ * Font size and padding may differ per badge type, but min-height keeps them level. */
+.wcpce-gallery__badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 6px 12px;
+	border-radius: 6px;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.01em;
+	line-height: 1;
+	white-space: nowrap;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+	min-height: 30px;
+	box-sizing: border-box;
+}
+
+/* Discount badge — Bourgini green, matches .wc-card__badge default */
+.wcpce-gallery__badge--discount {
+	background: #3EC26D;
+	color: #fff;
+}
+
+/* Nieuw badge — Bourgini red, matches .wc-card__badge--nieuw */
+.wcpce-gallery__badge--nieuw {
+	background: #B4211C;
+	color: #fff;
+}
+
+/* PFAS-vrij badge — muted green, smaller font, with leaf icon.
+ * Padding adjusted so min-height from base keeps it the same height as other badges. */
+.wcpce-gallery__badge--pfas {
+	background: #57664d;
+	color: #fff;
+	font-size: 10px;
+	padding: 6px 9px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+
+/* Leaf icon inside PFAS badge — matches .wc-card__pfas-icon */
+.wcpce-gallery__badge--pfas svg {
+	width: 11px;
+	height: 12px;
+	flex-shrink: 0;
+	color: #fff;
+}
+
+/* ===== STAGE (main image area + nav) ===== */
+
+.wcpce-gallery__stage {
+	position: relative;
+}
+
+/* OOS visual treatment — same as card widget: dim + slight grayscale */
+.wcpce-gallery__stage--oos .wcpce-gallery__slides {
+	opacity: 0.55;
+	filter: grayscale(0.3);
+}
+
+/* ===== SLIDES ===== */
+
+.wcpce-gallery__slides {
+	position: relative;
+	aspect-ratio: 1 / 1;
+	overflow: hidden;
+	border-radius: 8px;
+	background: #f9f9f9;
+	-webkit-tap-highlight-color: transparent;
+	touch-action: pan-y;
+}
+
+.wcpce-gallery__slides-track {
+	display: flex;
+	height: 100%;
+	transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+	will-change: transform;
+	/* Prevent browser from showing native scroll indicators */
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+.wcpce-gallery__slide {
+	flex: 0 0 100%;
+	width: 100%;
+	height: 100%;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+.wcpce-gallery__main-image-wrap {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background: #f9f9f9;
+}
+
+.wcpce-gallery__image {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	display: block;
+	-webkit-user-drag: none;
+}
+
+/* ===== VIDEO SLIDE ===== */
+
+.wcpce-gallery__video-slide {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.wcpce-gallery__video-thumb {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	display: block;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.wcpce-gallery__play-btn {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 64px;
+	height: 64px;
+	border-radius: 50%;
+	border: 2px solid rgba(255, 255, 255, 0.92);
+	background: rgba(0, 0, 0, 0.68);
+	box-shadow: 0 4px 18px rgba(0, 0, 0, 0.34);
+	color: #fff;
+	cursor: pointer;
+	z-index: 3;
+	transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+.wcpce-gallery__play-btn:hover {
+	background: rgba(0, 0, 0, 0.82);
+	box-shadow: 0 5px 22px rgba(0, 0, 0, 0.42);
+	transform: translate(-50%, -50%) scale(1.06);
+}
+
+.wcpce-gallery__play-btn:focus-visible {
+	outline: 2px solid #3EC26D;
+	outline-offset: 3px;
+}
+
+.wcpce-gallery__play-btn svg {
+	width: 26px;
+	height: 26px;
+	margin-left: 3px;
+}
+
+/* ===== PREV / NEXT NAVIGATION ===== */
+
+/* Prev/next navigation — white circle, border + shadow so visible on any bg.
+ * All hover/focus/active states are explicitly set to prevent theme colour bleed
+ * (Bourgini site-wide button:hover uses a pink/red accent that would bleed in). */
+/* Desktop: half over the edge of the image — absolute, translateX 50% outward.
+ * Requires the stage wrapper to have overflow:visible (default).
+ * The Elementor widget wrapper must have enough horizontal padding/margin
+ * to accommodate the half-button bleed — typically fine on full-width sections. */
+.wcpce-gallery__nav {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 4;
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	border-radius: 50% !important;
+	border: 1px solid rgba(0, 0, 0, 0.10) !important;
+	background: #fff !important;
+	color: #2a2a2a !important;
+	cursor: pointer;
+	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.12);
+	transition: box-shadow 0.15s, opacity 0.15s !important;
+	text-decoration: none !important;
+	outline: none;
+	padding: 0 !important;
+	opacity: 0.82;
+}
+
+.wcpce-gallery__nav--prev {
+	left: -18px;
+}
+
+.wcpce-gallery__nav--next {
+	right: -18px;
+}
+
+.wcpce-gallery__nav:hover,
+.wcpce-gallery__nav:active {
+	background: #f5f5f5 !important;
+	color: #2a2a2a !important;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+	border-color: rgba(0, 0, 0, 0.15) !important;
+	opacity: 1;
+}
+
+.wcpce-gallery__nav:focus-visible {
+	outline: 2px solid #3EC26D !important;
+	outline-offset: 2px;
+	background: #fff !important;
+	color: #2a2a2a !important;
+	opacity: 1;
+}
+
+.wcpce-gallery__nav svg {
+	width: 16px;
+	height: 16px;
+	flex-shrink: 0;
+}
+
+.wcpce-gallery__nav:hover,
+.wcpce-gallery__nav:active {
+	background: #f5f5f5 !important;
+	color: #2a2a2a !important;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.22);
+	border-color: rgba(0, 0, 0, 0.18) !important;
+}
+
+.wcpce-gallery__nav:focus-visible {
+	outline: 2px solid #3EC26D !important;
+	outline-offset: 2px;
+	background: #fff !important;
+	color: #2a2a2a !important;
+}
+
+.wcpce-gallery__nav svg {
+	width: 18px;
+	height: 18px;
+	flex-shrink: 0;
+}
+
+/* ===== STATUS OVERLAYS ===== */
+
+.wcpce-gallery__overlay {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 4;
+	padding: 8px 16px;
+	border-radius: 6px;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+	text-align: center;
+	pointer-events: none;
+	white-space: nowrap;
+}
+
+.wcpce-gallery__overlay--niet-leverbaar {
+	background: rgba(0, 0, 0, 0.6);
+	color: #fff;
+}
+
+.wcpce-gallery__overlay--oos {
+	background: rgba(0, 0, 0, 0.62);
+	color: #fff;
+}
+
+/* ===== THUMBNAILS ===== */
+
+.wcpce-gallery__thumbnails {
+	display: flex;
+	gap: 6px;
+	margin-top: 10px;
+	overflow: hidden;
+	width: 100%;
+}
+
+.wcpce-gallery__thumb {
+	flex: 0 0 auto;
+}
+
+/* Thumbnails beyond the configured visible count are hidden.
+ * PHP adds wcpce-gallery__thumb--hidden to items at index >= thumbnail_count. */
+.wcpce-gallery__thumb--hidden {
+	display: none;
+}
+
+.wcpce-gallery__thumb-btn {
+	position: relative;
+	display: block;
+	width: 72px;
+	height: 72px;
+	padding: 0;
+	border: 2px solid transparent;
+	border-radius: 6px;
+	background: #f2f2f2 !important;
+	cursor: pointer;
+	overflow: hidden;
+	transition: border-color 0.15s, background 0.15s;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.wcpce-gallery__thumb-btn img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center center;
+	display: block;
+	border-radius: 4px;
+}
+
+.wcpce-gallery__thumb--video .wcpce-gallery__thumb-btn img {
+	transform: scale(1.04);
+}
+
+.wcpce-gallery__thumb--active .wcpce-gallery__thumb-btn,
+.wcpce-gallery__thumb-btn[aria-current="true"] {
+	border-color: #3EC26D;
+}
+
+.wcpce-gallery__thumb:not(.wcpce-gallery__thumb--active) .wcpce-gallery__thumb-btn:hover {
+	border-color: #B4211C;
+	background: #f2f2f2 !important;
+}
+
+.wcpce-gallery__thumb-btn:focus-visible {
+	outline: 2px solid #3EC26D;
+	outline-offset: 2px;
+	background: #f2f2f2 !important;
+}
+
+/* Video indicator on thumbnail */
+.wcpce-gallery__thumb-video-icon {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 30px;
+	height: 30px;
+	transform: translate(-50%, -50%);
+	background: rgba(0, 0, 0, 0.74);
+	border: 2px solid rgba(255, 255, 255, 0.92);
+	border-radius: 50%;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #fff;
+	pointer-events: none;
+}
+
+.wcpce-gallery__thumb-video-icon svg {
+	width: 14px;
+	height: 14px;
+	margin-left: 2px;
+}
+
+/* More-indicator badge on last visible thumbnail */
+.wcpce-gallery__thumb-more {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(0, 0, 0, 0.5);
+	color: #fff;
+	font-size: 13px;
+	font-weight: 700;
+	border-radius: 4px;
+}
+
+/* ===== LIGHTBOX ===== */
+
+.wcpce-gallery__lightbox {
+	display: none;
+	position: fixed;
+	inset: 0;
+	z-index: 100000;
+	align-items: center;
+	justify-content: center;
+}
+
+.wcpce-gallery__lightbox[aria-hidden="false"] {
+	display: flex;
+}
+
+.wcpce-gallery__lightbox-backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.92);
+	cursor: pointer;
+}
+
+.wcpce-gallery__lightbox-inner {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	max-width: 1200px;
+	padding: 56px 64px 32px;
+	box-sizing: border-box;
+}
+
+.wcpce-gallery__lightbox-content {
+	position: relative;
+	max-width: 100%;
+	max-height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.wcpce-gallery__lightbox-content img {
+	max-width: 100%;
+	max-height: calc(100vh - 100px);
+	object-fit: contain;
+	display: block;
+	user-select: none;
+	border-radius: 4px;
+}
+
+/* YouTube iframe in lightbox */
+.wcpce-gallery__lightbox-content iframe {
+	width: min(900px, calc(100vw - 128px));
+	height: min(506px, calc((100vw - 128px) * 9 / 16));
+	border: none;
+	display: block;
+	border-radius: 4px;
+}
+
+/* Lightbox close button — top-right, same style as lightbox nav, theme-bleed proof */
+.wcpce-gallery__lightbox-close {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	z-index: 2;
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border-radius: 50% !important;
+	border: 1px solid rgba(255, 255, 255, 0.3) !important;
+	background: rgba(0, 0, 0, 0.45) !important;
+	color: #fff !important;
+	cursor: pointer;
+	transition: background 0.15s, border-color 0.15s;
+	outline: none;
+	padding: 0 !important;
+}
+
+.wcpce-gallery__lightbox-close:hover,
+.wcpce-gallery__lightbox-close:active {
+	background: rgba(0, 0, 0, 0.65) !important;
+	border-color: rgba(255, 255, 255, 0.4) !important;
+	color: #fff !important;
+}
+
+.wcpce-gallery__lightbox-close:focus-visible {
+	outline: 2px solid #fff !important;
+	outline-offset: 2px;
+	background: rgba(0, 0, 0, 0.45) !important;
+}
+
+.wcpce-gallery__lightbox-close svg {
+	width: 16px;
+	height: 16px;
+	flex-shrink: 0;
+}
+
+/* Lightbox nav buttons — semi-transparent white circle, theme-bleed proof */
+.wcpce-gallery__lightbox-nav {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 2;
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border-radius: 50% !important;
+	border: 1px solid rgba(255, 255, 255, 0.3) !important;
+	background: rgba(0, 0, 0, 0.45) !important;
+	color: #fff !important;
+	cursor: pointer;
+	transition: background 0.15s, border-color 0.15s;
+	outline: none;
+	padding: 0 !important;
+}
+
+.wcpce-gallery__lightbox-nav--prev {
+	left: 16px;
+}
+
+.wcpce-gallery__lightbox-nav--next {
+	right: 16px;
+}
+
+.wcpce-gallery__lightbox-nav:hover,
+.wcpce-gallery__lightbox-nav:active {
+	background: rgba(0, 0, 0, 0.65) !important;
+	border-color: rgba(255, 255, 255, 0.4) !important;
+	color: #fff !important;
+}
+
+.wcpce-gallery__lightbox-nav:focus-visible {
+	outline: 2px solid #fff !important;
+	outline-offset: 2px;
+	background: rgba(0, 0, 0, 0.45) !important;
+}
+
+.wcpce-gallery__lightbox-nav svg {
+	width: 22px;
+	height: 22px;
+	flex-shrink: 0;
+}
+
+/* ===== MOBILE ===== */
+
+@media (max-width: 767px) {
+	/* Mobile: no nav buttons — thumbnails + swipe handle navigation.
+	 * Swiping is a universally understood pattern on touch devices;
+	 * the thumbnail strip with +N indicator makes additional slides obvious. */
+	.wcpce-gallery__nav {
+		display: none !important;
+	}
+
+	.wcpce-gallery__thumb-btn {
+		width: 60px;
+		height: 60px;
+	}
+
+	/* Improve swipe feel: no transition delay during active touch drag.
+	 * JS removes .is-animating during drag and re-adds it for snap. */
+	.wcpce-gallery__slides-track.is-dragging {
+		transition: none;
+	}
+
+	.wcpce-gallery__lightbox-inner {
+		padding: 52px 8px 16px;
+	}
+
+	.wcpce-gallery__lightbox-nav--prev {
+		left: 4px;
+	}
+
+	.wcpce-gallery__lightbox-nav--next {
+		right: 4px;
+	}
+
+	.wcpce-gallery__lightbox-content img {
+		max-height: calc(100vh - 80px);
+	}
+
+	.wcpce-gallery__lightbox-content iframe {
+		width: calc(100vw - 16px);
+		height: calc((100vw - 16px) * 9 / 16);
+	}
+}
+
+
+/* ===== REDUCED MOTION ===== */
+
+@media (prefers-reduced-motion: reduce) {
+	.wcpce-gallery__slides-track {
+		transition: none;
+	}
+
+	.wcpce-gallery__play-btn:hover {
+		transform: translate(-50%, -50%);
+	}
+}

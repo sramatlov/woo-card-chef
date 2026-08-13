@@ -1,0 +1,159 @@
+/**
+ * Woo Card Chef — PDP Price & Promo Block styles.
+ *
+ * BEM block: .wcpce-price
+ * Colours mirror the product card for cross-widget consistency:
+ *   reference (struck) #888888, sale price #B4211C, current #2a2a2a,
+ *   discount chip #3EC26D / #fff (same as the card's Korting badge), 6px radius.
+ *
+ * The widget ships no JavaScript (server-rendered, progressive enhancement).
+ *
+ * @since 2.1.0
+ */
+
+/* ===== BLOCK ===== */
+.wcpce-price {
+	display: flex;
+	flex-direction: column;
+	row-gap: 4px;
+	color: #2a2a2a;
+	line-height: 1.2;
+}
+
+.wcpce-price__main {
+	display: flex;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+/* ===== REFERENCE (struck-through "Van") ===== */
+.wcpce-price__reference {
+	font-size: 15px;
+	color: #888888;
+	text-decoration: line-through;
+}
+
+.wcpce-price__reference .woocommerce-Price-amount {
+	color: inherit;
+}
+
+/* ===== SALE / CURRENT PRICE ===== */
+.wcpce-price__sale,
+.wcpce-price__current {
+	font-weight: 700;
+	font-size: 22px;
+	color: #2a2a2a;
+}
+
+.wcpce-price__sale {
+	color: #B4211C;
+}
+
+.wcpce-price__sale .woocommerce-Price-amount,
+.wcpce-price__current .woocommerce-Price-amount {
+	color: inherit;
+}
+
+.wcpce-price__from-label {
+	font-size: 13px;
+	font-weight: 500;
+	color: #5a5a5a;
+}
+
+/* ===== DISCOUNT CHIP ===== */
+.wcpce-price__chip {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 6px;
+	background: #3EC26D;
+	color: #ffffff;
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 1.4;
+	white-space: nowrap;
+}
+
+/* ===== SAVINGS LINE ===== */
+.wcpce-price__savings {
+	font-size: 13px;
+	font-weight: 600;
+	color: #2a2a2a;
+}
+
+.wcpce-price__savings .woocommerce-Price-amount {
+	color: inherit;
+}
+
+/* ===== LAYOUT MODES =====
+   Modes change prominence/layout only — which elements show is controlled by
+   the content toggles, not by the mode. */
+
+/* Compact: single inline row, savings folds to its own line on narrow widths. */
+.wcpce-price--compact .wcpce-price__sale,
+.wcpce-price--compact .wcpce-price__current {
+	font-size: 20px;
+}
+
+/* Extended: prominent sale price, reference sits above the row. */
+.wcpce-price--extended .wcpce-price__main {
+	align-items: flex-end;
+}
+
+.wcpce-price--extended .wcpce-price__sale,
+.wcpce-price--extended .wcpce-price__current {
+	font-size: 30px;
+}
+
+.wcpce-price--extended .wcpce-price__reference {
+	flex-basis: 100%;
+	order: -1;
+	margin-bottom: -2px;
+}
+
+/* ===== STATUS: NIET MEER LEVERBAAR ===== */
+.wcpce-price--unavailable {
+	opacity: 0.5;
+}
+
+.wcpce-price--unavailable .wcpce-price__current {
+	color: #6b6b6b;
+}
+
+/* ===== EDITOR NOTICE ===== */
+.wcpce-price-editor-notice {
+	padding: 10px 12px;
+	border: 1px dashed #3EC26D;
+	border-radius: 6px;
+	background: #f4fbf6;
+	color: #2a2a2a;
+	font-size: 13px;
+}
+
+/* ===== SCREEN-READER-ONLY =====
+   Scoped, prefixed copy (KNOWN_ISSUES notes the generic .sr-only may clash with
+   theme styles; this widget carries its own). */
+.wcpce-price__sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 767px) {
+	.wcpce-price__sale,
+	.wcpce-price__current {
+		font-size: 20px;
+	}
+
+	.wcpce-price--extended .wcpce-price__sale,
+	.wcpce-price--extended .wcpce-price__current {
+		font-size: 26px;
+	}
+}
