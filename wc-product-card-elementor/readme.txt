@@ -4,7 +4,7 @@ Tags: woocommerce, elementor, product card, archive, category, lipscore, acf
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.6.10
+Stable tag: 2.7.1
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Requires Plugins: woocommerce, elementor
@@ -13,7 +13,7 @@ A custom Elementor widget suite for WooCommerce product cards and focused produc
 
 == Description ==
 
-This plugin started as a custom "Product Card Grid" widget for WooCommerce category and archive pages. It now also ships focused PDP widgets for Elementor Theme Builder: Product Gallery, Product Price & Promo, Product USP / Benefits, Product Delivery & Availability, Product Accordion, Product Upsells, and Product Cross-sells / Related. Each widget is modular, server-rendered where possible, and designed so content lives in WooCommerce/ACF while presentation stays in Elementor.
+This plugin started as a custom "Product Card Grid" widget for WooCommerce category and archive pages. It now also ships focused PDP widgets for Elementor Theme Builder: Product Gallery, Product Price & Promo, Product USP / Benefits, Product Delivery & Availability, Product Accordion, Product Upsells, Product Cross-sells / Related, and Product Label Details. Each widget is modular, server-rendered where possible, and designed so content lives in WooCommerce, reusable product labels or ACF while presentation stays in Elementor.
 
 = Card features =
 
@@ -29,6 +29,7 @@ This plugin started as a custom "Product Card Grid" widget for WooCommerce categ
 * Optional action button for view product or add to cart / choose options
 * Mobile controls for columns, spacing, title clamp, USP visibility, and hover image swap
 * Whole-card click area using an overlay link, avoiding nested-link conflicts with Lipscore
+* Reusable product labels with custom text, colour, top-left/top-right position, priority and optional visible-from/visible-until scheduling; create labels on a product and reuse them across the catalogue
 
 = Elementor controls =
 
@@ -56,6 +57,7 @@ The widget exposes 35+ controls across the Content and Style tabs, including:
 * Product Accordion (PDP): description, specifications, reviews, FAQ and manual sections in an accessible accordion.
 * Product Upsells (PDP): WooCommerce upsells rendered as the existing product cards for accessories, spare parts and extensions, with optional popularity sorting.
 * Product Cross-sells / Related (PDP): WooCommerce cross-sells rendered as product cards, with WooCommerce related products as the fallback when no cross-sells are available.
+* Product Label Details (PDP): optional rich-text explanations and links from active reusable product labels, placed freely near the buy section.
 
 = Designed for Bourgini, generic by build =
 
@@ -70,12 +72,19 @@ The plugin's defaults match the Bourgini brand palette but every visual is overr
 5. Replace the existing product grid widget with the new "Product Card Grid" widget (under "Woo Card Chef" in the widget panel).
 6. Configure the widget. Default source is "Current archive (auto)", which is what you want on archive templates.
 7. Fill in the USP fields on individual products (Products > Edit Product > Product Card USPs metabox).
+8. Create or manage reusable labels under Products > Productlabels, or create a new label directly while editing a product.
 
 = USP fields =
 
 Three Product Card text fields are auto-registered on the product post type: USP 1, USP 2, USP 3. Each USP renders only if filled in. Recommended: at least one USP should be product-specific (e.g. "Geschikt voor 4 personen", "1500W vermogen") rather than a site-wide promise that repeats on every card.
 
 For the PDP Product USP / Benefits widget, ACF Pro registers a repeater field `pdp_usps` with one text field per row: `usp_text`. Editors only fill in the USP lines; layout, icons, columns, spacing, colours and typography are controlled in Elementor.
+
+= Reusable product labels =
+
+Product labels are stored as reusable WooCommerce product taxonomy terms and do not require ACF. Each label has text, a background colour, a top-left or top-right card position, a numeric priority and an active state. The plugin automatically chooses black or white label text for contrast.
+
+Select existing labels in the Productlabels panel while editing a product. Users with WooCommerce management rights can also create a new reusable label inline; product-only editor roles can assign existing labels but cannot create global definitions. Labels can also be managed centrally under Products > Productlabels. Each label can optionally have a visible-from and visible-until date/time in the WordPress site timezone; the shared schedule applies everywhere the reusable label is assigned. Productlabel bewerken also provides a WordPress visual/text editor for optional PDP explanation content with standard safe HTML and links. Place Product Label Details (PDP) in the Single Product template to render that content automatically; blank explanations are skipped and active state, schedule, priority and the widget limit are inherited from the label system. When multiple labels use the same card position they stack vertically; lower priority numbers render first. Product Card Grid, Product Upsells, Product Cross-sells / Related and Product Gallery expose controls to show/hide reusable labels and limit how many appear. The Gallery renders them by priority after its existing system badges in the horizontal badgebar and intentionally ignores card-corner position. Each widget's Style tab manages one shared custom-label typography, responsive padding, border radius, shadow and label gap. These controls target custom labels only and do not change Korting, Nieuw, PFAS-vrij, price, shipping or stock elements. Permanently unavailable products suppress reusable commercial labels. Existing Nieuw, PFAS-vrij and Niet meer leverbaar fields remain backwards-compatible. Product-list renderers bulk-prime label relationships and term metadata, and repeated reads of the same product reuse request-local label data.
 
 = Lipscore integration =
 
@@ -117,6 +126,21 @@ Check the "Minimum discount percentage" setting in the Discount Badge controls. 
 Yes. The plugin is generic and only its defaults are tuned to a specific brand palette. Install it on any shop and override colors via the Elementor controls.
 
 == Changelog ==
+
+= 2.7.1 =
+Release reusable custom product labels after staging acceptance. Labels are centrally reusable with custom text and colour, automatic contrast, card position, priority, active state and optional site-timezone scheduling. Product Card Grid, Product Upsells, Product Cross-sells / Related and Product Gallery share the label data while retaining context-specific positioning and widget-level styling. Labels can also contain an optional safe rich-text PDP explanation, managed without ACF in the WordPress Visual/Text editor and rendered by the zero-JS Product Label Details (PDP) Elementor widget. Existing Nieuw, PFAS-vrij, price, shipping and stock labels remain unchanged; permanently unavailable products suppress custom commercial labels and their explanations. Final hardening bulk-primes label relationships and term metadata, reuses filtered label data within one request, and restricts creation of global reusable definitions to users with `manage_woocommerce` while preserving existing-label assignment for product editors.
+
+= 2.7.1-rc.4 =
+Add optional PDP rich-text explanations to reusable product labels without an ACF dependency. Productlabel bewerken uses the WordPress Visual/Text editor and accepts standard safe post HTML, including formatted text, lists and links; inline label creation provides an HTML textarea. A new zero-JS Product Label Details (PDP) Elementor widget renders only active, currently scheduled labels with non-empty explanations, ordered by label priority with a configurable 1-10 limit. Permanently unavailable products suppress the explanation blocks. Label name/colour remain definition-level while panel layout, typography, spacing and link colours are controlled per widget. Output is sanitised with WordPress's safe post-HTML allowlist on save and render without deprecated link helpers.
+
+= 2.7.1-rc.3 =
+Add optional visible-from and visible-until date/time fields to reusable custom product labels. Scheduling uses the WordPress site timezone and applies centrally to every product and widget using the label. Empty boundaries remain unlimited, the end minute is inclusive, and invalid or reversed periods fail closed. Product editors can set the window while creating a label inline; the central Productlabels screens support editing and show the current schedule state. Existing labels without schedule metadata remain always visible.
+
+= 2.7.1-rc.2 =
+Extend reusable product labels to the PDP Product Gallery. The Gallery badgebar can show a configurable 1-10 labels after the existing Korting, Nieuw and PFAS-vrij badges, ordered by the shared label priority. Card-corner positions intentionally do not apply to the horizontal PDP badgebar. Gallery-level Elementor controls manage all PDP custom-label typography, responsive padding, border radius, shadow and spacing without affecting existing system badges. Custom labels wrap responsively and remain suppressed for permanently unavailable products.
+
+= 2.7.1-rc.1 =
+Add reusable taxonomy-backed product labels for shared product cards. Editors can select existing labels or create a new label directly on a product with custom text, background colour, top-left/top-right position and priority; labels remain centrally manageable and reusable across products. Multiple labels stack by position and priority, text colour is chosen automatically for contrast, and Elementor controls set visibility plus a 1-10 label limit for Product Card Grid, Product Upsells and Product Cross-sells / Related. A shared custom-only Style section manages typography, responsive padding, border radius, shadow and label gap without changing existing system labels, price, shipping or stock output. Existing Nieuw, PFAS-vrij and Niet meer leverbaar behaviour remains backwards-compatible; permanently unavailable products suppress the new commercial labels. The PDP Gallery badgebar is intentionally unchanged in this first release.
 
 = 2.6.10 =
 Compatibility metadata release. Records the production-tested stack of WordPress 7.0, WooCommerce 11.0, Elementor 4.2.2, Elementor Pro 4.2.1, and PHP 8.3. No functional plugin behaviour changed.

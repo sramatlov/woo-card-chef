@@ -104,6 +104,21 @@
 	color: #fff;
 }
 
+/* Reusable taxonomy labels form their own wrapping group. Their background and
+ * contrast colour come from the shared label definition; Elementor controls
+ * target only this group and never change the standard gallery badges. */
+.wcpce-gallery__custom-labels {
+	display: inline-flex;
+	flex-wrap: wrap;
+	align-items: center;
+	max-width: 100%;
+	gap: 6px;
+}
+
+.wcpce-gallery__badge--custom {
+	flex: 0 0 auto;
+}
+
 /* ===== STAGE (main image area + nav) ===== */
 
 .wcpce-gallery__stage {

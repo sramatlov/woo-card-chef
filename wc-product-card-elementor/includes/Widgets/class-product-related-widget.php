@@ -21,6 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 2.6.0
  */
 class WCPCE_Product_Related_Widget extends \Elementor\Widget_Base {
+	use WCPCE_Custom_Label_Controls;
 
 	// -------------------------------------------------------------------------
 	// Elementor identity & dependencies
@@ -118,6 +119,7 @@ class WCPCE_Product_Related_Widget extends \Elementor\Widget_Base {
 		$this->register_card_style_controls();
 		$this->register_typography_controls();
 		$this->register_color_controls();
+		$this->register_custom_label_style_controls();
 	}
 
 	/**
@@ -501,6 +503,32 @@ class WCPCE_Product_Related_Widget extends \Elementor\Widget_Base {
 				'label'     => esc_html__( 'Product badges', 'woo-card-chef' ),
 				'type'      => \Elementor\Controls_Manager::HEADING,
 				'separator' => 'before',
+			)
+		);
+
+		$this->add_control(
+			'show_custom_labels',
+			array(
+				'label'        => esc_html__( 'Show reusable product labels', 'woo-card-chef' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'Yes', 'woo-card-chef' ),
+				'label_off'    => esc_html__( 'No', 'woo-card-chef' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
+			)
+		);
+
+		$this->add_control(
+			'custom_label_limit',
+			array(
+				'label'       => esc_html__( 'Maximum reusable labels', 'woo-card-chef' ),
+				'type'        => \Elementor\Controls_Manager::NUMBER,
+				'default'     => 3,
+				'min'         => 1,
+				'max'         => 10,
+				'step'        => 1,
+				'condition'   => array( 'show_custom_labels' => 'yes' ),
+				'description' => esc_html__( 'Label priority decides which labels remain visible when the limit is reached.', 'woo-card-chef' ),
 			)
 		);
 
@@ -1218,6 +1246,7 @@ class WCPCE_Product_Related_Widget extends \Elementor\Widget_Base {
 		$settings['shipping_threshold'] = max( 0.0, min( 1000.0, isset( $settings['shipping_threshold'] ) ? (float) $settings['shipping_threshold'] : 25.0 ) );
 		$settings['badge_threshold']    = max( 0, min( 100, isset( $settings['badge_threshold'] ) ? absint( $settings['badge_threshold'] ) : 0 ) );
 		$settings['usp_count']          = max( 1, min( 3, isset( $settings['usp_count'] ) ? absint( $settings['usp_count'] ) : 2 ) );
+		$settings['custom_label_limit'] = max( 1, min( 10, isset( $settings['custom_label_limit'] ) ? absint( $settings['custom_label_limit'] ) : 3 ) );
 
 		$settings['heading_tag'] = $this->validate_choice( $settings['heading_tag'] ?? 'h2', array( 'h2', 'h3', 'h4', 'h5', 'h6', 'div' ), 'h2' );
 		$settings['mobile_layout'] = $this->validate_choice( $settings['mobile_layout'] ?? 'scroll', array( 'scroll', 'grid' ), 'scroll' );
@@ -1240,6 +1269,7 @@ class WCPCE_Product_Related_Widget extends \Elementor\Widget_Base {
 			'show_badge_nieuw'            => 'yes',
 			'show_badge_pfas'             => '',
 			'show_badge_niet_leverbaar'   => 'yes',
+			'show_custom_labels'           => 'yes',
 			'hover_lift'                  => 'yes',
 		);
 
@@ -1486,6 +1516,8 @@ class WCPCE_Product_Related_Widget extends \Elementor\Widget_Base {
 			'badge_pfas_label'            => $settings['badge_pfas_label'] ?? __( 'PFAS-vrij', 'woo-card-chef' ),
 			'show_badge_niet_leverbaar'   => $settings['show_badge_niet_leverbaar'] ?? 'yes',
 			'badge_niet_leverbaar_label'  => $settings['badge_niet_leverbaar_label'] ?? __( 'Niet meer leverbaar', 'woo-card-chef' ),
+			'show_custom_labels'           => $settings['show_custom_labels'] ?? 'yes',
+			'custom_label_limit'           => $settings['custom_label_limit'] ?? 3,
 			'hover_lift'                  => $settings['hover_lift'] ?? 'yes',
 		);
 	}
@@ -1584,6 +1616,9 @@ class WCPCE_Product_Related_Widget extends \Elementor\Widget_Base {
 
 		WCPCE_Card_Renderer::render_svg_sprite();
 		WCPCE_Image_Helper::prime_attachment_caches( $products, $card_settings );
+		if ( 'yes' === ( $card_settings['show_custom_labels'] ?? 'yes' ) && class_exists( 'WCPCE_Product_Labels' ) ) {
+			WCPCE_Product_Labels::prime_product_label_caches( $products );
+		}
 
 		echo '<ul class="products wc-card-grid wcpce-related__grid" role="list">';
 

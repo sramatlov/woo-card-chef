@@ -26,6 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
+	use WCPCE_Custom_Label_Controls;
 
 	/**
 	 * Widget machine name. Must be unique within Elementor.
@@ -140,6 +141,7 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 		$this->register_typography_controls();
 		$this->register_color_controls();
 		$this->register_badge_style_controls();
+		$this->register_custom_label_style_controls();
 		$this->register_pagination_style_controls();
 		$this->register_rating_style_controls();
 	}
@@ -644,6 +646,33 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 				'label'     => esc_html__( 'Product badges', 'woo-card-chef' ),
 				'type'      => \Elementor\Controls_Manager::HEADING,
 				'separator' => 'before',
+			)
+		);
+
+		$this->add_control(
+			'show_custom_labels',
+			array(
+				'label'        => esc_html__( 'Toon herbruikbare productlabels', 'woo-card-chef' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'On', 'woo-card-chef' ),
+				'label_off'    => esc_html__( 'Off', 'woo-card-chef' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
+				'description'  => esc_html__( 'Toont de labels die onder Producten > Productlabels aan producten zijn gekoppeld.', 'woo-card-chef' ),
+			)
+		);
+
+		$this->add_control(
+			'custom_label_limit',
+			array(
+				'label'       => esc_html__( 'Maximum aantal productlabels', 'woo-card-chef' ),
+				'type'        => \Elementor\Controls_Manager::NUMBER,
+				'default'     => 3,
+				'min'         => 1,
+				'max'         => 10,
+				'step'        => 1,
+				'condition'   => array( 'show_custom_labels' => 'yes' ),
+				'description' => esc_html__( 'Prioriteit bepaalt welke labels worden getoond wanneer er meer labels gekoppeld zijn.', 'woo-card-chef' ),
 			)
 		);
 
@@ -1732,6 +1761,9 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 		// cold cache. After priming they all read from the WP object cache.
 		// Delegated to WCPCE_Image_Helper (Phase 6, R4) — behaviour unchanged.
 		WCPCE_Image_Helper::prime_attachment_caches( $products, $settings );
+		if ( 'yes' === ( $settings['show_custom_labels'] ?? 'yes' ) && class_exists( 'WCPCE_Product_Labels' ) ) {
+			WCPCE_Product_Labels::prime_product_label_caches( $products );
+		}
 
 		$widget_id = $this->get_id();
 

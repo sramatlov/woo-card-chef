@@ -45,6 +45,12 @@ final class WC_Product_Card_Elementor_Plugin {
 	 * @since 1.0.0
 	 */
 	private function __construct() {
+		// Register reusable taxonomy-backed product labels. The class owns both
+		// the product-editor management UI and the frontend label data contract.
+		require_once WCPCE_PLUGIN_DIR . 'includes/class-product-labels.php';
+		WCPCE_Product_Labels::register();
+		require_once WCPCE_PLUGIN_DIR . 'includes/Traits/trait-custom-label-controls.php';
+
 		// Load shared helper classes. These are stateless static utilities used by
 		// both widget render paths and card/gallery templates. Loaded unconditionally
 		// at bootstrap so all consumers can rely on them being available.
@@ -121,6 +127,7 @@ final class WC_Product_Card_Elementor_Plugin {
 	 * @since 2.4.0 Added the Product Accordion widget (PDP Phase 6).
 	 * @since 2.5.0 Added the Product Upsells widget (PDP Phase 7).
 	 * @since 2.6.0 Added the Product Cross-sells / Related widget (PDP Phase 8).
+	 * @since 2.7.1 Added the Product Label Details widget.
 	 * @param \Elementor\Widgets_Manager $widgets_manager Elementor widgets manager.
 	 * @return void
 	 */
@@ -148,6 +155,9 @@ final class WC_Product_Card_Elementor_Plugin {
 
 		require_once WCPCE_PLUGIN_DIR . 'includes/Widgets/class-product-related-widget.php';
 		$widgets_manager->register( new WCPCE_Product_Related_Widget() );
+
+		require_once WCPCE_PLUGIN_DIR . 'includes/Widgets/class-product-label-details-widget.php';
+		$widgets_manager->register( new WCPCE_Product_Label_Details_Widget() );
 	}
 
 	/**

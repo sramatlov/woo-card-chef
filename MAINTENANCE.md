@@ -34,6 +34,8 @@ Een uitstel wordt in de betreffende PR of issue vastgelegd met risico, tijdelijk
 
 ## Wijzigings- en releasepad
 
+Voor gedeelde stagingtests krijgt iedere kandidaat een uniek `X.Y.Z-rc.N`-nummer in pluginheader, `WCPCE_VERSION`, `Stable tag` en ZIP-bestandsnaam. Een eenmaal gedeelde RC wordt niet overschreven. De goedgekeurde kandidaat wordt vervolgens uitgebracht als `X.Y.Z`; fixes na die definitieve release verhogen de patchversie.
+
 1. Maak een afgebakende branch en pull request.
 2. Werk bij een release de pluginheader, `WCPCE_VERSION`, `Stable tag` en het changelog synchroon bij.
 3. Los alle verplichte CI-fouten en open reviewgesprekken op.
@@ -46,7 +48,7 @@ Een uitstel wordt in de betreffende PR of issue vastgelegd met risico, tijdelijk
 ## Minimale stagingcontrole
 
 - Plugin activeert zonder fatal, nieuwe PHP-warning of adminfout.
-- Alle acht Elementor-widgets blijven beschikbaar.
+- Alle negen Elementor-widgets blijven beschikbaar.
 - Een representatief productarchief en rijk productdetail renderen op desktop en mobiel.
 - Product Gallery, Accordion, prijzen, voorraad/levering, upsells en related/cross-sells werken.
 - Elementor-editor en preview blijven bruikbaar.

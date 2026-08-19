@@ -9,7 +9,8 @@
  * - All wcpce_q_* transients listed in that option
  *
  * Per-product ACF postmeta (card_title, usp_1/2/3, pdp_usps, badge_*, card_hover_image)
- * is intentionally LEFT in place because:
+ * and reusable wcpce_product_label terms/relationships/term meta (including
+ * visibility schedules and PDP explanations) are intentionally LEFT in place because:
  * - It may be valuable content the user wants to preserve.
  * - Re-installing the plugin restores access to it with no data loss.
  * - Wholesale postmeta deletion is risky and slow on large stores.

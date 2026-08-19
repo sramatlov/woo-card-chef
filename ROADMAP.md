@@ -1,6 +1,6 @@
 # Roadmap - Woo Card Chef
 
-## Current version: 2.6.10
+## Current release: 2.7.1
 
 ---
 
@@ -77,11 +77,11 @@ R7 (class-assets.php) delivered in v2.0.0.
 
 ## Current status and next work
 
-Geen actieve fase. PDP Phase 8 (Product Cross-sells / Related) is voltooid in v2.6.0.
+De generieke productlabelsarchitectuur inclusief PDP Gallery-integratie, optionele tijdvensters en PDP-rich-texttoelichting is na stagingacceptatie uitgebracht als v2.7.1. De eerstvolgende geplande ontwikkeling is de toegankelijkheidsopschoning.
 
 De resterende roadmap is bewust smal gehouden. Er worden geen nieuwe PDP widgets of multi-shop uitbreidingen meer gepland totdat daar een concrete businesscase voor is.
 
-### v2.7.0 - Accessibility cleanup - Gepland
+### v2.8.0 - Accessibility cleanup - Gepland
 
 Doel: de bestaande toegankelijkheidsbasis opschonen en naamconflicten met themes voorkomen, zonder visuele of functionele herbouw.
 
@@ -98,7 +98,7 @@ Acceptatiecriteria:
 - bestaande frontend output blijft visueel gelijk;
 - gallery, accordion en product cards blijven toetsenbordbedienbaar.
 
-### v2.8.0 - Analytics foundation - Gepland
+### v2.9.0 - Analytics foundation - Gepland
 
 Doel: een lichte, opt-in meetlaag toevoegen voor bestaande widgets, zodat interacties meetbaar worden zonder harde afhankelijkheid van GA4, GTM of een specifieke datalayer.
 
@@ -115,26 +115,35 @@ Acceptatiecriteria:
 - analytics code verandert geen winkelgedrag;
 - geen tracking wordt geladen vanaf externe domeinen door de plugin zelf.
 
-### Future - Robust product labels architecture - Gepland
+### Future - Product labels vervolg - Te beoordelen
 
-Doel: nieuwe productlabels kunnen beheren zonder voor ieder label nieuwe ACF-velden, Elementor-controls, helperlogica, template-output en CSS-special cases toe te voegen.
+Doel: de in v2.7.1 geleverde taxonomylabels eventueel uitbreiden naar andere presentatiecontexten en bestaande hardcoded badges gecontroleerd migreren.
 
-Aanleiding: `Nieuw` en `PFAS-vrij` zijn nu als losse ACF true/false badges ingebouwd. Dat is beheersbaar voor twee vaste badges, maar niet schaalbaar wanneer er later labels zoals Bestseller, Actie, Limited edition of andere commerciële/producteigenschap-labels bijkomen.
+De basis is gereed: labels zijn herbruikbare `wcpce_product_label`-termen met tekst, kleur, kaartpositie, prioriteit, actieve status, optioneel tijdvenster en optionele PDP-toelichting. Product Card Grid, Upsells en Related renderen ze via de gedeelde card-template; Product Gallery toont ze via zijn horizontale badgebar en Product Label Details toont de veilige rich-textuitleg.
 
-Voorkeursrichting:
-- generiek productlabelsysteem, bij voorkeur via een WooCommerce product taxonomy of centraal configureerbare labeldefinities;
-- per label beheerbare tekst, kleur, positie, prioriteit, mobiel gedrag en eventueel icoon;
-- producten koppelen aan labels zonder codewijziging;
-- bestaande `badge_nieuw` en `badge_pfas_vrij` blijven tijdelijk backwards-compatible of worden gecontroleerd gemigreerd;
-- `Niet meer leverbaar` blijft een aparte beschikbaarheidsstatus, omdat die speciale suppressie- en overlaylogica heeft;
-- Card, Gallery, Upsells en Related gebruiken dezelfde label-helper en renderregels;
-- Elementor krijgt algemene label-toggles/styling waar nodig, niet per nieuw label een hardcoded control.
+Mogelijke vervolgrichting:
+- optionele gecontroleerde migratie van `badge_nieuw` en `badge_pfas_vrij`;
+- per-context mobiel gedrag of iconen toevoegen wanneer daar een concrete businesscase voor is;
+- `Niet meer leverbaar` als aparte beschikbaarheidsstatus behouden.
 
-Acceptatiecriteria:
-- een nieuw label kan door beheer worden aangemaakt en aan producten gekoppeld zonder plugin-code aan te passen;
-- bestaande producten met Nieuw/PFAS-vrij blijven zichtbaar na migratie;
-- labelprioriteit voorkomt visuele conflicten met korting, voorraadlabels en niet-leverbaar overlays;
+Acceptatiecriteria voor een vervolg:
+- card- en Gallery-presentatie hebben expliciete, niet-conflicterende positieregels;
+- bestaande producten met Nieuw/PFAS-vrij blijven zichtbaar tijdens een eventuele migratie;
 - frontend output blijft server-side en toegankelijk.
+
+### v2.7.1 - Reusable product labels - Voltooid
+
+- Private WooCommerce-producttaxonomie `wcpce_product_label` toegevoegd.
+- Labels zijn centraal herbruikbaar; WooCommerce-beheerders kunnen ze ook direct vanuit een product aanmaken en producteditors kunnen bestaande definities koppelen.
+- Per label: tekst, achtergrondkleur, automatische contrasterende tekstkleur, linksboven/rechtsboven, prioriteit, actieve status en optioneel zichtbaar-vanaf/zichtbaar-totvenster.
+- Tijdvensters gebruiken de WordPress-sitezone, gelden in alle gekoppelde widgets en zijn aan beide grenzen inclusief; lege grenzen blijven onbeperkt.
+- Optionele PDP-toelichting gebruikt term-meta en de WordPress Visueel/Tekst-editor; veilige standaard-HTML, lijsten en links zijn toegestaan zonder ACF.
+- De nieuwe zero-JS Product Label Details-widget kan vrij bij de koopsectie worden geplaatst en toont alleen actieve, ingeplande labels met ingevulde toelichting volgens prioriteit en widgetlimiet.
+- Meerdere labels stapelen per hoek; lagere prioriteit verschijnt eerst en de widgetlimiet bepaalt hoeveel labels renderen.
+- Product Card Grid, Product Upsells en Product Cross-sells / Related gebruiken dezelfde server-side card-template-output.
+- Product Gallery toont dezelfde labels na de bestaande systeemlabels in zijn horizontale boven/onder-badgebar; kaartposities worden daar bewust genegeerd en labels wrappen responsive.
+- De vier widgets delen één Elementor-stijlcontract voor custom-labeltypografie, responsive padding, radius, schaduw en tussenruimte; contextspecifieke selectors houden systeemlabels en commerce-elementen erbuiten.
+- Bestaande Nieuw/PFAS/niet-leverbaarvelden blijven backwards-compatible; niet-leverbaar onderdrukt custom commerciële labels.
 
 ### v2.6.10 - Compatibility metadata sync - Voltooid
 
@@ -659,11 +668,11 @@ Alternatieven en aanvullende producten duidelijk tonen zonder de primaire koopac
 
 ## Remaining roadmap scope
 
-De actieve roadmap bestaat vanaf v2.6.7 alleen nog uit:
+De actieve roadmap bestaat vanaf v2.7.1 uit:
 
-1. `v2.7.0 - Accessibility cleanup`
-2. `v2.8.0 - Analytics foundation`
-3. `Future - Robust product labels architecture`
+1. `v2.8.0 - Accessibility cleanup`
+2. `v2.9.0 - Analytics foundation`
+3. `Future - Product labels vervolg` (alleen bij concrete behoefte)
 
 Andere richtingen in dit document zijn historie, afgeronde fases, bewuste descopes of later opnieuw te beoordelen ideeen. Ze vormen geen actieve roadmap.
 

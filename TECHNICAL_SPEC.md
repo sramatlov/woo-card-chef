@@ -28,8 +28,11 @@ wc-product-card-elementor/
 ├── readme.txt                      WordPress.org format changelog and description
 ├── includes/
 │   ├── class-plugin.php            Singleton bootstrap: loads helpers, registers all widgets, class-assets, ACF fields, query var, cache flush
+│   ├── class-product-labels.php    Reusable product-label taxonomy, admin UI, term meta and frontend label data
 │   ├── class-acf-fields.php        Programmatic ACF field group registration (6 groups)
 │   ├── class-assets.php            Centralised CSS/JS registration for all widgets (R7, v2.0.0)
+│   ├── Traits/
+│   │   └── trait-custom-label-controls.php Shared Elementor style controls for custom labels
 │   ├── Widgets/
 │   │   ├── class-product-card-widget.php   Product Card grid widget (moved from includes/ root in v2.0.0)
 │   │   ├── class-product-gallery-widget.php  PDP Gallery widget (new in v2.0.0)
@@ -38,7 +41,8 @@ wc-product-card-elementor/
 │   │   ├── class-product-delivery-widget.php PDP Delivery & Availability widget (new in v2.3.0)
 │   │   ├── class-product-accordion-widget.php PDP Product Accordion widget (new in v2.4.0)
 │   │   ├── class-product-upsells-widget.php PDP Product Upsells widget (new in v2.5.0)
-│   │   └── class-product-related-widget.php PDP Cross-sells / Related widget (new in v2.6.0)
+│   │   ├── class-product-related-widget.php PDP Cross-sells / Related widget (new in v2.6.0)
+│   │   └── class-product-label-details-widget.php PDP reusable-label explanation widget (new in v2.7.1)
 │   └── Helpers/
 │       ├── class-badge-helper.php  WCPCE_Badge_Helper (Phase 6 R1, v1.0.80)
 │       ├── class-stock-helper.php  WCPCE_Stock_Helper (Phase 6 R3, v1.0.81)
@@ -55,7 +59,8 @@ wc-product-card-elementor/
 │   │   ├── product-delivery.css    PDP Delivery & Availability styles (unminified, new in v2.3.0)
 │   │   ├── product-accordion.css   PDP Product Accordion styles (unminified, new in v2.4.0)
 │   │   ├── product-upsells.css     PDP Product Upsells styles (unminified, new in v2.5.0)
-│   │   └── product-related.css     PDP Cross-sells / Related styles (unminified, new in v2.6.0)
+│   │   ├── product-related.css     PDP Cross-sells / Related styles (unminified, new in v2.6.0)
+│   │   └── product-label-details.css PDP reusable-label explanation styles (unminified, new in v2.7.1)
 │   └── js/
 │       ├── product-gallery.js      PDP Gallery widget JS (new in v2.0.0; deferred)
 │       └── product-accordion.js    PDP Accordion widget JS (new in v2.4.0; deferred)
@@ -63,7 +68,7 @@ wc-product-card-elementor/
     └── card.php                    Card partial included per product in the render loop
 ```
 
-**JavaScript.** The Product Card widget ships no JavaScript (zero-JS since v1.0.54). The PDP Gallery widget ships `assets/js/product-gallery.js`, registered with `strategy: 'defer'` and only enqueued on pages where the widget is present (via `get_script_depends()`). Purely presentational PDP widgets (Price & Promo Block, Product USP / Benefits, Product Delivery & Availability) return an empty `get_script_depends()` array and ship CSS only. The Product Accordion widget ships `assets/js/product-accordion.js` (deferred) for toggle behaviour, FAQ inner accordion, Lipscore count sync, and hash-jump navigation. The Product Upsells and Product Cross-sells / Related widgets have no widget-specific JS, but return `wc-add-to-cart` statically because the shared card template can render AJAX add-to-cart buttons.
+**JavaScript.** The Product Card widget ships no JavaScript (zero-JS since v1.0.54). The PDP Gallery widget ships `assets/js/product-gallery.js`, registered with `strategy: 'defer'` and only enqueued on pages where the widget is present (via `get_script_depends()`). Purely presentational PDP widgets (Price & Promo Block, Product USP / Benefits, Product Delivery & Availability and Product Label Details) return an empty `get_script_depends()` array and ship CSS only. The Product Accordion widget ships `assets/js/product-accordion.js` (deferred) for toggle behaviour, FAQ inner accordion, Lipscore count sync, and hash-jump navigation. The Product Upsells and Product Cross-sells / Related widgets have no widget-specific JS, but return `wc-add-to-cart` statically because the shared card template can render AJAX add-to-cart buttons.
 
 **Helpers (Phase 6, v1.0.80-v1.0.84; v2.5.0).** Shared stateless utility classes live in `includes/Helpers/`. Required unconditionally at bootstrap. No constructors, no object state. Since v2.4.1, `WCPCE_Price_Helper::get_product_price_data()` has a static per-request cache because multiple PDP widgets can reuse the same product price data. Since v2.5.0, `WCPCE_Card_Renderer` owns card sprite output, `templates/card.php` inclusion, and card data computation so PDP product-list widgets can reuse the Product Card Grid card logic.
 
@@ -72,13 +77,38 @@ wc-product-card-elementor/
 ## Constants
 
 ```php
-WCPCE_VERSION       // e.g. '2.6.10'
+WCPCE_VERSION       // current release: '2.7.1'
 WCPCE_PLUGIN_FILE   // __FILE__ of main plugin file
 WCPCE_PLUGIN_DIR    // plugin_dir_path()
 WCPCE_PLUGIN_URL    // plugin_dir_url()
 WCPCE_MIN_ELEMENTOR_VERSION  // '3.5.0'
 WCPCE_MIN_PHP_VERSION        // '7.4'
 ```
+
+## Reusable product labels: `WCPCE_Product_Labels` (v2.7.1)
+
+`WCPCE_Product_Labels` registers the private `wcpce_product_label` taxonomy for WooCommerce products. Labels are reusable catalogue data rather than per-widget or ACF values. The taxonomy has an admin screen under Products > Productlabels and a custom product metabox that can select existing labels. Inline creation is shown and processed only for users with `manage_woocommerce`; users who can edit the product but cannot manage WooCommerce may still assign existing labels.
+
+### Label data model
+
+| Value | Storage | Behaviour |
+|---|---|---|
+| Text | Taxonomy term name | Sanitised and limited to 60 characters when created inline |
+| Background colour | `wcpce_label_color` term meta | Six-digit hex; defaults to `#B4211C` |
+| Position | `wcpce_label_position` term meta | `top-left` or `top-right` |
+| Priority | `wcpce_label_priority` term meta | Integer 0-999; lower renders first |
+| Active | `wcpce_label_active` term meta | Inactive terms stay assigned but do not render |
+| Visible from | `wcpce_label_visible_from` term meta | Optional site-local `Y-m-d H:i:s`; start minute is inclusive |
+| Visible until | `wcpce_label_visible_until` term meta | Optional site-local `Y-m-d H:i:s`; end minute is stored with second 59 and is inclusive |
+| PDP explanation | `wcpce_label_pdp_details` term meta | Optional `wp_kses_post()` HTML from the WordPress Visual/Text editor; blank labels opt out of the PDP detail widget |
+
+Frontend data comes from `WCPCE_Product_Labels::get_product_labels( $product_id, $limit )`. It removes inactive terms and terms outside their optional visibility window, computes a black/white WCAG-contrast text colour, sorts by priority then label text and applies a 1-10 total limit. Schedule comparison uses `current_datetime()` and `wp_timezone()` so WordPress's configured site timezone is authoritative. Empty boundaries are open-ended; malformed stored values and an end before the start fail closed. `templates/card.php` groups the remaining labels into two absolute-positioned vertical stacks. The stack occupying the same corner as Korting/Nieuw receives a vertical offset. `Niet meer leverbaar` suppresses all reusable commercial labels.
+
+Frontend relationship reads use `get_the_terms()` so WordPress's object-term cache is authoritative. `prime_product_label_caches()` bulk-primes product term relationships plus the metadata for all referenced label terms before Grid, Upsells and Related card loops; already cached objects are skipped by WordPress. The filtered/sorted base label array is additionally cached per product for the current PHP request, so Gallery, Card and Product Label Details can reuse it without repeating schedule parsing or relationship reads. Product assignment invalidates only that product's request entry; editing a reusable label clears the request cache because the definition may affect multiple products. No persistent label cache is introduced, so term edits and time windows do not require custom cross-request invalidation.
+
+Product Card Grid, Product Upsells, Product Cross-sells / Related and Product Gallery expose `show_custom_labels` plus `custom_label_limit`. All four use `WCPCE_Custom_Label_Controls`, which registers the same widget-level style surface: Elementor typography, responsive padding, responsive border radius, responsive label gap and box shadow. Card selectors remain restricted to `.wc-card__custom-label` and `.wc-card__labels`; Gallery selectors remain restricted to `.wcpce-gallery__badge--custom` and `.wcpce-gallery__custom-labels`. They cannot affect Korting, Nieuw, PFAS-vrij, price, shipping or stock output. Label background colour remains definition-level term meta and its text colour remains automatic. The Gallery renders labels after its system badges in shared priority order, applies its 1-10 limit, wraps them horizontally and deliberately ignores the term's card-corner position. `Niet meer leverbaar` suppresses Gallery custom labels while retaining the Gallery's existing PFAS behaviour.
+
+`WCPCE_Product_Labels::get_product_label_details( $product_id, $limit )` applies the same active/schedule/priority pipeline and then filters out empty PDP explanations. `WCPCE_Product_Label_Details_Widget` also suppresses all explanation panels for `badge_niet_leverbaar`, matching the commercial-label rule in cards and Gallery. It renders the remaining safe HTML server-side with optional label-name badges, term-level colours and widget-level panel/typography/link styling. Content is sanitised with `wp_kses_post()` both when saved and when rendered. No shortcodes, scripts or arbitrary embeds are executed; deprecated targeted-link helpers are deliberately not called.
 
 ## ACF field groups (6 total)
 
@@ -329,7 +359,7 @@ Single `initAccordion(accordionEl)` helper guards on the `.wcpce-accordion` elem
 
 ## Product Card widget
 
-The widget file moved from `includes/class-product-card-widget.php` to `includes/Widgets/class-product-card-widget.php` in v2.0.0. Its widget name remains `wc_product_card`. Since v2.5.0 the render loop delegates sprite/card rendering to `WCPCE_Card_Renderer`. In v2.6.9 Auto mode's empty frontend state was corrected so shoppers see the configured customer-facing message while technical query guidance remains limited to Elementor editor/preview.
+The widget file moved from `includes/class-product-card-widget.php` to `includes/Widgets/class-product-card-widget.php` in v2.0.0. Its widget name remains `wc_product_card`. Since v2.5.0 the render loop delegates sprite/card rendering to `WCPCE_Card_Renderer`. In v2.6.9 Auto mode's empty frontend state was corrected so shoppers see the configured customer-facing message while technical query guidance remains limited to Elementor editor/preview. Since v2.7.1 the shared card template can render reusable product labels, controlled by `show_custom_labels` and `custom_label_limit`.
 
 ## PDP Product Upsells widget: `WCPCE_Product_Upsells_Widget` (v2.5.0)
 
@@ -402,6 +432,8 @@ Same control surface as Product Upsells: heading + heading tag, maximum products
 ## CSS architecture
 
 **Product Card:** `product-card.css`. BEM `.wc-card__*`. Unchanged.
+
+Reusable labels use `.wc-card__labels`, position modifiers `.wc-card__labels--top-left` / `--top-right`, and `.wc-card__custom-label`. One active corner may use the full media width; two active corners each receive a bounded half-width stack. The custom background/text colours are passed as sanitised CSS custom properties. Mobile uses smaller padding, type and stack gaps.
 
 **PDP Gallery:** `product-gallery.css`. BEM `.wcpce-gallery__*`. Key rules:
 - No `isolation: isolate` on the gallery wrapper (lightbox must escape to viewport).

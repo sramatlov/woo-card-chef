@@ -244,6 +244,24 @@ Cosmetic only. Most widget/helper files contain a small number of CRLF lines wit
 
 ## Open / unresolved
 
+### PDP Gallery ignores the custom label's card-corner position
+Intentional. `wcpce_label_position` controls only Product Card Grid, Upsells and Related. The Gallery has one horizontal badgebar above or below the media and therefore renders custom labels after its system badges in priority order. This prevents one reusable label from needing a second, conflicting PDP position.
+
+### Product-label limit applies across both card corners
+Intentional. The Elementor limit (default 3, range 1-10) selects the highest-priority labels across the product first; the selected labels are then grouped into left/right stacks. This prevents assigning labels to both corners from silently doubling the configured maximum.
+
+### Inactive product labels remain assigned
+Intentional. Turning a reusable label inactive hides it everywhere without destroying product relationships. Reactivating it restores the same assignments.
+
+### Product-label planning applies to every assignment
+Intentional. Visible-from/visible-until values belong to the reusable label definition, so the same window is used on every linked product and in Card Grid, Upsells, Related and Product Gallery. Create a separate label when the same text needs a different campaign period for a subset of products.
+
+### PDP label explanations apply to every assignment
+Intentional. The optional PDP rich text belongs to the reusable label and is therefore identical on every linked product. Use separate labels when the same short badge text needs different PDP terms or gifts. Product-specific overrides are deliberately not supported because they would weaken central reuse and scheduling.
+
+### Full-page caching can delay a scheduled label boundary
+Visibility is evaluated whenever WordPress generates the widget HTML. A previously cached product or archive page can therefore retain its earlier label state until that page cache expires or is purged. For minute-critical campaigns, align the host/cache-plugin lifetime with the schedule or purge the affected pages at the start and end boundaries.
+
 ### `posts_per_page` in manual mode may yield fewer cards than expected
 If some products fail `is_visible()` after the query, the grid shows fewer cards than the configured limit. Consistent with WooCommerce's own behaviour. Accepted.
 

@@ -50,7 +50,7 @@ Test waar mogelijk ook een verborgen product en een upsell/cross-sell die niet z
 
 - Plugin activeert zonder fatals of admin notices bij geldige afhankelijkheden.
 - Ontbrekende WooCommerce of Elementor levert een beheerwaarschuwing en geen frontendfatal.
-- Elementor toont de categorie **Woo Card Chef** en alle acht widgets.
+- Elementor toont de categorie **Woo Card Chef** en alle negen widgets.
 - Frontend en Elementor preview gebruiken het juiste huidige product.
 - Pagina's zonder Woo Card Chef-widget laden geen onnodige widgetassets.
 - Browserconsole bevat geen nieuwe JavaScriptfouten.
@@ -68,6 +68,21 @@ Test waar mogelijk ook een verborgen product en een upsell/cross-sell die niet z
 - Eenvoudige en variabele prijzen tonen intern consistente korting, referentie en besparing.
 - Nieuw, PFAS-vrij, niet-leverbaar en out-of-stock volgen hun prioriteitsregels.
 - Overlay-link, Lipscore-placeholder en optionele action button veroorzaken geen geneste links.
+- Een bestaand productlabel kan aan meerdere producten worden gekoppeld en gebruikt overal dezelfde tekst, kleur, positie en prioriteit.
+- Een nieuw label vanuit het productscherm wordt opgeslagen, direct gekoppeld en verschijnt daarna als herbruikbare keuze.
+- Een gebruiker met `manage_woocommerce` ziet het inline formulier en kan een label aanmaken; een aangepaste rol met alleen productbewerkingsrechten kan bestaande labels koppelen maar ziet het formulier niet en kan creatie niet via een gemanipuleerde POST afdwingen.
+- Linksboven/rechtsboven stapelen correct; Korting/Nieuw veroorzaakt alleen in dezelfde hoek een verticale offset.
+- De widgetlimiet toont de labels met de hoogste prioriteit (laagste getal) en inactieve labels blijven verborgen.
+- Een label zonder planning blijft altijd zichtbaar; alleen-start en alleen-eind werken als open tijdvensters.
+- Een label verschijnt exact vanaf de gekozen startminuut en blijft zichtbaar tot en met de gekozen eindminuut volgens de WordPress-sitezone.
+- Toekomstige, verlopen, omgekeerde en beschadigde periodes renderen niet in Card Grid, Upsells, Related of Product Gallery.
+- De centrale Productlabels-lijst toont een begrijpelijke status voor altijd/gepland/nu zichtbaar/verlopen/ongeldig.
+- Herhaal start-/eindtests na het legen van eventuele full-page cache; controleer bij tijdkritische campagnes ook de ingestelde cacheduur.
+- Niet meer leverbaar onderdrukt herbruikbare commerciële labels; PFAS en de bestaande beschikbaarheidsregels blijven ongewijzigd.
+- Custom-labeltypografie, responsive padding, radius, schaduw en gap wijzigen alle custom labels binnen de widget gelijkmatig.
+- Custom-labelstijlcontrols veranderen Korting, Nieuw, PFAS-vrij, prijs, Gratis verzending en voorraadlabels niet.
+- Een per-label kleurwijziging blijft behouden wanneer de gedeelde widgettypografie of vormgeving wijzigt.
+- Controleer met Query Monitor op een koude cache dat een productlijst labelrelaties in bulk ophaalt en niet één `wp_get_object_terms()`-query per kaart uitvoert; Gallery en Product Label Details op dezelfde PDP moeten dezelfde requestdata hergebruiken.
 
 ### Product Gallery
 
@@ -78,6 +93,22 @@ Test waar mogelijk ook een verborgen product en een upsell/cross-sell die niet z
 - Video opent via YouTube-nocookie en wordt pas bij interactie als iframe gemaakt.
 - Inactieve slides hebben `aria-hidden` en `inert`; verborgen play buttons zijn niet focusbaar.
 - Lege media-alt gebruikt de productnaam als fallback.
+- Herbruikbare labels verschijnen na Korting/Nieuw/PFAS in prioriteitsvolgorde en respecteren de Gallery-limiet.
+- De boven/onder-instelling van de badgebar verplaatst ook custom labels; links-/rechtsboven van de kaartdefinitie wordt op PDP bewust genegeerd.
+- Meerdere custom labels wrappen zonder horizontale overflow op tablet en mobiel.
+- Gallery-typografie, padding, radius, schaduw en labelafstand wijzigen alleen custom labels en niet de systeemlabels.
+- `Niet meer leverbaar` verbergt custom labels terwijl het bestaande PFAS-gedrag gelijk blijft.
+
+### Product Label Details
+
+- Een lege PDP-toelichting maakt geen detailblok; bestaande labels blijven verder ongewijzigd renderen.
+- De WordPress Visueel/Tekst-editor bewaart alinea's, koppen, nadruk, lijsten en veilige links.
+- Scripts, eventhandlers en niet-toegestane embeds worden bij opslag/uitvoer verwijderd; gewone en `target="_blank"`-links blijven zonder deprecated WordPress-calls werken.
+- Alleen actieve labels binnen hun zichtbaarheidstijdvenster verschijnen, gesorteerd op prioriteit en begrensd door de widgetlimiet.
+- `Niet meer leverbaar` onderdrukt ook de PDP-toelichtingsblokken.
+- De labelnaam kan op widgetniveau worden verborgen; labelkleur blijft termgebonden en paneel/tekst/linkstyling blijft widgetgebonden.
+- Meerdere toelichtingen stapelen zonder overflow op desktop, tablet en mobiel; de widget laadt geen JavaScript.
+- Zonder productcontext of passende toelichting verschijnt alleen in Elementor een editorbericht en op de frontend geen leeg blok.
 
 ### Product Price & Promo
 
@@ -117,6 +148,7 @@ Test waar mogelijk ook een verborgen product en een upsell/cross-sell die niet z
 - Popularity-sortering sorteert alleen de zichtbare gekoppelde producten.
 - Maximum, empty state, mobile horizontal scroll en card toggles werken.
 - Optionele AJAX add-to-cart gebruikt WooCommerce `wc-add-to-cart`.
+- Herbruikbare productlabels en de ingestelde limiet komen overeen met de gedeelde Product Card-output.
 
 ### Product Cross-sells / Related
 
@@ -124,6 +156,7 @@ Test waar mogelijk ook een verborgen product en een upsell/cross-sell die niet z
 - Related Products worden alleen gebruikt wanneer geen zichtbare cross-sells overblijven.
 - Het huidige product en onzichtbare/onpubliceerde producten verschijnen niet.
 - Cardweergave blijft gelijk aan Product Card Grid en Upsells.
+- Herbruikbare productlabels en de ingestelde limiet komen overeen met de gedeelde Product Card-output.
 
 ## 5. Responsive en visueel
 
@@ -158,7 +191,7 @@ Controleer kaarten met korte en lange titels, ontbrekende ratings, één tot dri
 Voer na het bouwen van de install-zip uit:
 
 1. Installeer de zip als schone installatie op staging.
-2. Activeer de plugin en controleer alle acht widgetregistraties.
+2. Activeer de plugin en controleer alle negen widgetregistraties.
 3. Installeer dezelfde zip als update over de vorige productieversie.
 4. Open minimaal één productarchief en één rijk productdetail.
 5. Controleer browserconsole en WordPress-debuglog.

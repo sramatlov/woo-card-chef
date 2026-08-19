@@ -2,9 +2,9 @@
 
 ## What it is
 
-Woo Card Chef is a custom Elementor widget plugin for WooCommerce. The current release is **v2.6.10** and it ships eight widgets:
+Woo Card Chef is a custom Elementor widget plugin for WooCommerce. The current release is **v2.7.1** and it ships nine widgets. This release adds reusable custom product labels across product cards and PDP presentation contexts.
 
-1. **Product Card widget** — renders product grids as richly designed product cards on category and archive pages. Replaces the default WooCommerce product loop and the EAEL product grid widget. Since v2.6.9, empty search/archive results always show the configured customer-facing message on the frontend while technical guidance remains editor-only. v2.6.10 records the current production-tested compatibility matrix without changing frontend behaviour.
+1. **Product Card widget** — renders product grids as richly designed product cards on category and archive pages. Replaces the default WooCommerce product loop and the EAEL product grid widget. Since v2.6.9, empty search/archive results always show the configured customer-facing message on the frontend while technical guidance remains editor-only. v2.7.1 adds reusable taxonomy-backed product labels with custom text, colour, position and priority.
 2. **PDP Gallery widget** *(new in v2.0.0)* — replaces the default WooCommerce product image and gallery on the product detail page (PDP) with a slide-based gallery supporting images, YouTube video slides, lightbox, zoom, and a badgebar.
 3. **Price & Promo Block widget** *(new in v2.1.0)* — replaces the default WooCommerce price output on the PDP with a status-aware price block: regular/sale price, struck reference, discount-percentage chip, savings amount, and "Tot -X%" / "Vanaf €X" handling for variable products.
 4. **Product USP / Benefits widget** *(new in v2.2.0)* — renders short PDP-specific benefit lines near the buying area. Content comes from a simple ACF Pro repeater (`pdp_usps > usp_text`) with fallback to short description and product-card USPs; layout and styling live in Elementor.
@@ -13,6 +13,7 @@ Woo Card Chef is a custom Elementor widget plugin for WooCommerce. The current r
 
 7. **Product Upsells widget** *(new in v2.5.0)* - renders WooCommerce upsells on the PDP using the same product-card template as the Product Card Grid. Bourgini uses this for accessories, spare parts and extensions; layout and card element visibility live in Elementor.
 8. **Product Cross-sells / Related widget** *(new in v2.6.0)* - renders WooCommerce cross-sells on the PDP using the same product-card template and controls as Product Upsells. When no visible cross-sells are available, it falls back to WooCommerce related products.
+9. **Product Label Details widget** *(new in v2.7.1)* - renders optional safe rich-text explanations from the current product's active reusable labels. The widget is zero-JS and can be placed freely near the PDP buy section; active state, scheduling and priority remain label-level while presentation stays in Elementor.
 
 ## Who it's for
 
@@ -31,7 +32,21 @@ All three run WooCommerce on Kinsta hosting with Elementor + Hello theme.
 ## Core feature list
 
 ### Product Card widget (v1.x)
-ACF-driven card title, hover image and USPs; smart discount badge; Nieuw / PFAS-vrij / Niet meer leverbaar badges; free shipping pill; Lipscore rating placeholder; savings line; LCP-optimised images; server-rendered pagination; WBW Product Filter PRO auto-mode compatibility; and a customer-facing empty state for frontend archives/searches.
+ACF-driven card title, hover image and USPs; smart discount badge; Nieuw / PFAS-vrij / Niet meer leverbaar badges; reusable taxonomy-backed labels; free shipping pill; Lipscore rating placeholder; savings line; LCP-optimised images; server-rendered pagination; WBW Product Filter PRO auto-mode compatibility; and a customer-facing empty state for frontend archives/searches.
+
+### Reusable Product Labels (v2.7.1)
+
+- Private product taxonomy `wcpce_product_label`; no ACF dependency.
+- Create/select labels directly on a product or manage them centrally under Products > Productlabels.
+- Per-label text (term name), background colour, top-left/top-right position, priority, active state, optional visible-from/visible-until window and optional PDP rich-text explanation.
+- Automatic black/white text colour based on contrast; scheduling is global to the reusable label and filters every card/PDP context before rendering.
+- Multiple labels stack vertically per corner; a widget-level 1-10 limit defaults to 3 and uses priority to select labels.
+- Custom labels in one widget share Elementor-managed typography, responsive padding, border radius, shadow and stack gap. Label colour remains part of the reusable label definition.
+- The custom-label style selectors never target Korting, Nieuw, PFAS-vrij, price, shipping or stock elements.
+- Shared `templates/card.php` output covers Product Card Grid, Product Upsells and Product Cross-sells / Related; the PDP Gallery reads the same taxonomy data into its horizontal badgebar.
+- Existing Nieuw, PFAS-vrij and Niet meer leverbaar fields remain unchanged; permanent unavailability suppresses reusable commercial labels.
+- The PDP Gallery ignores card-corner position and shows selected labels by priority after its existing system badges; its own widget-level controls style only the custom labels.
+- Product Label Details reads the same filtered label data, skips empty explanations and renders safe formatted text/lists/links through a dedicated zero-JS PDP widget with a 1-10 limit.
 
 ### PDP Gallery widget (v2.0.0)
 
@@ -47,6 +62,7 @@ ACF-driven card title, hover image and USPs; smart discount badge; Nieuw / PFAS-
 
 **Badgebar:**
 - Korting / Nieuw / PFAS-vrij badges in a horizontal bar above or below the gallery
+- Reusable custom labels after the system badges, ordered by priority with a configurable 1-10 limit and responsive wrapping
 - Badge styling matches the product card exactly (same colours, font, border-radius, PFAS leaf icon, equal badge heights)
 - Niet meer leverbaar suppresses Korting and Nieuw (PFAS-vrij is an attribute badge and is not suppressed)
 - Status overlays (Niet meer leverbaar / Tijdelijk uitverkocht) render on the main image
