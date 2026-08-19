@@ -265,6 +265,56 @@ ul.products.wc-card-grid {
 	color: #ffffff;
 }
 
+/* Reusable taxonomy-backed product labels. Each corner is its own vertical
+   stack. The PHP renderer adds an offset only when the discount/Nieuw system
+   badge occupies the same corner. */
+.wc-card__labels {
+	position: absolute;
+	top: 12px;
+	z-index: 4;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 6px;
+	max-width: calc(50% - 18px);
+	pointer-events: none;
+}
+
+.wc-card__labels--top-left {
+	left: 12px;
+}
+
+.wc-card__labels--top-right {
+	right: 12px;
+	align-items: flex-end;
+}
+
+.wc-card__labels--single-position {
+	max-width: calc(100% - 24px);
+}
+
+.wc-card__labels--offset-system {
+	top: 48px;
+}
+
+.wc-card__custom-label {
+	display: inline-flex;
+	align-items: center;
+	max-width: 100%;
+	box-sizing: border-box;
+	padding: 6px 12px;
+	border-radius: 6px;
+	background: var(--wcpce-label-bg, #B4211C);
+	color: var(--wcpce-label-color, #ffffff);
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.01em;
+	line-height: 1.2;
+	text-align: left;
+	overflow-wrap: anywhere;
+}
+
 /* "Niet meer leverbaar" centered overlay — covers the full image area with a
    semi-transparent black overlay and centered label text. The card also gets
    the wc-card--out-of-stock class (dimming + grayscale) via the template. */
@@ -657,6 +707,19 @@ ul.products.wc-card-grid {
 	.wc-card__badge:not(.wc-card__badge--pfas) {
 		font-size: 11px;
 		padding: 4px 8px;
+	}
+
+	.wc-card__labels {
+		gap: 4px;
+	}
+
+	.wc-card__labels--offset-system {
+		top: 42px;
+	}
+
+	.wc-card__custom-label {
+		padding: 4px 8px;
+		font-size: 11px;
 	}
 
 	.wc-card__button {

@@ -2,9 +2,9 @@
 
 [![Validate and build plugin zip](https://github.com/sramatlov/woo-card-chef/actions/workflows/validate-and-build.yml/badge.svg?branch=main)](https://github.com/sramatlov/woo-card-chef/actions/workflows/validate-and-build.yml)
 
-Woo Card Chef is een custom WordPress-plugin met acht Elementor-widgets voor WooCommerce-productkaarten, productarchieven en productdetailpagina's. De plugin is primair gebouwd voor Bourgini.com en houdt productinhoud in WooCommerce/ACF en presentatie in Elementor.
+Woo Card Chef is een custom WordPress-plugin met negen Elementor-widgets voor WooCommerce-productkaarten, productarchieven en productdetailpagina's. De plugin is primair gebouwd voor Bourgini.com en houdt productinhoud in WooCommerce, herbruikbare productlabels of ACF en presentatie in Elementor.
 
-**Huidige versie:** 2.6.10
+**Huidige release:** 2.7.1
 
 **Pluginmap:** `wc-product-card-elementor/`
 
@@ -22,6 +22,9 @@ Woo Card Chef is een custom WordPress-plugin met acht Elementor-widgets voor Woo
 | Product Accordion | Beschrijving, specificaties, reviews, FAQ en handleiding |
 | Product Upsells | Handmatig gekoppelde WooCommerce-upsells als productkaarten |
 | Product Cross-sells / Related | Cross-sells met Related Products als fallback |
+| Product Label Details | Optionele labeltoelichting met veilige HTML en links op de PDP |
+
+Product Card Grid, Product Upsells, Product Cross-sells / Related en de PDP Product Gallery ondersteunen vanaf v2.7.1 herbruikbare productlabels. Een label wordt centraal opgeslagen met tekst, kleur, kaartpositie, prioriteit, een optioneel zichtbaarheidsvenster en optionele PDP-toelichting. Gebruikers met WooCommerce-beheerrechten kunnen het direct vanuit een product aanmaken; producteditors kunnen bestaande labels selecteren en bij meerdere producten hergebruiken. De planning gebruikt de WordPress-sitezone en geldt overal waar het label is gekoppeld. De toelichting wordt zonder ACF beheerd met de WordPress Visueel/Tekst-editor onder Productlabel bewerken en via Product Label Details vrij in de Single Product-template geplaatst. Op kaarten worden labels links- of rechtsboven gestapeld; de Gallery toont ze in prioriteitsvolgorde in de horizontale badgebar boven of onder de afbeelding. Alle custom labels binnen één widget delen dezelfde beheerbare Elementor-typografie, padding, afronding, schaduw en onderlinge ruimte. De bestaande systeemlabels en prijs-/verzend-/voorraadelementen vallen buiten deze controls.
 
 ## Vereisten
 
@@ -56,7 +59,7 @@ composer validate --strict --no-check-publish
 composer audit --locked
 composer check
 python tools/validate_plugin_metadata.py --plugin-dir wc-product-card-elementor --main-file wc-product-card-elementor.php
-python tools/build_wordpress_plugin_zip.py --source-dir wc-product-card-elementor --destination-zip dist/woo-card-chef-v2.6.10-wordpress-install.zip --plugin-slug wc-product-card-elementor --main-file wc-product-card-elementor.php
+python tools/build_wordpress_plugin_zip.py --source-dir wc-product-card-elementor --destination-zip dist/woo-card-chef-v2.7.1-wordpress-install.zip --plugin-slug wc-product-card-elementor --main-file wc-product-card-elementor.php
 ```
 
 Gebruik daarnaast [`TESTING.md`](TESTING.md) voor de handmatige regressiematrix en [`WORDPRESS_PLUGIN_RELEASE_CHECKLIST.md`](WORDPRESS_PLUGIN_RELEASE_CHECKLIST.md) voor iedere release.
@@ -98,6 +101,7 @@ Iedere pull request en push naar `main` wordt gecontroleerd op:
 - Widgets halen de huidige productcontext eerst uit `get_queried_object()` en daarna pas uit `global $product`.
 - Assets worden centraal geregistreerd en alleen geladen via de dependencies van een aanwezige widget.
 - De gedeelde productkaart wordt gerenderd via `WCPCE_Card_Renderer` en `templates/card.php`.
+- Herbruikbare productlabels zijn private taxonomy-termen; bestaande ACF-badges blijven backwards-compatible.
 - Presentatiewidgets voegen geen eigen Product/Offer-schema toe.
 - `get_script_depends()` blijft statisch en leest geen widgetinstellingen.
 

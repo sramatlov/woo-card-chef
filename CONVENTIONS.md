@@ -259,3 +259,33 @@ Core commerce content is always server-rendered. JavaScript is added only where 
 ## Price display: tax-correct amounts (v2.1.0)
 
 Widgets that render prices outside the product card pass every displayed amount through `wc_get_price_to_display( $product, array( 'price' => $raw ) )` so the output respects the shop's tax display setting and matches WooCommerce's own `get_price_html()` and Product schema. The discount percentage is tax-neutral and is not converted. The struck reference value runs through the `wcpce_price_reference_value` filter; percentage and savings derive from that reference. (The card widget predates this and uses `wc_price()` on raw helper values — no visible difference on Bourgini's incl-VAT setup; see DECISIONS_LOG.)
+
+## Reusable product-label conventions (v2.7.1)
+
+### Labels use a taxonomy, not new ACF flags
+
+Reusable commercial labels belong to `wcpce_product_label`. Do not add a new ACF true/false field, Elementor toggle and CSS special case for every new label. Existing Nieuw/PFAS/niet-leverbaar fields remain only for backwards compatibility and their special status rules.
+
+### Term meta owns presentation
+
+The term name owns visible text. `wcpce_label_color`, `wcpce_label_position`, `wcpce_label_priority`, `wcpce_label_active`, `wcpce_label_visible_from`, `wcpce_label_visible_until` and optional `wcpce_label_pdp_details` own reusable definition/state. Validate these values both on save and when preparing frontend output. Colour is the deliberate per-label style exception because it communicates the label identity; text contrast remains automatic.
+
+### Scheduling is label-wide and site-local
+
+Optional visibility boundaries apply to every assignment of the term and every frontend context. Parse `datetime-local` input in `wp_timezone()`, compare with `current_datetime()`, include the selected start and end minutes, and leave a missing boundary open-ended. Invalid stored dates or an end before the start must fail closed. Do not introduce per-product schedule overrides without a separate data-model decision.
+
+### PDP explanation HTML is safe, term-level content
+
+PDP explanation content is optional and global to the reusable label. Use the WordPress Visual/Text editor on the term edit screen and sanitise with `wp_kses_post()` on both save and render. Do not execute shortcodes, scripts, event attributes or arbitrary embeds, and do not call the deprecated `wp_targeted_link_rel()` helper. The Product Label Details widget owns placement, limit and shared presentation; it must not duplicate or override the label schedule.
+
+### Shared format is widget-level only
+
+Font family, responsive font size, weight, line height, letter spacing, text transform, responsive padding, border radius, shadow and stack gap belong to the shared `WCPCE_Custom_Label_Controls` Elementor surface. All custom labels inside one widget use that same format. Never generate a separate Elementor control per taxonomy term.
+
+### Custom-label selectors must not touch system elements
+
+Shared controls may target only `.wc-card__custom-label` and `.wc-card__labels` in card contexts, or `.wcpce-gallery__badge--custom` and `.wcpce-gallery__custom-labels` in the PDP Gallery. Discount/Korting, Nieuw, PFAS-vrij, price, Gratis verzending, stock and Niet meer leverbaar retain their existing independent controls and styles.
+
+### Position and collision rules are deterministic
+
+Only top-left and top-right are valid reusable-label positions on cards. Labels stack vertically by priority (lower first), then alphabetically. Korting/Nieuw keeps its existing system slot; a custom stack in that same corner is offset. PFAS remains bottom-left, stock remains bottom-right and niet-leverbaar suppresses reusable commercial labels. The Gallery deliberately ignores card position: it renders labels horizontally after system badges, uses the same priority order and follows the Gallery's above/below badgebar setting.

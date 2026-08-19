@@ -46,6 +46,7 @@ final class WCPCE_Assets {
 		self::register_product_accordion_assets();
 		self::register_product_upsells_assets();
 		self::register_product_related_assets();
+		self::register_product_label_details_assets();
 	}
 
 	/**
@@ -225,6 +226,24 @@ final class WCPCE_Assets {
 			'wcpce-product-related',
 			WCPCE_PLUGIN_URL . 'assets/css/product-related.css',
 			array( 'wc-product-card-elementor' ),
+			WCPCE_VERSION
+		);
+	}
+
+	/**
+	 * Registers assets for the PDP Product Label Details widget.
+	 *
+	 * CSS handle: wcpce-product-label-details
+	 * No JS: label content, schedule and rendering are fully server-side.
+	 *
+	 * @since 2.7.1
+	 * @return void
+	 */
+	private static function register_product_label_details_assets(): void {
+		wp_register_style(
+			'wcpce-product-label-details',
+			WCPCE_PLUGIN_URL . 'assets/css/product-label-details.css',
+			array(),
 			WCPCE_VERSION
 		);
 	}

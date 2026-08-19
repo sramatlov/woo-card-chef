@@ -40,6 +40,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 2.0.0
  */
 class WCPCE_Product_Gallery_Widget extends \Elementor\Widget_Base {
+	use WCPCE_Custom_Label_Controls;
 
 	// -------------------------------------------------------------------------
 	// Elementor identity & dependencies
@@ -140,6 +141,11 @@ class WCPCE_Product_Gallery_Widget extends \Elementor\Widget_Base {
 		$this->register_badge_controls();
 		$this->register_layout_controls();
 		$this->register_style_controls();
+		$this->register_custom_label_style_controls(
+			'.wcpce-gallery__badge--custom',
+			'.wcpce-gallery__custom-labels',
+			array( 'show_badgebar' => 'yes' )
+		);
 	}
 
 	/**
@@ -213,7 +219,7 @@ class WCPCE_Product_Gallery_Widget extends \Elementor\Widget_Base {
 				'type'         => \Elementor\Controls_Manager::SWITCHER,
 				'default'      => 'yes',
 				'return_value' => 'yes',
-				'description'  => esc_html__( 'Badgebar shows Korting, Nieuw and PFAS-vrij.', 'woo-card-chef' ),
+				'description'  => esc_html__( 'Badgebar shows Korting, Nieuw, PFAS-vrij and enabled custom product labels.', 'woo-card-chef' ),
 			)
 		);
 
@@ -261,6 +267,35 @@ class WCPCE_Product_Gallery_Widget extends \Elementor\Widget_Base {
 				'default'      => 'yes',
 				'return_value' => 'yes',
 				'condition'    => array( 'show_badgebar' => 'yes' ),
+			)
+		);
+
+		$this->add_control(
+			'show_custom_labels',
+			array(
+				'label'        => esc_html__( 'Show custom product labels', 'woo-card-chef' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'default'      => 'yes',
+				'return_value' => 'yes',
+				'condition'    => array( 'show_badgebar' => 'yes' ),
+				'description'  => esc_html__( 'Shows reusable product labels after the standard badges. Card corner positions do not apply in the horizontal PDP badgebar.', 'woo-card-chef' ),
+			)
+		);
+
+		$this->add_control(
+			'custom_label_limit',
+			array(
+				'label'       => esc_html__( 'Maximum custom labels', 'woo-card-chef' ),
+				'type'        => \Elementor\Controls_Manager::NUMBER,
+				'default'     => 3,
+				'min'         => 1,
+				'max'         => 10,
+				'step'        => 1,
+				'condition'   => array(
+					'show_badgebar'      => 'yes',
+					'show_custom_labels' => 'yes',
+				),
+				'description' => esc_html__( 'Lower label priority numbers appear first.', 'woo-card-chef' ),
 			)
 		);
 
@@ -724,6 +759,8 @@ class WCPCE_Product_Gallery_Widget extends \Elementor\Widget_Base {
 		// badge_threshold — clamp 0-100.
 		$settings['badge_threshold'] = max( 0, min( 100, absint( $settings['badge_threshold'] ?? 0 ) ) );
 
+		$settings['custom_label_limit'] = max( 1, min( 10, absint( $settings['custom_label_limit'] ?? 3 ) ) );
+
 		return $settings;
 	}
 
@@ -1065,7 +1102,7 @@ class WCPCE_Product_Gallery_Widget extends \Elementor\Widget_Base {
 	}
 
 	/**
-	 * Renders the badgebar (Korting, Nieuw, PFAS-vrij).
+	 * Renders the badgebar (Korting, Nieuw, PFAS-vrij and reusable labels).
 	 *
 	 * Niet meer leverbaar suppresses Korting and Nieuw in the badgebar
 	 * (design decision E) but does NOT suppress PFAS-vrij (eigenschap badge).
@@ -1076,13 +1113,15 @@ class WCPCE_Product_Gallery_Widget extends \Elementor\Widget_Base {
 	 * does not apply in the badgebar where both can show simultaneously.
 	 *
 	 * @since 2.0.0
-	 * @param array      $settings Widget settings.
-	 * @param array      $acf_data ACF badge flags from WCPCE_ACF_Helper.
-	 * @param array      $price_data Price data from WCPCE_Price_Helper.
-	 * @param string     $position 'above' or 'below'.
+	 * @param array  $settings        Widget settings.
+	 * @param array  $acf_data        ACF badge flags from WCPCE_ACF_Helper.
+	 * @param array  $price_data      Price data from WCPCE_Price_Helper.
+	 * @param int    $product_id      Current product ID.
+	 * @param string $position        'above' or 'below'.
+	 * @param bool   $mixed_discounts Whether variable discounts differ.
 	 * @return void
 	 */
-	private function render_badgebar( array $settings, array $acf_data, array $price_data, string $position, bool $mixed_discounts = false ): void {
+	private function render_badgebar( array $settings, array $acf_data, array $price_data, int $product_id, string $position, bool $mixed_discounts = false ): void {
 		if ( 'yes' !== ( $settings['show_badgebar'] ?? 'yes' ) ) {
 			return;
 		}
@@ -1101,8 +1140,13 @@ class WCPCE_Product_Gallery_Widget extends \Elementor\Widget_Base {
 		$show_nieuw = ! $niet_leverbaar && ! empty( $flags['nieuw'] );
 		$show_pfas  = ! empty( $flags['pfas'] );
 
+		$custom_labels = array();
+		if ( ! $niet_leverbaar && 'yes' === ( $settings['show_custom_labels'] ?? 'yes' ) && class_exists( 'WCPCE_Product_Labels' ) ) {
+			$custom_labels = WCPCE_Product_Labels::get_product_labels( $product_id, $settings['custom_label_limit'] ?? 3 );
+		}
+
 		// Nothing to show.
-		if ( ! $show_badge && ! $show_nieuw && ! $show_pfas ) {
+		if ( ! $show_badge && ! $show_nieuw && ! $show_pfas && empty( $custom_labels ) ) {
 			return;
 		}
 
@@ -1135,6 +1179,17 @@ class WCPCE_Product_Gallery_Widget extends \Elementor\Widget_Base {
 			echo '<span class="wcpce-gallery__badge wcpce-gallery__badge--pfas">';
 			echo wp_kses( '<svg aria-hidden="true" focusable="false"><use href="#wcpce-gallery-icon-leaf"/></svg>', $allowed_svg );
 			echo esc_html( $labels['pfas'] );
+			echo '</span>';
+		}
+
+		if ( ! empty( $custom_labels ) ) {
+			echo '<span class="wcpce-gallery__custom-labels" role="group" aria-label="' . esc_attr__( 'Extra productlabels', 'woo-card-chef' ) . '">';
+			foreach ( $custom_labels as $custom_label ) {
+				$style = 'background-color:' . $custom_label['color'] . ';color:' . $custom_label['text_color'] . ';';
+				echo '<span class="wcpce-gallery__badge wcpce-gallery__badge--custom" style="' . esc_attr( $style ) . '">';
+				echo esc_html( $custom_label['text'] );
+				echo '</span>';
+			}
 			echo '</span>';
 		}
 
@@ -1373,7 +1428,7 @@ class WCPCE_Product_Gallery_Widget extends \Elementor\Widget_Base {
 
 		// Badgebar — above.
 		if ( 'above' === $badgebar_position ) {
-			$this->render_badgebar( $settings, $acf_data, $price_data, 'above', $mixed_discounts );
+			$this->render_badgebar( $settings, $acf_data, $price_data, $product->get_id(), 'above', $mixed_discounts );
 		}
 
 		// Main image area.
@@ -1536,7 +1591,7 @@ class WCPCE_Product_Gallery_Widget extends \Elementor\Widget_Base {
 
 		// Badgebar — below.
 		if ( 'below' === $badgebar_position ) {
-			$this->render_badgebar( $settings, $acf_data, $price_data, 'below', $mixed_discounts );
+			$this->render_badgebar( $settings, $acf_data, $price_data, $product->get_id(), 'below', $mixed_discounts );
 		}
 
 		echo '</div>'; // .wcpce-gallery

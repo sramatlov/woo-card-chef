@@ -199,6 +199,28 @@
 | **v2.6.8** | **Patch: Product Accordion manual fallback. If `product_manual` is empty, the widget can auto-match a PDF from the configured manuals directory using SKU/MPN tokens with trailing zeroes stripped.** |
 | **v2.6.9** | **Hotfix: Product Card Grid empty-state correction. Auto-mode frontend requests show the customer-facing Dutch empty message instead of Elementor editor guidance.** |
 | **v2.6.10** | **Compatibility metadata release. Records validation on WordPress 7.0.4, WooCommerce 11.0.1, Elementor 4.2.2, Elementor Pro 4.2.1, and PHP 8.3 without changing plugin behaviour.** |
+| **v2.7.1-rc.1** | **First release candidate for reusable product labels. Private taxonomy with reusable text, colour, card position, priority and active state; shared rendering and widget-level styling in Grid, Upsells and Related. Becomes v2.7.1 after staging acceptance.** |
+| **v2.7.1-rc.2** | **Extends reusable product labels to the PDP Gallery badgebar with priority ordering, a widget limit, responsive wrapping and Gallery-scoped shared styling. Card positions remain card-only.** |
+| **v2.7.1-rc.3** | **Adds optional site-timezone visible-from/visible-until scheduling to reusable labels, shared across all assigned products and rendering contexts.** |
+| **v2.7.1-rc.4** | **Adds optional safe rich-text PDP explanations to reusable labels and a zero-JS Product Label Details Elementor widget.** |
+| **v2.7.1** | **Final reusable product-label release after staging acceptance. Combines central label reuse, card and Gallery presentation, scheduling, shared widget styling and optional safe rich-text PDP explanations without ACF.** |
+
+## Technical terms — Reusable Product Labels (v2.7.1)
+
+| Term | Meaning |
+|---|---|
+| **Productlabel** | Reusable `wcpce_product_label` taxonomy term assigned to one or more WooCommerce products. |
+| **Label colour** | `wcpce_label_color` term meta; sanitised hex background colour. Frontend text becomes black or white automatically. |
+| **Label position** | `wcpce_label_position`; `top-left` or `top-right` on shared product cards. |
+| **Label priority** | `wcpce_label_priority`; 0-999, with lower numbers rendered first. |
+| **Label active state** | `wcpce_label_active`; inactive labels retain assignments but do not render. |
+| **Label visibility window** | Optional `wcpce_label_visible_from` / `wcpce_label_visible_until` term meta in the WordPress site timezone. Missing boundaries are open-ended; invalid periods do not render. |
+| **Label PDP explanation** | Optional `wcpce_label_pdp_details` term meta edited with WordPress Visual/Text; safe formatted HTML and links shown through Product Label Details. |
+| **Product Label Details** | Zero-JS PDP Elementor widget that renders active, currently scheduled reusable labels with non-empty explanations in priority order. |
+| **Custom label limit** | Elementor `custom_label_limit`; maximum 1-10 taxonomy labels per widget, default 3. Cards apply it across both corners; Gallery applies it to the horizontal badgebar. |
+| **Custom label format** | Shared widget-level styling from `WCPCE_Custom_Label_Controls`: typography, responsive padding/radius, shadow and stack gap. Applied equally to all custom labels in that widget. |
+| **System label/element** | Existing Korting, Nieuw, PFAS-vrij, Niet meer leverbaar, price, Gratis verzending and stock output. Explicitly outside custom-label style selectors. |
+| **WCPCE_Custom_Label_Controls** | Trait that registers the same custom-only Elementor Style section in Product Card Grid, Upsells, Related and Product Gallery with context-specific selectors. |
 
 ## Technical terms — Product Accordion widget (v2.4.0)
 

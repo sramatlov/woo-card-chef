@@ -1,5 +1,47 @@
 # Decisions Log — Woo Card Chef
 
+## v2.7.1 Reusable Product Labels Decisions
+
+### Decision: Private product taxonomy instead of new ACF flags
+**Chose:** Store reusable labels as terms in the private `wcpce_product_label` taxonomy. The term name is the visible text; colour, position, priority, active state, optional visibility window and optional PDP explanation are term meta.
+**Rejected:** One new ACF true/false field per label, an ACF repeater per product, or a custom post type.
+**Why:** A taxonomy provides native many-to-many reuse between labels and products without an ACF dependency. Editors can maintain one definition and apply it throughout the catalogue.
+
+### Decision: Two top-corner stacks with deterministic collision rules
+**Chose:** Custom labels use top-left or top-right vertical stacks. Lower priority numbers render first, then labels sort alphabetically. A stack in the Korting/Nieuw corner receives an offset; PFAS remains bottom-left and stock remains bottom-right.
+**Rejected:** Four unrestricted corners, free pixel positioning, or allowing badges to overlap.
+**Why:** The bottom corners already have stable product-status responsibilities. Restricting custom labels to the top creates predictable responsive behaviour and keeps existing card semantics intact.
+
+### Decision: Backwards-compatible system labels; context-specific custom-label placement
+**Chose:** Keep Nieuw, PFAS-vrij and Niet meer leverbaar unchanged. Render taxonomy labels in Product Card Grid, Upsells and Related through the shared template, and after the system badges in the Gallery's horizontal badgebar. Suppress taxonomy labels on permanently unavailable products in both contexts.
+**Rejected:** Immediate migration of existing product metadata or reusing card-corner positions in the Gallery's horizontal above/below badgebar.
+**Why:** Existing product data and Elementor templates must keep rendering identically. The term position remains a card-specific presentation value; the Gallery follows its own above/below widget setting and shared label priority, which fits its horizontal layout without inventing conflicting PDP positions.
+
+### Decision: Label identity per term, shared format per widget
+**Chose:** Keep label text, colour, position, priority and status on the reusable term. Manage typography, responsive padding, border radius, shadow and stack spacing once per widget through a shared Elementor control trait.
+**Rejected:** Typography or dimensions per individual taxonomy term, and reusing existing system-badge style selectors.
+**Why:** A label must remain recognisable across products while adapting to the card context. One shared format prevents visual drift and avoids dynamic Elementor controls for arbitrary terms. Strict custom-only selectors protect Korting, Nieuw, PFAS-vrij, price, shipping and stock presentation.
+
+### Decision: One site-timezone schedule per reusable label
+**Chose:** Store optional visible-from and visible-until boundaries on the label term and apply that window to every assigned product and every rendering context. Use the WordPress site timezone, inclusive start/end minutes and fail-closed validation for malformed or reversed periods.
+**Rejected:** Per-product schedules for the same term, browser-local time, UTC fields exposed directly to editors, or silently swapping reversed dates.
+**Why:** A reusable label represents one catalogue-wide message. A single schedule prevents products and widgets from drifting, matches the timezone editors already manage in WordPress and makes campaign activation deterministic. Failing closed avoids accidentally publishing a mistimed commercial label.
+
+### Decision: Optional rich-text PDP explanation belongs to the reusable label
+**Chose:** Store one optional `wcpce_label_pdp_details` value per term, edit it with WordPress's Visual/Text editor and render it through a dedicated zero-JS Elementor widget. Standard post HTML is allowed through `wp_kses_post()`; empty content opts out automatically.
+**Rejected:** ACF fields per product, free HTML embedded in Elementor per template, shortcodes, scripts/iframes, or product-specific overrides for the same reusable label.
+**Why:** The explanation and its schedule must remain aligned with the catalogue-wide promotion label. Term-level content avoids duplicate per-product maintenance, removes an ACF dependency and lets Elementor control placement/presentation without owning campaign copy. Save-and-render sanitisation protects the frontend while retaining formatted text and links. The deprecated `wp_targeted_link_rel()` helper is not used.
+
+### Decision: Core object-term cache plus request-level label reuse
+**Chose:** Bulk-prime product term relationships and referenced label metadata before card loops, read individual assignments through `get_the_terms()` and reuse the filtered/sorted label array per product for the current PHP request.
+**Rejected:** Calling uncached `wp_get_object_terms()` for every card, or persisting rendered label data in transients.
+**Why:** A normal grid can render many products and the same PDP product can be read by Gallery and Product Label Details. WordPress's relationship cache collapses list reads into bulk work, while the request cache avoids duplicate schedule parsing. Request-only storage needs no persistent invalidation when a label schedule crosses a boundary.
+
+### Decision: Assignment and reusable-label creation have different capabilities
+**Chose:** Product editors may assign existing labels when they can edit the product. Creating a new reusable definition inline, editing it centrally or deleting it requires `manage_woocommerce`; the inline form is hidden and the save handler independently enforces the same capability.
+**Rejected:** Treating `edit_post` as sufficient authority to create global reusable catalogue definitions.
+**Why:** Assignment changes one authorised product, while creating a taxonomy term changes the shared catalogue vocabulary. Keeping the server-side check independent from UI visibility prevents crafted product-save requests from bypassing the central taxonomy capability model.
+
 ## v2.6.0 Product Cross-sells / Related Decisions
 
 ### Decision: Cross-sells first, Related Products fallback

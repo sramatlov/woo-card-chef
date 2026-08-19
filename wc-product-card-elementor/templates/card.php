@@ -106,6 +106,29 @@ $show_nieuw_badge_final    = $badge_state['show_nieuw'];
 $show_badge_pfas           = $badge_state['show_pfas'];
 $show_badge_niet_leverbaar = $badge_state['show_niet_leverbaar'];
 
+// Reusable taxonomy-backed product labels. Commercial custom labels are hidden
+// when the permanent-unavailable overlay takes over, matching the existing
+// suppression of discount and Nieuw. The configured limit applies across both
+// positions; priority determines which labels make the cut.
+$custom_labels_by_position = array(
+	'top-left'  => array(),
+	'top-right' => array(),
+);
+
+if ( ! $show_badge_niet_leverbaar && 'yes' === ( $settings['show_custom_labels'] ?? 'yes' ) && class_exists( 'WCPCE_Product_Labels' ) ) {
+	$custom_label_limit = max( 1, min( 10, absint( $settings['custom_label_limit'] ?? 3 ) ) );
+	$custom_labels      = WCPCE_Product_Labels::get_product_labels( $product_id, $custom_label_limit );
+
+	foreach ( $custom_labels as $custom_label ) {
+		$custom_position = 'top-right' === ( $custom_label['position'] ?? '' ) ? 'top-right' : 'top-left';
+		$custom_labels_by_position[ $custom_position ][] = $custom_label;
+	}
+}
+
+$custom_label_positions_used = count( array_filter( $custom_labels_by_position ) );
+$system_badge_position       = 'top-right' === ( $settings['badge_position'] ?? 'top-left' ) ? 'top-right' : 'top-left';
+$system_badge_visible        = $show_badge || $show_nieuw_badge_final;
+
 // E1/E2: cache badge label values once to avoid repeated array lookups.
 $badge_labels         = WCPCE_Badge_Helper::get_badge_labels( $settings );
 $label_nieuw          = $badge_labels['nieuw'];
@@ -229,6 +252,28 @@ $title_id = ! empty( $widget_id )
 				<?php echo esc_html( $label_pfas ); ?>
 			</span>
 		<?php endif; ?>
+
+		<?php foreach ( $custom_labels_by_position as $custom_position => $position_labels ) : ?>
+			<?php if ( ! empty( $position_labels ) ) : ?>
+				<?php
+				$custom_stack_classes = array( 'wc-card__labels', 'wc-card__labels--' . $custom_position );
+				if ( 1 === $custom_label_positions_used ) {
+					$custom_stack_classes[] = 'wc-card__labels--single-position';
+				}
+				if ( $system_badge_visible && $system_badge_position === $custom_position ) {
+					$custom_stack_classes[] = 'wc-card__labels--offset-system';
+				}
+				?>
+				<div class="<?php echo esc_attr( implode( ' ', $custom_stack_classes ) ); ?>" role="group" aria-label="<?php esc_attr_e( 'Productlabels', 'woo-card-chef' ); ?>">
+					<?php foreach ( $position_labels as $custom_label ) : ?>
+						<?php
+						$custom_label_style = '--wcpce-label-bg:' . $custom_label['color'] . ';--wcpce-label-color:' . $custom_label['text_color'] . ';';
+						?>
+						<span class="wc-card__custom-label" style="<?php echo esc_attr( $custom_label_style ); ?>"><?php echo esc_html( $custom_label['text'] ); ?></span>
+					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
+		<?php endforeach; ?>
 
 		<?php if ( $show_badge_niet_leverbaar ) : ?>
 			<div class="wc-card__niet-leverbaar-overlay" aria-hidden="true">

@@ -1,0 +1,103 @@
+/**
+ * PDP Product Label Details widget styles.
+ *
+ * Server-rendered and zero-JS. Reusable label definitions own the accent and
+ * badge colours; Elementor owns the shared panel and typography presentation.
+ *
+ * @since 2.7.1
+ */
+
+.wcpce-label-details {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	width: 100%;
+}
+
+.wcpce-label-details__item {
+	position: relative;
+	min-width: 0;
+	padding: 16px 18px;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	background: #ffffff;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.wcpce-label-details__item::before {
+	position: absolute;
+	inset: 0 auto 0 0;
+	width: 4px;
+	background: var(--wcpce-label-detail-color, #b4211c);
+	content: "";
+}
+
+.wcpce-label-details__label {
+	display: inline-flex;
+	align-items: center;
+	max-width: 100%;
+	margin: 0 0 10px;
+	padding: 5px 10px;
+	border-radius: 6px;
+	background: var(--wcpce-label-detail-color, #b4211c);
+	color: var(--wcpce-label-detail-text-color, #ffffff);
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 1.2;
+	word-break: break-word;
+	box-sizing: border-box;
+}
+
+.wcpce-label-details__content {
+	min-width: 0;
+	color: #2a2a2a;
+	font-size: 14px;
+	line-height: 1.55;
+	overflow-wrap: anywhere;
+}
+
+.wcpce-label-details__content > :first-child {
+	margin-top: 0;
+}
+
+.wcpce-label-details__content > :last-child {
+	margin-bottom: 0;
+}
+
+.wcpce-label-details__content ul,
+.wcpce-label-details__content ol {
+	padding-left: 1.4em;
+}
+
+.wcpce-label-details__content a {
+	color: #b4211c;
+	font-weight: 600;
+	text-decoration: underline;
+	text-underline-offset: 0.14em;
+}
+
+.wcpce-label-details__content a:hover,
+.wcpce-label-details__content a:focus-visible {
+	color: #7f1714;
+}
+
+.wcpce-label-details__content a:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+.wcpce-label-details-editor-notice {
+	padding: 10px 12px;
+	border: 1px dashed #3ec26d;
+	border-radius: 6px;
+	background: #f4fbf6;
+	color: #2a2a2a;
+	font-size: 13px;
+}
+
+@media (max-width: 767px) {
+	.wcpce-label-details__item {
+		padding: 14px;
+	}
+}

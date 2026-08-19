@@ -6,6 +6,7 @@ Gebruik deze checklist voor iedere patch-, minor- en majorrelease. Een release i
 
 - **Patch** (`2.6.9` → `2.6.10`): bugfix of kleine compatibiliteits-/documentatiecorrectie zonder nieuwe editorworkflow.
 - **Minor** (`2.6.x` → `2.7.0`): nieuwe functionaliteit of controls die backwards-compatible zijn.
+- **Release candidate** (`2.7.1-rc.1` → `2.7.1-rc.2`): iedere nieuwe gedeelde stagingbuild krijgt een uniek oplopend RC-nummer. Het basisnummer moet hoger zijn dan de laatst geïnstalleerde definitieve versie; de definitieve `2.7.1` volgt pas na acceptatie.
 - **Major** (`2.x` → `3.0.0`): breaking change, datamigratie of bewust incompatibele architectuurwijziging.
 
 Leg de gebruikersimpact en regressierisico's vast voordat de versie wordt verhoogd.
@@ -84,7 +85,7 @@ Gebruik bij voorkeur de installatiezip uit een geslaagde `main`-workflow. Voor e
 ```powershell
 python tools/build_wordpress_plugin_zip.py `
   --source-dir wc-product-card-elementor `
-  --destination-zip dist/woo-card-chef-v2.6.10-wordpress-install.zip `
+  --destination-zip dist/woo-card-chef-v2.7.1-wordpress-install.zip `
   --plugin-slug wc-product-card-elementor `
   --main-file wc-product-card-elementor.php
 ```
@@ -115,7 +116,7 @@ wc-product-card-elementor/wc-product-card-elementor.php
 Test op staging met een database- en bestandenbackup:
 
 1. Installeer de zip op een schone WordPress-installatie.
-2. Activeer de plugin en controleer de acht Elementor-widgets.
+2. Activeer de plugin en controleer de negen Elementor-widgets.
 3. Installeer dezelfde zip als update over de vorige productieversie.
 4. Controleer dat opgeslagen Elementor-templates, ACF-data en widgetcontrols behouden blijven.
 5. Open een productarchief en een rijk productdetail op desktop en mobiel.

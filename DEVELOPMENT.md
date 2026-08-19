@@ -39,6 +39,7 @@ wc-product-card-elementor/
 ├── readme.txt                      WordPress-metadata en changelog
 ├── includes/
 │   ├── class-plugin.php            Registratie van helpers, assets, ACF en widgets
+│   ├── class-product-labels.php    Herbruikbare productlabels, beheer en frontenddata
 │   ├── class-assets.php            Centrale registratie van CSS en JavaScript
 │   ├── class-acf-fields.php        Zes lokale ACF-veldgroepen
 │   ├── Helpers/                    Gedeelde stateless logica en card renderer
@@ -51,7 +52,7 @@ wc-product-card-elementor/
 ## Uitvoeringsmodel
 
 1. `wc-product-card-elementor.php` valideert de omgeving, definieert constants en start `WC_Product_Card_Elementor_Plugin`.
-2. `class-plugin.php` laadt helpers, registreert assets en ACF-velden en registreert acht widgets bij Elementor.
+2. `class-plugin.php` laadt helpers, registreert assets en ACF-velden en registreert negen widgets bij Elementor.
 3. Een widget haalt de huidige WooCommerce-context en gevalideerde Elementor-instellingen op.
 4. Belangrijke commerce-inhoud wordt server-side opgebouwd.
 5. Elementor laadt alleen de CSS-/JS-handles die de widget via `get_style_depends()` en `get_script_depends()` declareert.
@@ -77,6 +78,8 @@ Deze waarden moeten identiek zijn:
 - `WCPCE_VERSION` in hetzelfde bestand;
 - `Stable tag:` in `wc-product-card-elementor/readme.txt`.
 
+Gedeelde testbuilds gebruiken `X.Y.Z-rc.N`, bijvoorbeeld `2.7.1-rc.1`. De `X.Y.Z` moet hoger zijn dan de laatst geïnstalleerde definitieve versie. Verhoog `N` voor iedere nieuwe ZIP die buiten de lokale werkmap wordt getest en wijzig alle drie versievelden mee. Overschrijf nooit een eerder gedeelde RC-bestandsnaam. Na stagingacceptatie wordt de kandidaat de definitieve `X.Y.Z`; een bugfix daarna verhoogt de patchversie.
+
 Werk bij iedere gedragswijziging ook bij:
 
 - het changelog in `readme.txt`;
@@ -96,6 +99,14 @@ De Accordion gebruikt voor handleidingen deze prioriteit:
 2. Automatische PDF-match in de geconfigureerde WordPress-root-relatieve manualsmap.
 
 De automatische match gebruikt SKU en filterbare MPN-meta-keys. Houd bestandsnamen stabiel en test producten met en zonder trailing nullen in het artikelnummer.
+
+## Herbruikbare productlabels
+
+Productlabels gebruiken de private taxonomy `wcpce_product_label` en hebben geen ACF-afhankelijkheid. De termnaam is de zichtbare tekst; kleur, positie, prioriteit en actieve status staan in termmeta. Bestaande termnamen of taxonomy-slugs mogen niet worden gewijzigd zonder migratieplan, omdat productrelaties hiernaar verwijzen.
+
+Labels worden server-side via de gedeelde card-template getoond in Product Card Grid, Upsells en Related. Houd `Nieuw`, `PFAS-vrij` en `Niet meer leverbaar` backwards-compatible. De Gallery-badgebar valt buiten de eerste implementatie en mag niet stilzwijgend dezelfde corner-positionering overnemen.
+
+De drie kaartwidgets gebruiken `WCPCE_Custom_Label_Controls` voor één identiek Elementor-stijlcontract. De trait mag uitsluitend `.wc-card__custom-label` en `.wc-card__labels` targeten. Breid deze selectors niet uit naar systeemlabels, prijs, gratis verzending of voorraadoutput. Per-label tekst/kleur/positie/prioriteit blijft taxonomydata; gedeelde typografie en vormgeving blijft widgetpresentatie.
 
 ## Compatibiliteit en regressierisico's
 
