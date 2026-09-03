@@ -204,6 +204,18 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 		);
 
 		$this->add_control(
+			'exclude_categories',
+			array(
+				'label'       => esc_html__( 'Exclude categories', 'woo-card-chef' ),
+				'type'        => \Elementor\Controls_Manager::SELECT2,
+				'multiple'    => true,
+				'label_block' => true,
+				'options'     => $this->get_product_category_options_lazy( false ),
+				'description' => esc_html__( 'Hide products from these categories and their child categories. Works with both Current archive and Manual category.', 'woo-card-chef' ),
+			)
+		);
+
+		$this->add_control(
 			'limit',
 			array(
 				'label'     => esc_html__( 'Number of products', 'woo-card-chef' ),
@@ -1673,9 +1685,10 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 	 * list of product categories.
 	 *
 	 * @since 1.0.1
+	 * @param bool $hide_empty Whether categories without directly assigned products are hidden.
 	 * @return array
 	 */
-	private function get_product_category_options_lazy(): array {
+	private function get_product_category_options_lazy( bool $hide_empty = true ): array {
 		// Only fetch terms in contexts where the editor panel will actually display them.
 		$is_editor_context = is_admin() || $this->is_elementor_editor_or_preview() || ( defined( 'DOING_AJAX' ) && DOING_AJAX );
 
@@ -1683,16 +1696,24 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 			return array();
 		}
 
-		return $this->get_product_category_options();
+		return $this->get_product_category_options( $hide_empty );
 	}
 
 	/**
-	 * Builds the options array for the manual category Select2 control.
+	 * Builds the options array for the category Select2 controls.
 	 *
 	 * @since 1.0.0
+	 * @param bool $hide_empty Whether categories without directly assigned products are hidden.
 	 * @return array
 	 */
-	private function get_product_category_options(): array {
+	private function get_product_category_options( bool $hide_empty = true ): array {
+		static $cached_options = array();
+		$cache_key             = $hide_empty ? 'nonempty' : 'all';
+
+		if ( isset( $cached_options[ $cache_key ] ) ) {
+			return $cached_options[ $cache_key ];
+		}
+
 		$options = array();
 
 		// Guard against running this in contexts where WC isn't loaded yet.
@@ -1703,7 +1724,7 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 		$terms = get_terms(
 			array(
 				'taxonomy'   => 'product_cat',
-				'hide_empty' => true,
+				'hide_empty' => $hide_empty,
 			)
 		);
 
@@ -1714,6 +1735,8 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 		foreach ( $terms as $term ) {
 			$options[ $term->term_id ] = $term->name;
 		}
+
+		$cached_options[ $cache_key ] = $options;
 
 		return $options;
 	}
@@ -1837,6 +1860,7 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 	 */
 	private function get_products( array $settings ): array {
 		$source = isset( $settings['source'] ) ? $settings['source'] : 'auto';
+		$excluded_category_ids = $this->sanitize_category_ids( $settings['exclude_categories'] ?? array() );
 
 		// Detect Elementor editor / preview context so we can show fallback content
 		// when no real archive query is available (e.g. designing the template before
@@ -1845,13 +1869,20 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 
 		if ( 'auto' === $source ) {
 			global $wp_query;
-			// Use the main archive query if it has products and we're on an archive.
-			if ( ( is_shop() || is_product_taxonomy() || is_post_type_archive( 'product' ) ) && ! empty( $wp_query->posts ) ) {
-				return array(
-					'products'      => $this->posts_to_products( $wp_query->posts ),
-					'max_num_pages' => max( 1, (int) $wp_query->max_num_pages ),
-					'paged'         => $this->get_current_archive_pagination_page(),
-				);
+			// Use the current archive context. A configured exclusion must replay even
+			// when the original page is empty so its pagination metadata stays truthful.
+			if ( is_shop() || is_product_taxonomy() || is_post_type_archive( 'product' ) ) {
+				if ( ! empty( $excluded_category_ids ) ) {
+					return $this->run_archive_query_with_exclusions( $excluded_category_ids );
+				}
+
+				if ( ! empty( $wp_query->posts ) ) {
+					return array(
+						'products'      => $this->posts_to_products( $wp_query->posts ),
+						'max_num_pages' => max( 1, (int) $wp_query->max_num_pages ),
+						'paged'         => $this->get_current_archive_pagination_page(),
+					);
+				}
 			}
 
 			// Fallback for the editor preview: show recent products so the user has
@@ -1859,7 +1890,7 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 			if ( $is_editor ) {
 				$fallback_limit = 12;
 				return array(
-					'products'      => $this->run_fallback_query( $fallback_limit ),
+					'products'      => $this->run_fallback_query( $fallback_limit, $excluded_category_ids ),
 					'max_num_pages' => 1,
 					'paged'         => 1,
 				);
@@ -1871,6 +1902,62 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 
 		// Manual source: run a custom WP_Query.
 		return $this->run_manual_query( $settings );
+	}
+
+	/**
+	 * Replays the archive query with category exclusions applied.
+	 *
+	 * Elementor widget settings are not available when WordPress executes the main
+	 * query. Replaying its original arguments through the normal main-query hooks
+	 * retains WooCommerce ordering, price/attribute filters and third-party archive
+	 * integrations while calculating correct exclusion-aware pagination. Both query
+	 * globals are restored immediately afterwards. The normal Auto path performs no
+	 * second query when no exclusions are selected.
+	 *
+	 * @since 2.7.2
+	 * @param int[] $excluded_category_ids Product category term IDs.
+	 * @return array { products: WC_Product[], max_num_pages: int, paged: int }
+	 */
+	private function run_archive_query_with_exclusions( array $excluded_category_ids ): array {
+		global $wp_query, $wp_the_query;
+
+		$main_query = $wp_query;
+		$args       = is_object( $main_query ) && isset( $main_query->query ) ? wp_parse_args( $main_query->query ) : array();
+		$tax_query  = isset( $args['tax_query'] ) && is_array( $args['tax_query'] ) ? $args['tax_query'] : array(); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+		$paged      = $this->get_current_archive_pagination_page();
+
+		$tax_query[] = $this->build_category_exclusion_clause( $excluded_category_ids );
+
+		$args['post_type']                     = 'product';
+		$args['post_status']                   = 'publish';
+		$args['tax_query']                     = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+		$args['no_found_rows']                 = false;
+		$args['fields']                        = '';
+		$args['paged']                         = $paged;
+		$args['suppress_filters']              = false;
+		$args['wcpce_archive_exclusion_query'] = true;
+
+		$query                 = new WP_Query();
+		$previous_wp_query     = $wp_query;
+		$previous_wp_the_query = $wp_the_query;
+
+		try {
+			// WooCommerce and catalogue-filter plugins intentionally restrict important
+			// ordering/filter hooks to the main query. Temporarily expose only this
+			// synchronous replay as the main query, then restore both globals in finally.
+			$wp_query     = $query;
+			$wp_the_query = $query;
+			$query->query( $args );
+		} finally {
+			$wp_query     = $previous_wp_query;
+			$wp_the_query = $previous_wp_the_query;
+		}
+
+		return array(
+			'products'      => $this->posts_to_products( $query->posts ),
+			'max_num_pages' => max( 1, (int) $query->max_num_pages ),
+			'paged'         => $paged,
+		);
 	}
 
 	/**
@@ -1907,10 +1994,11 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 	 * preview doesn't show products that are hidden from the catalog.
 	 *
 	 * @since 1.0.0
-	 * @param int $limit Number of products.
+	 * @param int   $limit                 Number of products.
+	 * @param int[] $excluded_category_ids Product category term IDs to exclude.
 	 * @return WC_Product[]
 	 */
-	private function run_fallback_query( int $limit = 12 ): array {
+	private function run_fallback_query( int $limit = 12, array $excluded_category_ids = array() ): array {
 		$tax_query = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			array(
 				'taxonomy' => 'product_visibility',
@@ -1919,6 +2007,10 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 				'operator' => 'NOT IN',
 			),
 		);
+
+		if ( ! empty( $excluded_category_ids ) ) {
+			$tax_query[] = $this->build_category_exclusion_clause( $excluded_category_ids );
+		}
 
 		// Respect the WooCommerce "Hide out of stock items" catalog setting.
 		if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) ) {
@@ -1983,11 +2075,9 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 			}
 		}
 
-		// Category: array of positive integers only.
-		if ( isset( $settings['category'] ) && is_array( $settings['category'] ) ) {
-			$settings['category'] = array_values(
-				array_filter( array_map( 'absint', $settings['category'] ) )
-			);
+		// Category controls: arrays of positive integers only.
+		foreach ( array( 'category', 'exclude_categories' ) as $category_field ) {
+			$settings[ $category_field ] = $this->sanitize_category_ids( $settings[ $category_field ] ?? array() );
 		}
 
 		// Include / exclude IDs: comma-separated string → validated back to string.
@@ -2086,6 +2176,11 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 					),
 				);
 			}
+		}
+
+		if ( ! empty( $settings['exclude_categories'] ) ) {
+			$args['tax_query']   = isset( $args['tax_query'] ) ? $args['tax_query'] : array(); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+			$args['tax_query'][] = $this->build_category_exclusion_clause( $settings['exclude_categories'] );
 		}
 
 		// Q1: Sale only filter — restrict to products currently on sale.
@@ -2276,6 +2371,43 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Sanitises an Elementor category control value to unique positive term IDs.
+	 *
+	 * @since 2.7.2
+	 * @param mixed $value Raw Select2 value.
+	 * @return int[]
+	 */
+	private function sanitize_category_ids( $value ): array {
+		if ( ! is_array( $value ) ) {
+			$value = '' === $value || null === $value ? array() : array( $value );
+		}
+
+		$ids = array_filter( array_map( 'absint', $value ) );
+
+		return array_slice( array_values( array_unique( $ids ) ), 0, 200 );
+	}
+
+	/**
+	 * Builds the shared product-category exclusion clause.
+	 *
+	 * Child categories are included so excluding a parent category removes its
+	 * complete branch from both auto and manual product grids.
+	 *
+	 * @since 2.7.2
+	 * @param int[] $category_ids Product category term IDs.
+	 * @return array
+	 */
+	private function build_category_exclusion_clause( array $category_ids ): array {
+		return array(
+			'taxonomy'         => 'product_cat',
+			'field'            => 'term_id',
+			'terms'            => $category_ids,
+			'operator'         => 'NOT IN',
+			'include_children' => true,
+		);
 	}
 
 	/**

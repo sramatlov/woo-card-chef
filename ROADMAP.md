@@ -1,6 +1,6 @@
 # Roadmap - Woo Card Chef
 
-## Current release: 2.7.1
+## Current release: 2.7.2
 
 ---
 
@@ -28,7 +28,7 @@ Belangrijk voor alle nieuwe widgets:
 Core Elementor widget with auto/manual query modes, WooCommerce product grid, discount badge (3 formats plus a separate show/hide toggle), out-of-stock label, action button, ACF-driven USPs (3 slots), free shipping pill, Lipscore rating placeholder, savings line, hover image swap, and responsive style controls for all card elements.
 
 ### Query & filtering
-Sale-only, featured-only, stock, include/exclude by ID filters for manual mode. Configurable empty state. Editor notice when manual query returns zero products. Manual mode and editor fallback queries both respect the WooCommerce "Hide out of stock items" site setting (was Phase 5 H2 - completed in v1.0.50).
+Sale-only, featured-only, stock, include/exclude by ID filters for manual mode. Category exclusion including child categories works in both Auto and Manual mode; Auto replays the archive request through normal WooCommerce/plugin main-query hooks so ordering, filters and exclusion-aware pagination remain correct without a persistent global WooCommerce query override. Configurable empty state. Editor notice when manual query returns zero products. Manual mode and editor fallback queries both respect the WooCommerce "Hide out of stock items" site setting (was Phase 5 H2 - completed in v1.0.50).
 
 ### Code quality & performance
 PHP return types on all methods, HPOS compatibility, WC query API for ordering, SVG sprite for icons, LCP-optimised image loading (`fetchpriority`, `loading`, `sizes`, `decoding`), `isolation: isolate` on widget wrapper, `wc_prime_caches_for_products()`, bulk attachment cache priming, `get_price_html()` cached per card, ACF fields read via direct `get_post_meta()`, transient caching for manual queries (stores IDs not objects), null-safe editor detection.
@@ -77,7 +77,7 @@ R7 (class-assets.php) delivered in v2.0.0.
 
 ## Current status and next work
 
-De generieke productlabelsarchitectuur inclusief PDP Gallery-integratie, optionele tijdvensters en PDP-rich-texttoelichting is na stagingacceptatie uitgebracht als v2.7.1. De eerstvolgende geplande ontwikkeling is de toegankelijkheidsopschoning.
+De Product Card Grid-categorie-uitsluiting is na stagingacceptatie uitgebracht als v2.7.2. De eerder geleverde productlabelsarchitectuur uit v2.7.1 blijft ongewijzigd. De eerstvolgende geplande ontwikkeling is de toegankelijkheidsopschoning.
 
 De resterende roadmap is bewust smal gehouden. Er worden geen nieuwe PDP widgets of multi-shop uitbreidingen meer gepland totdat daar een concrete businesscase voor is.
 
@@ -130,6 +130,17 @@ Acceptatiecriteria voor een vervolg:
 - card- en Gallery-presentatie hebben expliciete, niet-conflicterende positieregels;
 - bestaande producten met Nieuw/PFAS-vrij blijven zichtbaar tijdens een eventuele migratie;
 - frontend output blijft server-side en toegankelijk.
+
+### v2.7.2 - Product Card Grid category exclusion - Voltooid
+
+- Meervoudige **Exclude categories**-control toegevoegd aan Current archive en Manual category.
+- Geselecteerde productcategorieën en alle onderliggende categorieën worden via een gedeelde `product_cat NOT IN`-clause uitgesloten.
+- Ook lege bovenliggende categorieën blijven selecteerbaar, zodat een volledige categorietak kan worden verborgen.
+- Auto mode herhaalt alleen bij een ingestelde uitsluiting de oorspronkelijke archiefquery via bestaande WooCommerce- en pluginhooks.
+- WooCommerce-prijssortering, populariteit, WBW-categoriefiltering en uitsluitingsbewuste gridpaginering zijn op staging gevalideerd.
+- Zonder uitsluitingen blijft Auto mode de oorspronkelijke hoofdquery direct gebruiken en ontstaat geen extra query.
+- De queryglobals worden altijd in `finally` hersteld; er is geen permanente globale WooCommerce-queryoverride toegevoegd.
+- Stagingacceptatie op 3 september 2026: 69 unieke zichtbare producten over acht pagina's, zonder reserveonderdelen.
 
 ### v2.7.1 - Reusable product labels - Voltooid
 
@@ -668,7 +679,7 @@ Alternatieven en aanvullende producten duidelijk tonen zonder de primaire koopac
 
 ## Remaining roadmap scope
 
-De actieve roadmap bestaat vanaf v2.7.1 uit:
+De actieve roadmap bestaat vanaf v2.7.2 uit:
 
 1. `v2.8.0 - Accessibility cleanup`
 2. `v2.9.0 - Analytics foundation`

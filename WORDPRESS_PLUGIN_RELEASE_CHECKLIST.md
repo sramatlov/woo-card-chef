@@ -6,7 +6,7 @@ Gebruik deze checklist voor iedere patch-, minor- en majorrelease. Een release i
 
 - **Patch** (`2.6.9` → `2.6.10`): bugfix of kleine compatibiliteits-/documentatiecorrectie zonder nieuwe editorworkflow.
 - **Minor** (`2.6.x` → `2.7.0`): nieuwe functionaliteit of controls die backwards-compatible zijn.
-- **Release candidate** (`2.7.1-rc.1` → `2.7.1-rc.2`): iedere nieuwe gedeelde stagingbuild krijgt een uniek oplopend RC-nummer. Het basisnummer moet hoger zijn dan de laatst geïnstalleerde definitieve versie; de definitieve `2.7.1` volgt pas na acceptatie.
+- **Release candidate** (`2.7.2-rc.1` → `2.7.2-rc.2`): iedere nieuwe gedeelde stagingbuild krijgt een uniek oplopend RC-nummer. Het basisnummer moet hoger zijn dan de laatst geïnstalleerde definitieve versie; de definitieve `2.7.2` volgt pas na acceptatie.
 - **Major** (`2.x` → `3.0.0`): breaking change, datamigratie of bewust incompatibele architectuurwijziging.
 
 Leg de gebruikersimpact en regressierisico's vast voordat de versie wordt verhoogd.
@@ -51,7 +51,7 @@ Controleer vervolgens op achtergebleven debugcode en verouderde versieverwijzing
 
 ```powershell
 rg -n "var_dump|print_r|console\.log|TODO|FIXME" .\wc-product-card-elementor
-rg -n "2\.6\.[0-9]+" README.md PROJECT_OVERVIEW.md TECHNICAL_SPEC.md ROADMAP.md GLOSSARY.md
+rg -n "Huidige release.*2\.7\.1|current release.*2\.7\.1|Current release: 2\.7\.1" README.md PROJECT_OVERVIEW.md TECHNICAL_SPEC.md ROADMAP.md
 ```
 
 Beoordeel iedere match; changelog- en historie-verwijzingen mogen vanzelfsprekend ouder zijn.
@@ -72,6 +72,7 @@ Volg [`TESTING.md`](TESTING.md). Minimaal verplicht:
 
 - pluginactivatie;
 - één Product Archive met Auto mode en een leeg resultaat;
+- Product Card Grid met categorie-uitsluiting in Auto en Manual mode, inclusief sortering, filter en paginering;
 - één rijk productdetail met Gallery, prijs, USP, delivery en Accordion;
 - Upsells en Cross-sells/Related;
 - Elementor editor/preview;
@@ -85,7 +86,7 @@ Gebruik bij voorkeur de installatiezip uit een geslaagde `main`-workflow. Voor e
 ```powershell
 python tools/build_wordpress_plugin_zip.py `
   --source-dir wc-product-card-elementor `
-  --destination-zip dist/woo-card-chef-v2.7.1-wordpress-install.zip `
+  --destination-zip dist/woo-card-chef-v2.7.2-wordpress-install.zip `
   --plugin-slug wc-product-card-elementor `
   --main-file wc-product-card-elementor.php
 ```
