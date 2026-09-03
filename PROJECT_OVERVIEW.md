@@ -2,9 +2,9 @@
 
 ## What it is
 
-Woo Card Chef is a custom Elementor widget plugin for WooCommerce. The current release is **v2.7.1** and it ships nine widgets. This release adds reusable custom product labels across product cards and PDP presentation contexts.
+Woo Card Chef is a custom Elementor widget plugin for WooCommerce. The current release is **v2.7.2** and it ships nine widgets. This release adds widget-scoped product-category exclusion to Product Card Grid while preserving archive ordering, filters and grid pagination.
 
-1. **Product Card widget** — renders product grids as richly designed product cards on category and archive pages. Replaces the default WooCommerce product loop and the EAEL product grid widget. Since v2.6.9, empty search/archive results always show the configured customer-facing message on the frontend while technical guidance remains editor-only. v2.7.1 adds reusable taxonomy-backed product labels with custom text, colour, position and priority.
+1. **Product Card widget** — renders product grids as richly designed product cards on category and archive pages. Replaces the default WooCommerce product loop and the EAEL product grid widget. Since v2.6.9, empty search/archive results always show the configured customer-facing message on the frontend while technical guidance remains editor-only. v2.7.1 adds reusable taxonomy-backed product labels with custom text, colour, position and priority; v2.7.2 can exclude selected product-category branches in Auto and Manual mode.
 2. **PDP Gallery widget** *(new in v2.0.0)* — replaces the default WooCommerce product image and gallery on the product detail page (PDP) with a slide-based gallery supporting images, YouTube video slides, lightbox, zoom, and a badgebar.
 3. **Price & Promo Block widget** *(new in v2.1.0)* — replaces the default WooCommerce price output on the PDP with a status-aware price block: regular/sale price, struck reference, discount-percentage chip, savings amount, and "Tot -X%" / "Vanaf €X" handling for variable products.
 4. **Product USP / Benefits widget** *(new in v2.2.0)* — renders short PDP-specific benefit lines near the buying area. Content comes from a simple ACF Pro repeater (`pdp_usps > usp_text`) with fallback to short description and product-card USPs; layout and styling live in Elementor.
@@ -32,7 +32,16 @@ All three run WooCommerce on Kinsta hosting with Elementor + Hello theme.
 ## Core feature list
 
 ### Product Card widget (v1.x)
-ACF-driven card title, hover image and USPs; smart discount badge; Nieuw / PFAS-vrij / Niet meer leverbaar badges; reusable taxonomy-backed labels; free shipping pill; Lipscore rating placeholder; savings line; LCP-optimised images; server-rendered pagination; WBW Product Filter PRO auto-mode compatibility; and a customer-facing empty state for frontend archives/searches.
+ACF-driven card title, hover image and USPs; smart discount badge; Nieuw / PFAS-vrij / Niet meer leverbaar badges; reusable taxonomy-backed labels; free shipping pill; Lipscore rating placeholder; savings line; LCP-optimised images; server-rendered pagination; category exclusion (including child categories) in Auto and Manual mode; WBW Product Filter PRO auto-mode compatibility; and a customer-facing empty state for frontend archives/searches.
+
+### Product Card category exclusion (v2.7.2)
+
+- `exclude_categories` is a widget-level multi-select available for both Current archive and Manual category sources.
+- Selected `product_cat` terms and their descendants are excluded; empty parent categories remain selectable in Elementor.
+- Manual mode appends the shared `NOT IN` taxonomy clause to its custom query.
+- Auto mode replays the original archive arguments through existing WooCommerce/plugin main-query hooks so catalogue ordering, WBW filtering and exclusion-aware grid totals remain intact.
+- No persistent `pre_get_posts`, `woocommerce_product_query` or `loop_shop_per_page` override is registered.
+- The setting affects only the Product Card Grid instance. The underlying WordPress main-query metadata and unrelated WooCommerce loops remain unchanged.
 
 ### Reusable Product Labels (v2.7.1)
 

@@ -183,6 +183,12 @@ Path-only base URL since v1.0.69. Deliberate trade-off. UTM preservation remains
 ### Decision: No global WooCommerce archive overrides (v1.0.72)
 `loop_shop_per_page` and all `pre_get_posts` hooks are forbidden on the product card widget.
 
+### Decision: Auto category exclusions use an archive-aware widget query (v2.7.2)
+**Chose:** When `exclude_categories` is filled in Auto mode, replay the original archive query arguments through the normal main-query hooks with a `product_cat NOT IN` clause and child categories enabled. Temporarily expose the synchronous replay through both WordPress query globals and restore them in `finally`. Without exclusions, continue consuming the original main query directly.
+**Rejected:** Filtering the already paginated `$wp_query->posts` array after the main query, or installing a global `pre_get_posts` override.
+**Why:** Post-filtering creates short pages and incorrect totals. Copying only the resolved query vars misses WooCommerce SQL-clause filters used by price, popularity, rating and layered navigation. A persistent global hook cannot reliably read per-widget Elementor settings before the main query and would leak widget presentation choices into unrelated WooCommerce loops. The conditional replay preserves WooCommerce/plugin query behavior, restores global state immediately and produces exclusion-aware products and pagination.
+**Accepted consequence:** The per-widget replay cannot retroactively change document-title totals or the validity of manually requested archive URLs determined by the already-executed WordPress main query. The grid exposes only exclusion-aware pagination. Global archive metadata would require a separate site-level rule with different scope.
+
 ### Decision: Validation at the query/render boundary
 `validate_manual_settings()` (card widget, v1.0.75) and `validate_gallery_settings()` (gallery widget, v1.0.89) are defensive against data corruption, not against attacker input. Elementor settings are only writable by authenticated editors.
 

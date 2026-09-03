@@ -25,8 +25,10 @@
 
 | Term | Meaning |
 |---|---|
-| **Auto mode** | Rides the main WP archive query. WBW, WC sorting, and pagination work natively. |
+| **Auto mode** | Rides the main WP archive query. When category exclusions are configured, it replays the archive request once through the normal WooCommerce/plugin main-query hooks so ordering, filters and pagination remain consistent. |
 | **Manual mode** | Runs its own `WP_Query`. Used for landing pages and curated sections. |
+| **Exclude categories** | Product Card Grid Select2 control that removes products assigned to selected `product_cat` terms or their child categories in both Auto and Manual mode. |
+| **Archive exclusion replay** | Synchronous Auto-mode `WP_Query` used only when `exclude_categories` is configured. It reuses the original archive arguments, runs through existing main-query hooks and restores both WordPress query globals immediately afterwards. |
 | **Card data array** | `$card` array returned by `compute_card_data()` and passed to `card.php`. |
 | **Sprite (card)** | Inline SVG block by `render_svg_sprite()`. Symbols: check, truck, leaf. Output once per page. |
 | **WCPCE_Card_Renderer** | Shared renderer introduced in v2.5.0. Outputs the card sprite, computes card data, and includes `templates/card.php` for card-based widgets. |
@@ -159,7 +161,7 @@
 | **ACF / ACF Pro** | Custom fields. ACF Pro required for gallery video and PDP USP repeaters. |
 | **WBW Product Filter PRO** | AJAX filtering, auto mode only. Three WBW settings required. |
 | **Lipscore** | Rating platform. Plugin outputs `<div class="lipscore-rating-small">` placeholder only. |
-| **Kinsta** | Hosting. Staging: stg-bourginicom.kinsta.cloud |
+| **Kinsta** | Hosting. Current Bourgini staging: env-bourginicom-premium.kinsta.cloud |
 | **Hello theme** | Active theme. Notable: global `img { height: auto }` affects gallery (solved with background-image approach). |
 
 ## Version history shorthand
@@ -204,6 +206,9 @@
 | **v2.7.1-rc.3** | **Adds optional site-timezone visible-from/visible-until scheduling to reusable labels, shared across all assigned products and rendering contexts.** |
 | **v2.7.1-rc.4** | **Adds optional safe rich-text PDP explanations to reusable labels and a zero-JS Product Label Details Elementor widget.** |
 | **v2.7.1** | **Final reusable product-label release after staging acceptance. Combines central label reuse, card and Gallery presentation, scheduling, shared widget styling and optional safe rich-text PDP explanations without ACF.** |
+| **v2.7.2-rc.1** | **Initial Product Card Grid category-exclusion candidate. Superseded before staging because it did not replay WooCommerce SQL-clause filters.** |
+| **v2.7.2-rc.2** | **Hardened category-exclusion candidate. Replays archive requests through normal main-query hooks and passed staging validation for sorting, WBW filtering and eight-page pagination.** |
+| **v2.7.2** | **Final category-exclusion release after staging acceptance. Excludes selected product-category branches in Auto and Manual mode while preserving the existing no-persistent-global-override architecture.** |
 
 ## Technical terms — Reusable Product Labels (v2.7.1)
 

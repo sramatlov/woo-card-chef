@@ -4,7 +4,7 @@ Tags: woocommerce, elementor, product card, archive, category, lipscore, acf
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.7.1
+Stable tag: 2.7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Requires Plugins: woocommerce, elementor
@@ -18,6 +18,7 @@ This plugin started as a custom "Product Card Grid" widget for WooCommerce categ
 = Card features =
 
 * Auto-detection of the current category when placed on a Theme Builder archive template
+* Optional exclusion of one or more product categories, including their child categories, in both auto archive and manual modes
 * Smart discount badge with three formats (percentage, amount, or smart Rule of 100), a separate show/hide toggle, and a configurable minimum-discount threshold to suppress badges on weak deals
 * "Tot -X%" prefix for variable products with mixed discounts across variations
 * Optional savings line below the price, disabled by default for a calmer product-card design
@@ -37,6 +38,7 @@ The widget exposes 35+ controls across the Content and Style tabs, including:
 
 * Source (auto archive query or manual category)
 * Multi-category picker, product limit, and order-by (manual mode)
+* Multi-category exclusion in both auto and manual modes
 * Optional native pagination in auto archive mode; products per page remains controlled by WooCommerce, the theme, Customizer, or filter plugins
 * Toggles for every card element (rating, savings line, shipping pill, USPs, hover swap, badge, out-of-stock label, and action button)
 * Discount badge format and threshold
@@ -115,7 +117,11 @@ Yes. The rating block stays empty if Lipscore is not installed or has no review 
 
 = Will pagination work? =
 
-Yes. In Auto mode on an archive template, the widget uses the main archive query and native WooCommerce archive page URLs. In Manual mode, enable the widget's Pagination control to show server-rendered numbered links using the wcpce_paged query var.
+Yes. In Auto mode on an archive template, the widget uses the main archive query and native WooCommerce archive page URLs. When category exclusions are configured, it replays the archive request through the normal WooCommerce query hooks so the visible product set, ordering, filters and grid pagination remain aligned. In Manual mode, enable the widget's Pagination control to show server-rendered numbered links using the wcpce_paged query var.
+
+= Can I hide a product category from a grid? =
+
+Yes. Select one or more terms under Exclude categories in the Product Card Grid Query section. Products assigned to those terms or any child category are removed in both Current archive and Manual category mode. The setting belongs to that widget instance; it does not globally hide the category from WooCommerce, search or other product loops.
 
 = Why is the badge missing on a product I know is on sale? =
 
@@ -126,6 +132,15 @@ Check the "Minimum discount percentage" setting in the Discount Badge controls. 
 Yes. The plugin is generic and only its defaults are tuned to a specific brand palette. Install it on any shop and override colors via the Elementor controls.
 
 == Changelog ==
+
+= 2.7.2 =
+Release the Product Card Grid category-exclusion control after staging acceptance. Selected product categories and their descendants are excluded in both Current archive and Manual category mode. Auto mode retains WooCommerce catalogue ordering, WBW category filtering and exclusion-aware grid pagination by replaying the archive request through the normal main-query hooks without installing a persistent global query override.
+
+= 2.7.2-rc.2 =
+Add an Exclude categories control to Product Card Grid. Auto mode replays the original archive request through WooCommerce's normal main-query hooks with a product-category NOT IN clause, retaining catalogue ordering, price/attribute filters and exclusion-aware pagination; Manual mode applies the same exclusion to its custom query. Child categories are excluded automatically, including empty parent categories selected in Elementor.
+
+= 2.7.2-rc.1 =
+Initial category-exclusion candidate. Superseded before staging because its Auto-mode query copied resolved query vars without replaying WooCommerce's SQL-clause filters for price, popularity, rating and layered navigation.
 
 = 2.7.1 =
 Release reusable custom product labels after staging acceptance. Labels are centrally reusable with custom text and colour, automatic contrast, card position, priority, active state and optional site-timezone scheduling. Product Card Grid, Product Upsells, Product Cross-sells / Related and Product Gallery share the label data while retaining context-specific positioning and widget-level styling. Labels can also contain an optional safe rich-text PDP explanation, managed without ACF in the WordPress Visual/Text editor and rendered by the zero-JS Product Label Details (PDP) Elementor widget. Existing Nieuw, PFAS-vrij, price, shipping and stock labels remain unchanged; permanently unavailable products suppress custom commercial labels and their explanations. Final hardening bulk-primes label relationships and term metadata, reuses filtered label data within one request, and restricts creation of global reusable definitions to users with `manage_woocommerce` while preserving existing-label assignment for product editors.

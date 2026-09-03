@@ -4,7 +4,7 @@
 
 Woo Card Chef is een custom WordPress-plugin met negen Elementor-widgets voor WooCommerce-productkaarten, productarchieven en productdetailpagina's. De plugin is primair gebouwd voor Bourgini.com en houdt productinhoud in WooCommerce, herbruikbare productlabels of ACF en presentatie in Elementor.
 
-**Huidige release:** 2.7.1
+**Huidige release:** 2.7.2
 
 **Pluginmap:** `wc-product-card-elementor/`
 
@@ -14,7 +14,7 @@ Woo Card Chef is een custom WordPress-plugin met negen Elementor-widgets voor Wo
 
 | Widget | Gebruik |
 |---|---|
-| Product Card Grid | Productkaarten op categorie-, archief- en landingspagina's |
+| Product Card Grid | Productkaarten op categorie-, archief- en landingspagina's, met optionele categorie-uitsluiting |
 | Product Gallery | Afbeeldingen, YouTube-video's, thumbnails, badges en lightbox op de PDP |
 | Product Price & Promo | Reguliere/saleprijs, kortingschip, besparing en variabele prijzen |
 | Product USP / Benefits | Korte productvoordelen uit ACF of WooCommerce-fallbacks |
@@ -25,6 +25,10 @@ Woo Card Chef is een custom WordPress-plugin met negen Elementor-widgets voor Wo
 | Product Label Details | Optionele labeltoelichting met veilige HTML en links op de PDP |
 
 Product Card Grid, Product Upsells, Product Cross-sells / Related en de PDP Product Gallery ondersteunen vanaf v2.7.1 herbruikbare productlabels. Een label wordt centraal opgeslagen met tekst, kleur, kaartpositie, prioriteit, een optioneel zichtbaarheidsvenster en optionele PDP-toelichting. Gebruikers met WooCommerce-beheerrechten kunnen het direct vanuit een product aanmaken; producteditors kunnen bestaande labels selecteren en bij meerdere producten hergebruiken. De planning gebruikt de WordPress-sitezone en geldt overal waar het label is gekoppeld. De toelichting wordt zonder ACF beheerd met de WordPress Visueel/Tekst-editor onder Productlabel bewerken en via Product Label Details vrij in de Single Product-template geplaatst. Op kaarten worden labels links- of rechtsboven gestapeld; de Gallery toont ze in prioriteitsvolgorde in de horizontale badgebar boven of onder de afbeelding. Alle custom labels binnen één widget delen dezelfde beheerbare Elementor-typografie, padding, afronding, schaduw en onderlinge ruimte. De bestaande systeemlabels en prijs-/verzend-/voorraadelementen vallen buiten deze controls.
+
+## Productcategorie uitsluiten
+
+Product Card Grid heeft vanaf v2.7.2 onder **Query > Exclude categories** een meervoudige categoriekeuze. De geselecteerde categorieën en hun onderliggende categorieën worden uitgesloten in zowel **Current archive** als **Manual category**. In Auto mode blijven WooCommerce-sortering, actieve catalogusfilters en de paginering van de zichtbare grid behouden. De instelling hoort bij de betreffende widget en verbergt de categorie niet globaal uit WooCommerce, zoekresultaten of andere productloops.
 
 ## Vereisten
 
@@ -59,7 +63,7 @@ composer validate --strict --no-check-publish
 composer audit --locked
 composer check
 python tools/validate_plugin_metadata.py --plugin-dir wc-product-card-elementor --main-file wc-product-card-elementor.php
-python tools/build_wordpress_plugin_zip.py --source-dir wc-product-card-elementor --destination-zip dist/woo-card-chef-v2.7.1-wordpress-install.zip --plugin-slug wc-product-card-elementor --main-file wc-product-card-elementor.php
+python tools/build_wordpress_plugin_zip.py --source-dir wc-product-card-elementor --destination-zip dist/woo-card-chef-v2.7.2-wordpress-install.zip --plugin-slug wc-product-card-elementor --main-file wc-product-card-elementor.php
 ```
 
 Gebruik daarnaast [`TESTING.md`](TESTING.md) voor de handmatige regressiematrix en [`WORDPRESS_PLUGIN_RELEASE_CHECKLIST.md`](WORDPRESS_PLUGIN_RELEASE_CHECKLIST.md) voor iedere release.

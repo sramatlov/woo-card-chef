@@ -30,6 +30,12 @@ python tools/build_wordpress_plugin_zip.py --source-dir wc-product-card-elemento
 
 GitHub Actions herhaalt deze controles op PHP 7.4 en 8.3, voert WordPress Plugin Check in een geïsoleerde WordPress-omgeving uit en publiceert de gevalideerde installatiezip pas wanneer alle voorgaande jobs slagen.
 
+Gerichte standalone regressiecontrole voor de Product Card Grid-categorie-uitsluiting:
+
+```powershell
+php tools/test_product_card_category_exclusion.php
+```
+
 ## 2. Minimale testdata
 
 Gebruik minimaal de volgende WooCommerce-producten:
@@ -62,6 +68,8 @@ Test waar mogelijk ook een verborgen product en een upsell/cross-sell die niet z
 ### Product Card Grid
 
 - Auto mode werkt op categorie-, shop-, zoek- en leeg archief.
+- Exclude categories verwijdert geselecteerde categorieën en alle onderliggende categorieën in Auto en Manual mode; Auto-sortering, actieve filters en paginering blijven kloppen.
+- Een product dat zowel aan een uitgesloten als een niet-uitgesloten categorie is gekoppeld blijft uitgesloten.
 - Een leeg frontendarchief toont de configureerbare klanttekst en nooit technische editorhulp.
 - Manual mode respecteert categorie, include/exclude, sale, featured en voorraadfilters.
 - Native auto-pagination en `wcpce_paged` manual-pagination linken naar de juiste pagina.
@@ -199,3 +207,17 @@ Voer na het bouwen van de install-zip uit:
 7. Bewaar de vorige werkende zip als rollbackartefact.
 
 Noteer bij een release welke scenario's zijn getest, in welke browser(s), met welke pluginversies en op welke omgeving.
+
+## 9. v2.7.2 stagingacceptatie
+
+Op 3 september 2026 is `2.7.2-rc.2` in Chrome gecontroleerd op de Bourgini Kinsta-stagingomgeving en daarna geaccepteerd als `2.7.2`:
+
+- pluginassetversie `2.7.2-rc.2` bevestigd;
+- alle acht Product Card Grid-pagina's gescand: 69 unieke producten, verdeeld als 9/9/9/9/9/9/9/6;
+- geen product uit de uitgesloten reserveonderdelencategorie aangetroffen;
+- prijs oplopend, prijs aflopend en populariteit behouden de uitsluiting en juiste volgorde;
+- WBW-categoriefilter Waterkokers ververst de grid via AJAX naar acht passende producten zonder vastgelopen loader;
+- desktopgrid toont drie gelijke kolommen zonder horizontale overflow;
+- geen Woo Card Chef-consolefouten; een losse Trusted Shops `CustomEvent`-melding komt uit het externe trustbadge-script;
+- de gridpaginering eindigt correct op pagina 8;
+- bekende widget-scopingbeperking bevestigd: de onderliggende WordPress-hoofdquery en documenttitel blijven het ongefilterde totaal van 28 pagina's kennen, waardoor een handmatig bezochte pagina 9 leeg kan renderen. Zie `KNOWN_ISSUES.md`.
