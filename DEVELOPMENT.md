@@ -78,7 +78,7 @@ Deze waarden moeten identiek zijn:
 - `WCPCE_VERSION` in hetzelfde bestand;
 - `Stable tag:` in `wc-product-card-elementor/readme.txt`.
 
-Gedeelde testbuilds gebruiken `X.Y.Z-rc.N`, bijvoorbeeld `2.7.1-rc.1`. De `X.Y.Z` moet hoger zijn dan de laatst geïnstalleerde definitieve versie. Verhoog `N` voor iedere nieuwe ZIP die buiten de lokale werkmap wordt getest en wijzig alle drie versievelden mee. Overschrijf nooit een eerder gedeelde RC-bestandsnaam. Na stagingacceptatie wordt de kandidaat de definitieve `X.Y.Z`; een bugfix daarna verhoogt de patchversie.
+Gedeelde testbuilds gebruiken `X.Y.Z-rc.N`, bijvoorbeeld `2.7.3-rc.1` na release 2.7.2. De `X.Y.Z` moet hoger zijn dan de laatst geïnstalleerde definitieve versie. Verhoog `N` voor iedere nieuwe ZIP die buiten de lokale werkmap wordt getest en wijzig alle drie versievelden mee. Overschrijf nooit een eerder gedeelde RC-bestandsnaam. Na stagingacceptatie wordt de kandidaat de definitieve `X.Y.Z`; een bugfix daarna verhoogt de patchversie.
 
 Werk bij iedere gedragswijziging ook bij:
 

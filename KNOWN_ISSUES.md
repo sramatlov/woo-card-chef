@@ -121,6 +121,9 @@ Never conditional on settings. This applies across the widget suite; presentatio
 ### Manual mode pagination strips query args
 Deliberate trade-off from v1.0.69. Documented in DECISIONS_LOG.
 
+### Auto category exclusion does not rewrite global archive metadata
+Intentional widget-scoping consequence in v2.7.2. When **Exclude categories** is configured, Product Card Grid runs an exclusion-aware archive replay and generates the correct visible products and grid pagination. WordPress has already executed its global main query before Elementor widget settings are available, so the document title can still report the original unfiltered page total and a manually entered archive URL beyond the grid's final page can render an empty content area instead of becoming a 404. The grid never links to those extra pages. A global fix would require a separate site/archive-level query rule and is deliberately outside this reusable per-widget control.
+
 ### Nieuw badge does NOT inherit badge style controls
 Excluded from all four Discount Badge Style Elementor controls since v1.0.45.
 

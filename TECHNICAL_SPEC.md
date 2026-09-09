@@ -77,7 +77,7 @@ wc-product-card-elementor/
 ## Constants
 
 ```php
-WCPCE_VERSION       // current release: '2.7.1'
+WCPCE_VERSION       // current release: '2.7.2'
 WCPCE_PLUGIN_FILE   // __FILE__ of main plugin file
 WCPCE_PLUGIN_DIR    // plugin_dir_path()
 WCPCE_PLUGIN_URL    // plugin_dir_url()
@@ -360,6 +360,12 @@ Single `initAccordion(accordionEl)` helper guards on the `.wcpce-accordion` elem
 ## Product Card widget
 
 The widget file moved from `includes/class-product-card-widget.php` to `includes/Widgets/class-product-card-widget.php` in v2.0.0. Its widget name remains `wc_product_card`. Since v2.5.0 the render loop delegates sprite/card rendering to `WCPCE_Card_Renderer`. In v2.6.9 Auto mode's empty frontend state was corrected so shoppers see the configured customer-facing message while technical query guidance remains limited to Elementor editor/preview. Since v2.7.1 the shared card template can render reusable product labels, controlled by `show_custom_labels` and `custom_label_limit`.
+
+The `exclude_categories` Select2 control is available in both Auto and Manual mode and excludes the complete selected category branches through a `product_cat NOT IN` tax clause. The exclusion picker includes empty categories so an empty parent with populated descendants remains selectable. `sanitize_category_ids()` accepts scalar or array input, keeps unique positive IDs and caps the selection at 200 terms. Manual mode adds the shared clause to its existing custom query and the editor fallback applies it as well.
+
+Auto mode keeps the zero-persistent-override architecture: because Elementor settings do not exist when WordPress executes the main query, a configured exclusion copies `$wp_query->query`, appends the exclusion and replays those original request arguments while temporarily exposing the synchronous query through both `$wp_query` and `$wp_the_query`. WooCommerce and catalogue plugins therefore run their normal main-query ordering, price/attribute filtering and query hooks. `no_found_rows` is forced to `false`, `paged` is retained and the resulting query supplies the cards plus exclusion-aware grid pagination. Both globals are restored in `finally`, even when a hook throws. With no exclusions, Auto mode still consumes the original main query directly and performs no additional query.
+
+The exclusion remains deliberately widget-scoped. It does not retroactively change WordPress's already-executed main query, so document-title page totals and manually requested archive pages beyond the grid's last page can still reflect the unfiltered catalogue. Product Card Grid itself exposes only its exclusion-aware page links. A future requirement for globally filtered archive metadata would need a separate site/archive-level query rule rather than changing this per-widget control.
 
 ## PDP Product Upsells widget: `WCPCE_Product_Upsells_Widget` (v2.5.0)
 

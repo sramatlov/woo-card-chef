@@ -69,6 +69,8 @@ All PDP widgets resolve the current product via `get_queried_object()` first. `g
 ### No global WooCommerce archive overrides
 Do not register `pre_get_posts`, `woocommerce_product_query`, or `loop_shop_per_page` hooks.
 
+A widget-scoped Auto-mode exclusion may synchronously replay the original archive arguments through already registered hooks. It must not register a persistent query hook, must expose the replay through both `$wp_query` and `$wp_the_query` only while `WP_Query::query()` runs, and must restore both globals in `finally`.
+
 ### Helper classes are stateless and static (Phase 6+)
 `includes/Helpers/` classes: public static methods only, no constructor, no state. Prefix-style naming (`WCPCE_Badge_Helper`), not namespaces. Required unconditionally at bootstrap.
 
@@ -207,6 +209,9 @@ Columns, gap, title clamp, aspect ratio — all use `add_responsive_control`.
 
 ### No products-per-page control in auto mode
 Registering such a control requires `loop_shop_per_page`, which is explicitly forbidden.
+
+### Category exclusion is branch-wide and widget-scoped
+`exclude_categories` is available in Auto and Manual mode, includes empty terms in its Elementor options and always uses `include_children => true`. It must not become a persistent global WooCommerce archive override; unrelated grids and search results remain unchanged.
 
 ---
 
