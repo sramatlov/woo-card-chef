@@ -34,11 +34,11 @@ Product Card Grid heeft vanaf v2.7.2 onder **Query > Exclude categories** een me
 
 | Component | Minimum | Getest tot en met volgens pluginmetadata |
 |---|---:|---:|
-| WordPress | 6.0 | 7.0.4 |
-| PHP | 7.4 | 8.3 via CI |
-| WooCommerce | 6.0 | 11.0.1 |
-| Elementor | 3.5.0 | 4.2.2 |
-| Elementor Pro | Niet vereist | 4.2.1 |
+| WordPress | 6.0 | 7.1 |
+| PHP | 7.4 | 8.3.30 op staging en 8.3 via CI |
+| WooCommerce | 6.0 | 11.1.0 |
+| Elementor | 3.5.0 | 4.2.4 |
+| Elementor Pro | Niet vereist | 4.2.3 |
 | ACF / ACF Pro | Optioneel | Zie hieronder |
 
 Elementor en WooCommerce zijn harde afhankelijkheden. ACF is optioneel, maar zonder ACF blijven de productkaartvelden en de expliciete `product_manual`-bron leeg; de automatische PDF-handleidingfallback kan wel blijven werken. ACF Pro is nodig voor de repeaters `pdp_usps` en `pdp_gallery_videos`. Lipscore is optioneel en vult alleen de aanwezige rating-/reviews placeholders.
