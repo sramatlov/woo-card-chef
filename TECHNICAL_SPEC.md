@@ -4,11 +4,11 @@
 
 | Dependency | Minimum | Tested up to |
 |---|---|---|
-| WordPress | 6.0 | 7.0.4 |
-| PHP | 7.4 | 8.3 |
-| WooCommerce | 6.0 | 11.0.1 |
-| Elementor (free) | 3.5.0 | 4.2.2 |
-| Elementor Pro | — | 4.2.1 |
+| WordPress | 6.0 | 7.1 |
+| PHP | 7.4 | 8.3.30 |
+| WooCommerce | 6.0 | 11.1.0 |
+| Elementor (free) | 3.5.0 | 4.2.4 |
+| Elementor Pro | — | 4.2.3 |
 | ACF / ACF Pro | Any (optional) | Current |
 
 ## Hard dependencies

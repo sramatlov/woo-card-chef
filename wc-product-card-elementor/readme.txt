@@ -2,7 +2,7 @@
 Contributors: s15webdesign
 Tags: woocommerce, elementor, product card, archive, category, lipscore, acf
 Requires at least: 6.0
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
 Stable tag: 2.7.2
 License: GPL v2 or later
@@ -134,7 +134,7 @@ Yes. The plugin is generic and only its defaults are tuned to a specific brand p
 == Changelog ==
 
 = 2.7.2 =
-Release the Product Card Grid category-exclusion control after staging acceptance. Selected product categories and their descendants are excluded in both Current archive and Manual category mode. Auto mode retains WooCommerce catalogue ordering, WBW category filtering and exclusion-aware grid pagination by replaying the archive request through the normal main-query hooks without installing a persistent global query override.
+Release the Product Card Grid category-exclusion control after staging acceptance. Selected product categories and their descendants are excluded in both Current archive and Manual category mode. Auto mode retains WooCommerce catalogue ordering, WBW category filtering and exclusion-aware grid pagination by replaying the archive request through the normal main-query hooks without installing a persistent global query override. Revalidated on staging with WordPress 7.1, WooCommerce 11.1.0, Elementor 4.2.4, Elementor Pro 4.2.3 and PHP 8.3.30.
 
 = 2.7.2-rc.2 =
 Add an Exclude categories control to Product Card Grid. Auto mode replays the original archive request through WooCommerce's normal main-query hooks with a product-category NOT IN clause, retaining catalogue ordering, price/attribute filters and exclusion-aware pagination; Manual mode applies the same exclusion to its custom query. Child categories are excluded automatically, including empty parent categories selected in Elementor.

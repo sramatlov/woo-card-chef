@@ -5,7 +5,7 @@
  * Description:       Serving clean, customizable WooCommerce product cards and PDP widgets in Elementor, with ACF-powered USPs, media, prices, badges, delivery status and flexible product grids.
  * Version:           2.7.2
  * Requires at least: 6.0
- * Tested up to:      7.0
+ * Tested up to:      7.1
  * Requires PHP:      7.4
  * Author:            S15 Webdesign
  * Author URI:        https://vaneekerenindustries.nl
@@ -14,10 +14,10 @@
  * Text Domain:       woo-card-chef
  * Domain Path:       /languages
  * Requires Plugins:  woocommerce, elementor
- * Elementor tested up to: 4.2.2
- * Elementor Pro tested up to: 4.2.1
+ * Elementor tested up to: 4.2.4
+ * Elementor Pro tested up to: 4.2.3
  * WC requires at least: 6.0
- * WC tested up to: 11.0
+ * WC tested up to: 11.1
  *
  * @package WC_Product_Card_Elementor
  */

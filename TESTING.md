@@ -221,3 +221,17 @@ Op 3 september 2026 is `2.7.2-rc.2` in Chrome gecontroleerd op de Bourgini Kinst
 - geen Woo Card Chef-consolefouten; een losse Trusted Shops `CustomEvent`-melding komt uit het externe trustbadge-script;
 - de gridpaginering eindigt correct op pagina 8;
 - bekende widget-scopingbeperking bevestigd: de onderliggende WordPress-hoofdquery en documenttitel blijven het ongefilterde totaal van 28 pagina's kennen, waardoor een handmatig bezochte pagina 9 leeg kan renderen. Zie `KNOWN_ISSUES.md`.
+
+### Heracceptatie na platformupdates
+
+Op 9 september 2026 is de definitieve `2.7.2` opnieuw in Chrome gecontroleerd nadat de stagingstack was bijgewerkt naar WordPress 7.1, WooCommerce 11.1.0, Elementor 4.2.4 en Elementor Pro 4.2.3 op PHP 8.3.30:
+
+- een handmatige Kinsta-back-up van staging is om 09:43 CEST aangemaakt;
+- Woo Card Chef 2.7.2 is actief en alle negen widgets staan geregistreerd in Elementor;
+- het Product Card Grid bevat opnieuw 69 unieke producten over acht pagina's (9/9/9/9/9/9/9/6), zonder producten uit de uitgesloten onderdelenbranche en zonder horizontale overflow;
+- prijs oplopend en aflopend sorteren correct; populariteit behoudt de uitsluiting;
+- WBW-filter Waterkokers levert via de bestaande filteractie acht passende kaarten op zonder vastgelopen loader;
+- de rijke PDP toont Gallery, Price, USP, Delivery, Accordion, Upsells en Related; Product Label Details blijft terecht leeg zonder toepasselijke labeltoelichting;
+- Gallery-volgende activeert exact één volgende slide en houdt alle inactieve slides inert; Accordion opent het bijbehorende paneel met correcte `aria-expanded`-status;
+- toevoegen aan winkelwagen verhoogt de stagingwinkelmand van zes naar zeven items en de checkout laadt volledig met orderoverzicht en zeven betaalmethoden; er is geen bestelling geplaatst;
+- Kinsta `error.log` bevat geen meldingen; de browserconsole bevat alleen de bekende externe Trusted Shops `CustomEvent`-melding en geen Woo Card Chef-fout.
