@@ -209,6 +209,7 @@
 | **v2.7.2-rc.1** | **Initial Product Card Grid category-exclusion candidate. Superseded before staging because it did not replay WooCommerce SQL-clause filters.** |
 | **v2.7.2-rc.2** | **Hardened category-exclusion candidate. Replays archive requests through normal main-query hooks and passed staging validation for sorting, WBW filtering and eight-page pagination.** |
 | **v2.7.2** | **Final category-exclusion release after staging acceptance. Excludes selected product-category branches in Auto and Manual mode while preserving the existing no-persistent-global-override architecture.** |
+| **v2.8.0** | **Adds the staging-validated curated Product Category Navigation widget with manual order/name/image overrides, WooCommerce-owned destinations and responsive progressive enhancement.** |
 
 ## Technical terms — Reusable Product Labels (v2.7.1)
 

@@ -2,9 +2,9 @@
 
 [![Validate and build plugin zip](https://github.com/sramatlov/woo-card-chef/actions/workflows/validate-and-build.yml/badge.svg?branch=main)](https://github.com/sramatlov/woo-card-chef/actions/workflows/validate-and-build.yml)
 
-Woo Card Chef is een custom WordPress-plugin met negen Elementor-widgets voor WooCommerce-productkaarten, productarchieven en productdetailpagina's. De plugin is primair gebouwd voor Bourgini.com en houdt productinhoud in WooCommerce, herbruikbare productlabels of ACF en presentatie in Elementor.
+Woo Card Chef is een custom WordPress-plugin met tien Elementor-widgets voor WooCommerce-productkaarten, productarchieven, categorienavigatie en productdetailpagina's. De plugin is primair gebouwd voor Bourgini.com en houdt productinhoud in WooCommerce, herbruikbare productlabels of ACF en presentatie in Elementor.
 
-**Huidige release:** 2.7.2
+**Huidige release:** 2.8.0
 
 **Pluginmap:** `wc-product-card-elementor/`
 
@@ -15,6 +15,7 @@ Woo Card Chef is een custom WordPress-plugin met negen Elementor-widgets voor Wo
 | Widget | Gebruik |
 |---|---|
 | Product Card Grid | Productkaarten op categorie-, archief- en landingspagina's, met optionele categorie-uitsluiting |
+| Product Category Navigation | Handmatig geordende productcategorieën met aanpasbare naam en afbeelding |
 | Product Gallery | Afbeeldingen, YouTube-video's, thumbnails, badges en lightbox op de PDP |
 | Product Price & Promo | Reguliere/saleprijs, kortingschip, besparing en variabele prijzen |
 | Product USP / Benefits | Korte productvoordelen uit ACF of WooCommerce-fallbacks |
@@ -25,6 +26,12 @@ Woo Card Chef is een custom WordPress-plugin met negen Elementor-widgets voor Wo
 | Product Label Details | Optionele labeltoelichting met veilige HTML en links op de PDP |
 
 Product Card Grid, Product Upsells, Product Cross-sells / Related en de PDP Product Gallery ondersteunen vanaf v2.7.1 herbruikbare productlabels. Een label wordt centraal opgeslagen met tekst, kleur, kaartpositie, prioriteit, een optioneel zichtbaarheidsvenster en optionele PDP-toelichting. Gebruikers met WooCommerce-beheerrechten kunnen het direct vanuit een product aanmaken; producteditors kunnen bestaande labels selecteren en bij meerdere producten hergebruiken. De planning gebruikt de WordPress-sitezone en geldt overal waar het label is gekoppeld. De toelichting wordt zonder ACF beheerd met de WordPress Visueel/Tekst-editor onder Productlabel bewerken en via Product Label Details vrij in de Single Product-template geplaatst. Op kaarten worden labels links- of rechtsboven gestapeld; de Gallery toont ze in prioriteitsvolgorde in de horizontale badgebar boven of onder de afbeelding. Alle custom labels binnen één widget delen dezelfde beheerbare Elementor-typografie, padding, afronding, schaduw en onderlinge ruimte. De bestaande systeemlabels en prijs-/verzend-/voorraadelementen vallen buiten deze controls.
+
+## Product Category Navigation
+
+Vanaf v2.8.0 kan een beheerder in Elementor een compacte categoriecarrousel samenstellen. Iedere rij kiest één WooCommerce-productcategorie; de volgorde van de repeater is de zichtbare volgorde. De categorielink, standaardnaam en standaardafbeelding komen uit WooCommerce. Een zichtbare naam en Media Library-afbeelding kunnen per widgetrij handmatig worden overschreven zonder de centrale categorie te wijzigen. Dubbele categorieën worden na de eerste vermelding overgeslagen en verwijderde categorieën verschijnen alleen als waarschuwing in de editor. De lijst gebruikt touchscrolling en blijft zonder JavaScript werken; pijlen en paginadots verschijnen alleen bij echte overflow. WordPress levert responsive afbeeldingsvarianten via `srcset` en `sizes`.
+
+De definitieve 2.8.0-uitvoer is op 10 september 2026 gevalideerd op de Bourgini Kinsta-staginghomepage. De handmatig ingestelde reeks van tien categorieën, WooCommerce-links, responsive desktop-/mobielgedrag, pijlen, dots en WP Rocket/Imagify-afbeeldingsoptimalisatie werkten zoals bedoeld zonder Woo Card Chef-consolefouten.
 
 ## Productcategorie uitsluiten
 
@@ -63,7 +70,7 @@ composer validate --strict --no-check-publish
 composer audit --locked
 composer check
 python tools/validate_plugin_metadata.py --plugin-dir wc-product-card-elementor --main-file wc-product-card-elementor.php
-python tools/build_wordpress_plugin_zip.py --source-dir wc-product-card-elementor --destination-zip dist/woo-card-chef-v2.7.2-wordpress-install.zip --plugin-slug wc-product-card-elementor --main-file wc-product-card-elementor.php
+python tools/build_wordpress_plugin_zip.py --source-dir wc-product-card-elementor --destination-zip dist/woo-card-chef-v2.8.0-wordpress-install.zip --plugin-slug wc-product-card-elementor --main-file wc-product-card-elementor.php
 ```
 
 Gebruik daarnaast [`TESTING.md`](TESTING.md) voor de handmatige regressiematrix en [`WORDPRESS_PLUGIN_RELEASE_CHECKLIST.md`](WORDPRESS_PLUGIN_RELEASE_CHECKLIST.md) voor iedere release.

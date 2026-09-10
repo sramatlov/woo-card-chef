@@ -4,7 +4,7 @@ Tags: woocommerce, elementor, product card, archive, category, lipscore, acf
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.7.2
+Stable tag: 2.8.0
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Requires Plugins: woocommerce, elementor
@@ -13,7 +13,15 @@ A custom Elementor widget suite for WooCommerce product cards and focused produc
 
 == Description ==
 
-This plugin started as a custom "Product Card Grid" widget for WooCommerce category and archive pages. It now also ships focused PDP widgets for Elementor Theme Builder: Product Gallery, Product Price & Promo, Product USP / Benefits, Product Delivery & Availability, Product Accordion, Product Upsells, Product Cross-sells / Related, and Product Label Details. Each widget is modular, server-rendered where possible, and designed so content lives in WooCommerce, reusable product labels or ACF while presentation stays in Elementor.
+This plugin started as a custom "Product Card Grid" widget for WooCommerce category and archive pages. It now also ships Product Category Navigation and focused PDP widgets for Elementor Theme Builder: Product Gallery, Product Price & Promo, Product USP / Benefits, Product Delivery & Availability, Product Accordion, Product Upsells, Product Cross-sells / Related, and Product Label Details. Each widget is modular, server-rendered where possible, and designed so content lives in WooCommerce, reusable product labels or ACF while presentation stays in Elementor.
+
+= Product Category Navigation =
+
+* Curated, manually ordered WooCommerce product categories in an accessible horizontal list.
+* Per item: WooCommerce category, optional display-name override, and optional Media Library image override.
+* Category links and fallback names/images stay synchronised with WooCommerce; display overrides stay local to the Elementor widget.
+* Responsive card width and spacing, optional shop link, overflow-only arrows and pagination dots, and touch scrolling.
+* Responsive WordPress image variants with srcset/sizes; the small deferred script is loaded only where the widget is present.
 
 = Card features =
 
@@ -132,6 +140,9 @@ Check the "Minimum discount percentage" setting in the Discount Badge controls. 
 Yes. The plugin is generic and only its defaults are tuned to a specific brand palette. Install it on any shop and override colors via the Elementor controls.
 
 == Changelog ==
+
+= 2.8.0 =
+Add Product Category Navigation as the tenth Elementor widget. Editors can manually select and order WooCommerce categories, override each visible name and image, and style the responsive horizontal list, header, cards, arrows and dots. Category identity, destination URL and fallback thumbnail remain sourced from WooCommerce. Output is server-rendered and usable without JavaScript; a dependency-free deferred script adds overflow-aware navigation. Attachment metadata is bulk-primed and WordPress responsive image markup prevents full-size source images from being loaded unnecessarily. Validated on the Bourgini Kinsta staging homepage on desktop and mobile with ten curated categories, WP Rocket lazy loading and Imagify WebP variants.
 
 = 2.7.2 =
 Release the Product Card Grid category-exclusion control after staging acceptance. Selected product categories and their descendants are excluded in both Current archive and Manual category mode. Auto mode retains WooCommerce catalogue ordering, WBW category filtering and exclusion-aware grid pagination by replaying the archive request through the normal main-query hooks without installing a persistent global query override. Revalidated on staging with WordPress 7.1, WooCommerce 11.1.0, Elementor 4.2.4, Elementor Pro 4.2.3 and PHP 8.3.30.

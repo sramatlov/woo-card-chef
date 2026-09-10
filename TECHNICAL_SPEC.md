@@ -35,6 +35,7 @@ wc-product-card-elementor/
 │   │   └── trait-custom-label-controls.php Shared Elementor style controls for custom labels
 │   ├── Widgets/
 │   │   ├── class-product-card-widget.php   Product Card grid widget (moved from includes/ root in v2.0.0)
+│   │   ├── class-category-navigation-widget.php Product Category Navigation widget (new in v2.8.0)
 │   │   ├── class-product-gallery-widget.php  PDP Gallery widget (new in v2.0.0)
 │   │   ├── class-product-price-widget.php    PDP Price & Promo Block widget (new in v2.1.0)
 │   │   ├── class-product-usps-widget.php     PDP Product USP / Benefits widget (new in v2.2.0)
@@ -60,15 +61,17 @@ wc-product-card-elementor/
 │   │   ├── product-accordion.css   PDP Product Accordion styles (unminified, new in v2.4.0)
 │   │   ├── product-upsells.css     PDP Product Upsells styles (unminified, new in v2.5.0)
 │   │   ├── product-related.css     PDP Cross-sells / Related styles (unminified, new in v2.6.0)
-│   │   └── product-label-details.css PDP reusable-label explanation styles (unminified, new in v2.7.1)
+│   │   ├── product-label-details.css PDP reusable-label explanation styles (unminified, new in v2.7.1)
+│   │   └── category-navigation.css  Product Category Navigation styles (new in v2.8.0)
 │   └── js/
 │       ├── product-gallery.js      PDP Gallery widget JS (new in v2.0.0; deferred)
-│       └── product-accordion.js    PDP Accordion widget JS (new in v2.4.0; deferred)
+│       ├── product-accordion.js    PDP Accordion widget JS (new in v2.4.0; deferred)
+│       └── category-navigation.js  Overflow navigation enhancement (new in v2.8.0; deferred)
 └── templates/
     └── card.php                    Card partial included per product in the render loop
 ```
 
-**JavaScript.** The Product Card widget ships no JavaScript (zero-JS since v1.0.54). The PDP Gallery widget ships `assets/js/product-gallery.js`, registered with `strategy: 'defer'` and only enqueued on pages where the widget is present (via `get_script_depends()`). Purely presentational PDP widgets (Price & Promo Block, Product USP / Benefits, Product Delivery & Availability and Product Label Details) return an empty `get_script_depends()` array and ship CSS only. The Product Accordion widget ships `assets/js/product-accordion.js` (deferred) for toggle behaviour, FAQ inner accordion, Lipscore count sync, and hash-jump navigation. The Product Upsells and Product Cross-sells / Related widgets have no widget-specific JS, but return `wc-add-to-cart` statically because the shared card template can render AJAX add-to-cart buttons.
+**JavaScript.** The Product Card widget ships no JavaScript (zero-JS since v1.0.54). The PDP Gallery widget ships `assets/js/product-gallery.js`, registered with `strategy: 'defer'` and only enqueued on pages where the widget is present (via `get_script_depends()`). Product Category Navigation ships dependency-free deferred JS for overflow-aware arrows/dots; the underlying horizontal list remains usable without it. Purely presentational PDP widgets (Price & Promo Block, Product USP / Benefits, Product Delivery & Availability and Product Label Details) return an empty `get_script_depends()` array and ship CSS only. The Product Accordion widget ships `assets/js/product-accordion.js` (deferred) for toggle behaviour, FAQ inner accordion, Lipscore count sync, and hash-jump navigation. The Product Upsells and Product Cross-sells / Related widgets have no widget-specific JS, but return `wc-add-to-cart` statically because the shared card template can render AJAX add-to-cart buttons.
 
 **Helpers (Phase 6, v1.0.80-v1.0.84; v2.5.0).** Shared stateless utility classes live in `includes/Helpers/`. Required unconditionally at bootstrap. No constructors, no object state. Since v2.4.1, `WCPCE_Price_Helper::get_product_price_data()` has a static per-request cache because multiple PDP widgets can reuse the same product price data. Since v2.5.0, `WCPCE_Card_Renderer` owns card sprite output, `templates/card.php` inclusion, and card data computation so PDP product-list widgets can reuse the Product Card Grid card logic.
 
@@ -77,13 +80,23 @@ wc-product-card-elementor/
 ## Constants
 
 ```php
-WCPCE_VERSION       // current release: '2.7.2'
+WCPCE_VERSION       // current release: '2.8.0'
 WCPCE_PLUGIN_FILE   // __FILE__ of main plugin file
 WCPCE_PLUGIN_DIR    // plugin_dir_path()
 WCPCE_PLUGIN_URL    // plugin_dir_url()
 WCPCE_MIN_ELEMENTOR_VERSION  // '3.5.0'
 WCPCE_MIN_PHP_VERSION        // '7.4'
 ```
+
+## Product Category Navigation: `WCPCE_Category_Navigation_Widget` (v2.8.0)
+
+The widget renders curated `product_cat` terms outside any product-loop context. Elementor stores repeater order, optional display-name overrides and optional attachment overrides. WooCommerce remains authoritative for term existence, archive URLs, default names and `thumbnail_id`; ACF is not involved.
+
+`prepare_category_items()` clamps output to 24 rows, validates IDs, applies first-occurrence-wins deduplication and resolves all selected terms in one `get_terms()` call. It then restores the explicit repeater order. `WCPCE_Image_Helper::prime_attachment_ids()` primes selected attachment posts and metadata before the render loop. Images use `wp_get_attachment_image()` with an allowlisted size and a responsive `sizes` hint based on Elementor card-width controls.
+
+Markup is an accessible `nav > ul > li` structure with ordinary category links. CSS supplies horizontal touch scrolling and scroll snap without JavaScript. `category-navigation.js` guards each root with `data-wcpce-category-navigation-init`, measures real overflow, and creates page-aware controls only when necessary. It uses `ResizeObserver`, requestAnimationFrame-throttled scroll state, logical RTL handling and the reduced-motion preference. DOMContentLoaded and Elementor's `frontend/element_ready/wcpce_category_navigation.default` hook support frontend, editor preview and multiple instances.
+
+Content controls cover heading/tag, automatic or custom shop link, category repeater, image size, arrows, mobile arrows, dots and smooth scrolling. Style controls cover section spacing/background, responsive card width/gap, header and link presentation, thumbnail/image/label presentation, hover behaviour, arrows and dots. New WooCommerce categories do not auto-appear; this is intentionally a curated navigation surface.
 
 ## Reusable product labels: `WCPCE_Product_Labels` (v2.7.1)
 
