@@ -2,18 +2,19 @@
 
 ## What it is
 
-Woo Card Chef is a custom Elementor widget plugin for WooCommerce. The current release is **v2.7.2** and it ships nine widgets. This release adds widget-scoped product-category exclusion to Product Card Grid while preserving archive ordering, filters and grid pagination.
+Woo Card Chef is a custom Elementor widget plugin for WooCommerce. The current release is **v2.8.0** and it ships ten widgets. This release adds a curated Product Category Navigation widget with WooCommerce-owned category data and Elementor-owned presentation overrides.
 
 1. **Product Card widget** — renders product grids as richly designed product cards on category and archive pages. Replaces the default WooCommerce product loop and the EAEL product grid widget. Since v2.6.9, empty search/archive results always show the configured customer-facing message on the frontend while technical guidance remains editor-only. v2.7.1 adds reusable taxonomy-backed product labels with custom text, colour, position and priority; v2.7.2 can exclude selected product-category branches in Auto and Manual mode.
-2. **PDP Gallery widget** *(new in v2.0.0)* — replaces the default WooCommerce product image and gallery on the product detail page (PDP) with a slide-based gallery supporting images, YouTube video slides, lightbox, zoom, and a badgebar.
-3. **Price & Promo Block widget** *(new in v2.1.0)* — replaces the default WooCommerce price output on the PDP with a status-aware price block: regular/sale price, struck reference, discount-percentage chip, savings amount, and "Tot -X%" / "Vanaf €X" handling for variable products.
-4. **Product USP / Benefits widget** *(new in v2.2.0)* — renders short PDP-specific benefit lines near the buying area. Content comes from a simple ACF Pro repeater (`pdp_usps > usp_text`) with fallback to short description and product-card USPs; layout and styling live in Elementor.
-5. **Product Delivery & Availability widget** *(new in v2.3.0)* - renders PDP stock status, delivery promise and free-shipping threshold near the buy section. Uses WooCommerce stock, existing `badge_niet_leverbaar`, and price helper data; text and styling live in Elementor.
-6. **Product Accordion widget** *(new in v2.4.0, hardened in v2.4.1, v2.5.8 and v2.6.8)* — replaces the default WooCommerce product tabs on the PDP with a fully accessible, server-rendered accordion. Five sections: Description, Specifications, Reviews (Lipscore), FAQ (ACF repeater `product_faq`), and Manual (ACF file field `product_manual`). Each section is hidden when its content source is empty. In v2.4.1 the accordion became progressive-enhancement safe: content renders open in server HTML for no-JS/crawler contexts, then JS applies the configured collapsed state. In v2.5.8 `get_current_product()` was aligned to prefer `get_queried_object()` before `global $product`, and `get_reviews_content()` was simplified to a single set/restore of `global $product`. Since v2.6.8, an empty `product_manual` field falls back to automatic PDF matching in a configurable WordPress-root-relative manuals directory using SKU/MPN tokens.
+2. **Product Category Navigation widget** *(new in v2.8.0)* — renders a manually curated and ordered horizontal list of WooCommerce categories. Editors can override the visible name and image per row while WooCommerce remains authoritative for the category identity, link and fallback presentation.
+3. **PDP Gallery widget** *(new in v2.0.0)* — replaces the default WooCommerce product image and gallery on the product detail page (PDP) with a slide-based gallery supporting images, YouTube video slides, lightbox, zoom, and a badgebar.
+4. **Price & Promo Block widget** *(new in v2.1.0)* — replaces the default WooCommerce price output on the PDP with a status-aware price block: regular/sale price, struck reference, discount-percentage chip, savings amount, and "Tot -X%" / "Vanaf €X" handling for variable products.
+5. **Product USP / Benefits widget** *(new in v2.2.0)* — renders short PDP-specific benefit lines near the buying area. Content comes from a simple ACF Pro repeater (`pdp_usps > usp_text`) with fallback to short description and product-card USPs; layout and styling live in Elementor.
+6. **Product Delivery & Availability widget** *(new in v2.3.0)* - renders PDP stock status, delivery promise and free-shipping threshold near the buy section. Uses WooCommerce stock, existing `badge_niet_leverbaar`, and price helper data; text and styling live in Elementor.
+7. **Product Accordion widget** *(new in v2.4.0, hardened in v2.4.1, v2.5.8 and v2.6.8)* — replaces the default WooCommerce product tabs on the PDP with a fully accessible, server-rendered accordion. Five sections: Description, Specifications, Reviews (Lipscore), FAQ (ACF repeater `product_faq`), and Manual (ACF file field `product_manual`). Each section is hidden when its content source is empty. In v2.4.1 the accordion became progressive-enhancement safe: content renders open in server HTML for no-JS/crawler contexts, then JS applies the configured collapsed state. In v2.5.8 `get_current_product()` was aligned to prefer `get_queried_object()` before `global $product`, and `get_reviews_content()` was simplified to a single set/restore of `global $product`. Since v2.6.8, an empty `product_manual` field falls back to automatic PDF matching in a configurable WordPress-root-relative manuals directory using SKU/MPN tokens.
 
-7. **Product Upsells widget** *(new in v2.5.0)* - renders WooCommerce upsells on the PDP using the same product-card template as the Product Card Grid. Bourgini uses this for accessories, spare parts and extensions; layout and card element visibility live in Elementor.
-8. **Product Cross-sells / Related widget** *(new in v2.6.0)* - renders WooCommerce cross-sells on the PDP using the same product-card template and controls as Product Upsells. When no visible cross-sells are available, it falls back to WooCommerce related products.
-9. **Product Label Details widget** *(new in v2.7.1)* - renders optional safe rich-text explanations from the current product's active reusable labels. The widget is zero-JS and can be placed freely near the PDP buy section; active state, scheduling and priority remain label-level while presentation stays in Elementor.
+8. **Product Upsells widget** *(new in v2.5.0)* - renders WooCommerce upsells on the PDP using the same product-card template as the Product Card Grid. Bourgini uses this for accessories, spare parts and extensions; layout and card element visibility live in Elementor.
+9. **Product Cross-sells / Related widget** *(new in v2.6.0)* - renders WooCommerce cross-sells on the PDP using the same product-card template and controls as Product Upsells. When no visible cross-sells are available, it falls back to WooCommerce related products.
+10. **Product Label Details widget** *(new in v2.7.1)* - renders optional safe rich-text explanations from the current product's active reusable labels. The widget is zero-JS and can be placed freely near the PDP buy section; active state, scheduling and priority remain label-level while presentation stays in Elementor.
 
 ## Who it's for
 
@@ -42,6 +43,15 @@ ACF-driven card title, hover image and USPs; smart discount badge; Nieuw / PFAS-
 - Auto mode replays the original archive arguments through existing WooCommerce/plugin main-query hooks so catalogue ordering, WBW filtering and exclusion-aware grid totals remain intact.
 - No persistent `pre_get_posts`, `woocommerce_product_query` or `loop_shop_per_page` override is registered.
 - The setting affects only the Product Card Grid instance. The underlying WordPress main-query metadata and unrelated WooCommerce loops remain unchanged.
+
+### Product Category Navigation (v2.8.0)
+
+- Elementor repeater rows own the curated order. Each row selects one `product_cat` term and may override its visible name and attachment image.
+- WooCommerce owns term identity, archive permalink, default term name and `thumbnail_id`; renaming or relinking a category therefore propagates unless that row has an explicit presentation override.
+- New categories never appear automatically. Duplicate rows use first-occurrence-wins and missing/deleted terms are skipped with editor-only warnings.
+- One instance renders at most 24 valid rows and warns above the recommended 12, preventing an accidentally unbounded media rail.
+- Server-rendered `nav > ul > li` markup remains touch-scrollable without JavaScript. A small dependency-free deferred script adds arrows/dots only on overflow and supports multiple instances, resize, RTL and reduced motion.
+- Category attachments are bulk-primed and rendered through `wp_get_attachment_image()` with responsive `srcset` and control-derived `sizes`. Widget CSS/JS are registered centrally and enqueued by Elementor only when used.
 
 ### Reusable Product Labels (v2.7.1)
 

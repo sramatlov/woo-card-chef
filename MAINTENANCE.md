@@ -48,7 +48,7 @@ Voor gedeelde stagingtests krijgt iedere kandidaat een uniek `X.Y.Z-rc.N`-nummer
 ## Minimale stagingcontrole
 
 - Plugin activeert zonder fatal, nieuwe PHP-warning of adminfout.
-- Alle negen Elementor-widgets blijven beschikbaar.
+- Alle tien Elementor-widgets blijven beschikbaar.
 - Een representatief productarchief en rijk productdetail renderen op desktop en mobiel.
 - Product Card Grid-categorie-uitsluitingen behouden sortering, filters en uitsluitingsbewuste gridpaginering.
 - Product Gallery, Accordion, prijzen, voorraad/levering, upsells en related/cross-sells werken.

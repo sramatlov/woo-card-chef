@@ -128,12 +128,16 @@ final class WC_Product_Card_Elementor_Plugin {
 	 * @since 2.5.0 Added the Product Upsells widget (PDP Phase 7).
 	 * @since 2.6.0 Added the Product Cross-sells / Related widget (PDP Phase 8).
 	 * @since 2.7.1 Added the Product Label Details widget.
+	 * @since 2.8.0 Added the Product Category Navigation widget.
 	 * @param \Elementor\Widgets_Manager $widgets_manager Elementor widgets manager.
 	 * @return void
 	 */
 	public function register_widgets( $widgets_manager ): void {
 		require_once WCPCE_PLUGIN_DIR . 'includes/Widgets/class-product-card-widget.php';
 		$widgets_manager->register( new WC_Product_Card_Elementor_Widget() );
+
+		require_once WCPCE_PLUGIN_DIR . 'includes/Widgets/class-category-navigation-widget.php';
+		$widgets_manager->register( new WCPCE_Category_Navigation_Widget() );
 
 		require_once WCPCE_PLUGIN_DIR . 'includes/Widgets/class-product-gallery-widget.php';
 		$widgets_manager->register( new WCPCE_Product_Gallery_Widget() );

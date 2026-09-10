@@ -314,6 +314,14 @@ Intentional. ACF stores only content. Icons, layout, columns, typography, colour
 
 ---
 
+## Intentional integration behaviour — Product Category Navigation (v2.8.0)
+
+### WP Rocket can delay arrows and dots until the first interaction
+The server-rendered category list is immediately visible and horizontally scrollable, but WP Rocket's Delay JavaScript Execution rewrites `category-navigation.js` to `text/rocketlazyloadscript`. Consequently, overflow arrows and dots may appear only after the first keyboard, pointer or touch interaction. This is accepted because the complete linked category list remains usable before enhancement; excluding the script from delay would move non-critical interaction code back onto the initial execution path.
+
+### The rail is deliberately curated rather than automatic
+New WooCommerce categories do not appear until an editor adds them to the repeater. Duplicate selections use the first occurrence and deleted/incomplete terms are skipped. This prevents catalogue maintenance from silently changing homepage merchandising, but it means editors must update the widget when the desired selection changes.
+
 ## Intentional quirks - Product Delivery & Availability widget (v2.3.0)
 
 ### No exact shipping cost in the PDP widget

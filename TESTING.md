@@ -56,7 +56,7 @@ Test waar mogelijk ook een verborgen product en een upsell/cross-sell die niet z
 
 - Plugin activeert zonder fatals of admin notices bij geldige afhankelijkheden.
 - Ontbrekende WooCommerce of Elementor levert een beheerwaarschuwing en geen frontendfatal.
-- Elementor toont de categorie **Woo Card Chef** en alle negen widgets.
+- Elementor toont de categorie **Woo Card Chef** en alle tien widgets.
 - Frontend en Elementor preview gebruiken het juiste huidige product.
 - Pagina's zonder Woo Card Chef-widget laden geen onnodige widgetassets.
 - Browserconsole bevat geen nieuwe JavaScriptfouten.
@@ -199,7 +199,7 @@ Controleer kaarten met korte en lange titels, ontbrekende ratings, één tot dri
 Voer na het bouwen van de install-zip uit:
 
 1. Installeer de zip als schone installatie op staging.
-2. Activeer de plugin en controleer alle negen widgetregistraties.
+2. Activeer de plugin en controleer alle tien widgetregistraties.
 3. Installeer dezelfde zip als update over de vorige productieversie.
 4. Open minimaal één productarchief en één rijk productdetail.
 5. Controleer browserconsole en WordPress-debuglog.
@@ -235,3 +235,18 @@ Op 9 september 2026 is de definitieve `2.7.2` opnieuw in Chrome gecontroleerd na
 - Gallery-volgende activeert exact één volgende slide en houdt alle inactieve slides inert; Accordion opent het bijbehorende paneel met correcte `aria-expanded`-status;
 - toevoegen aan winkelwagen verhoogt de stagingwinkelmand van zes naar zeven items en de checkout laadt volledig met orderoverzicht en zeven betaalmethoden; er is geen bestelling geplaatst;
 - Kinsta `error.log` bevat geen meldingen; de browserconsole bevat alleen de bekende externe Trusted Shops `CustomEvent`-melding en geen Woo Card Chef-fout.
+
+## 10. v2.8.0 Product Category Navigation stagingacceptatie
+
+De definitieve 2.8.0-build is op 10 september 2026 gecontroleerd op de homepage van de Bourgini Kinsta-stagingomgeving. De oude losse categorienavigatie stond tijdens de test bewust boven de nieuwe widget ter visuele vergelijking.
+
+- pluginmetadata meldt 2.8.0; PHP 7.4-compatibiliteit, WordPress-securitysniffs, Composer-audit, JavaScript-syntax, bestaande categorie-uitsluitingsregressietest en installatiezip zijn lokaal groen;
+- de widget rendert de bewust ingestelde volgorde van tien unieke categorieën, inclusief de handmatige korte namen en Koffiezetapparaten als extra categorie;
+- alle tien kaartlinks wijzen naar de verwachte WooCommerce-productcategorieën en de algemene link wijst naar `/shop/`;
+- op 1280px viewport is de widget 1140px breed, zijn zeven kaarten zichtbaar en werkt navigatie over twee pagina's; de volgende/vorige-knoppen verplaatsen de lijst van 0 naar 540px en terug, wisselen hun disabled-status correct en houden exact één dot op `aria-current="true"`;
+- op 390x844px is de widget 335px breed, zijn kaarten 100px breed, zijn de pijlen volgens instelling verborgen en zijn vier paginadots beschikbaar voor touchscrolling;
+- zonder uitgevoerd widgetscript blijft de server-rendered horizontale lijst bruikbaar; na de eerste interactie activeert WP Rocket het uitgestelde script en verschijnen alleen bij overflow de werkende controls;
+- WP Rocket lazy-loadt de afbeeldingen en Imagify levert 100/150px WebP-bronnen met `srcset` en de ingestelde responsive `sizes`; de versiegebonden CSS en JS worden eenmaal geladen met een cacheduur van één jaar;
+- de browserconsole bevat geen Woo Card Chef-fout; alleen de al bekende externe Trusted Shops `CustomEvent`-melding is waargenomen.
+
+De WordPress-debuglog is in deze browserronde niet zelfstandig geopend. De eerdere platformheracceptatie van 9 september 2026 dekt de overige negen widgets en de rijke PDP; deze ronde was gericht op de nieuwe categorienavigatie.

@@ -339,6 +339,23 @@ The WBW / Elementor Pro sticky header conflict is resolved with native CSS `posi
 **Rejected:** Manually clearing expired sale dates on products, changing WooCommerce product data on page load, or moving Rank Math Product schema into Woo Card Chef.
 **Why:** WooCommerce can retain expired sale schedule data after a sale ends, and Rank Math may expose that stale date in Product schema. Google may suppress Product snippets/listings when `priceValidUntil` is in the past. The safest fix is output-level cleanup: future dates remain, active sale schema remains, historical admin data remains available, and Woo Card Chef stays out of Product schema ownership.
 
+## Product Category Navigation architecture (v2.8.0)
+
+### Decision: curated Elementor order, WooCommerce-owned category identity
+**Chose:** Store selected `product_cat` IDs in an Elementor repeater whose row order is the frontend order. WooCommerce remains authoritative for term existence, archive URL, default name and `thumbnail_id`; each row may override only its visible name and attachment image.
+**Rejected:** Automatically listing all categories, storing copied category URLs, or introducing a separate ACF/options data model.
+**Why:** The homepage rail is a merchandising selection, not a taxonomy dump. Manual order keeps editorial intent explicit, while live WooCommerce links and fallbacks prevent duplicated catalogue data from drifting. Local overrides allow short presentation names without renaming the central category.
+
+### Decision: progressive horizontal list with small dependency-free enhancement
+**Chose:** Render semantic `nav > ul > li` links that horizontally scroll without JavaScript. Load one deferred vanilla-JavaScript asset only when the widget is present; it measures real overflow and adds page-aware arrows/dots, resize handling and reduced-motion behaviour.
+**Rejected:** Swiper/Slick or another carousel dependency, autoplay, looping, and a JavaScript-only list.
+**Why:** Native scrolling is the fastest and most robust baseline. The enhancement is small, avoids another library and does not block category discovery when WP Rocket delays scripts until first interaction.
+
+### Decision: responsive WordPress attachments with a bounded item count
+**Chose:** Render category images through `wp_get_attachment_image()` with `srcset`, control-derived `sizes` and bulk attachment cache priming. Limit one instance to 24 valid categories and warn editors above 12.
+**Rejected:** Direct full-size media URLs or an unbounded repeater.
+**Why:** The original 1000px PNG sources are unnecessarily heavy for 100-150px cards. WordPress/Imagify can serve 100/150px WebP variants, while the bound prevents accidental query, HTML and image growth.
+
 ## PDP roadmap — scope decisions (v2.3.x)
 
 ### Decision: PDP Phase 5 (Add to Cart) descoped permanently

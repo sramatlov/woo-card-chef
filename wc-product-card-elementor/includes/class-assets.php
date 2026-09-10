@@ -39,6 +39,7 @@ final class WCPCE_Assets {
 	 */
 	public static function register(): void {
 		self::register_product_card_assets();
+		self::register_category_navigation_assets();
 		self::register_product_gallery_assets();
 		self::register_product_price_assets();
 		self::register_product_usps_assets();
@@ -47,6 +48,35 @@ final class WCPCE_Assets {
 		self::register_product_upsells_assets();
 		self::register_product_related_assets();
 		self::register_product_label_details_assets();
+	}
+
+	/**
+	 * Registers assets for the Product Category Navigation widget.
+	 *
+	 * The list remains usable without JavaScript. The small deferred script adds
+	 * overflow-aware arrows and pagination dots only when they are needed.
+	 *
+	 * @since 2.8.0
+	 * @return void
+	 */
+	private static function register_category_navigation_assets(): void {
+		wp_register_style(
+			'wcpce-category-navigation',
+			WCPCE_PLUGIN_URL . 'assets/css/category-navigation.css',
+			array(),
+			WCPCE_VERSION
+		);
+
+		wp_register_script(
+			'wcpce-category-navigation',
+			WCPCE_PLUGIN_URL . 'assets/js/category-navigation.js',
+			array(),
+			WCPCE_VERSION,
+			array(
+				'in_footer' => true,
+				'strategy'  => 'defer',
+			)
+		);
 	}
 
 	/**
