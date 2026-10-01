@@ -4,12 +4,14 @@
 
 | Dependency | Minimum | Tested up to |
 |---|---|---|
-| WordPress | 6.0 | 7.1 |
-| PHP | 7.4 | 8.3.30 |
-| WooCommerce | 6.0 | 11.1.0 |
-| Elementor (free) | 3.5.0 | 4.2.4 |
-| Elementor Pro | — | 4.2.3 |
+| WordPress | 6.0 | 7.1.2 (metadata: 7.1) |
+| PHP | 7.4 | 8.3.30 on staging (9 September 2026); 7.4 and 8.3 in CI |
+| WooCommerce | 6.0 | 11.1.2 (metadata: 11.1) |
+| Elementor (free) | 3.5.0 | 4.3.3 |
+| Elementor Pro | — | 4.3.1 |
 | ACF / ACF Pro | Any (optional) | Current |
+
+The 1 October 2026 staging check covered the desktop frontend only. WordPress and Elementor versions were read from generator metadata; WooCommerce and Elementor Pro versions were read from asset URLs. The current staging PHP runtime was not independently inspected. Editor, tablet/mobile, and regenerated WP Rocket Used CSS were not retested in this round; see `TESTING.md`.
 
 ## Hard dependencies
 - Elementor (free) — widget registration, controls, rendering lifecycle
@@ -80,7 +82,7 @@ wc-product-card-elementor/
 ## Constants
 
 ```php
-WCPCE_VERSION       // current release: '2.8.0'
+WCPCE_VERSION       // current release: '2.8.1'
 WCPCE_PLUGIN_FILE   // __FILE__ of main plugin file
 WCPCE_PLUGIN_DIR    // plugin_dir_path()
 WCPCE_PLUGIN_URL    // plugin_dir_url()

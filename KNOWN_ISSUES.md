@@ -1,5 +1,11 @@
 # Known Issues — Woo Card Chef
 
+## Solved bugs — Imagify and WP Rocket (v2.8.1)
+
+Imagify can move an image's class and inline style to a generated `picture` element. Cards, Gallery and Category Navigation now apply the required sizing and `object-fit` to its nested `img`. The Gallery lightbox also finds nested images and falls back to WP Rocket's `data-lazy-src` when the current image source is still a data URL placeholder.
+
+The 1 October 2026 desktop staging check confirmed category images, Gallery navigation and image lightbox operation. A separate homepage layout failure was observed with WP Rocket Used CSS missing Elementor page/template rules; the normal page worked on retry with regular CSS. Regenerated Used CSS has not been validated. See `TESTING.md` for scope and evidence.
+
 ## Solved bugs — Product Card widget
 
 See the v1.0.84 KNOWN_ISSUES for full pre-v1.0.84 history. Summary of key resolutions:

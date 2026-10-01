@@ -210,6 +210,7 @@
 | **v2.7.2-rc.2** | **Hardened category-exclusion candidate. Replays archive requests through normal main-query hooks and passed staging validation for sorting, WBW filtering and eight-page pagination.** |
 | **v2.7.2** | **Final category-exclusion release after staging acceptance. Excludes selected product-category branches in Auto and Manual mode while preserving the existing no-persistent-global-override architecture.** |
 | **v2.8.0** | **Adds the staging-validated curated Product Category Navigation widget with manual order/name/image overrides, WooCommerce-owned destinations and responsive progressive enhancement.** |
+| **v2.8.1** | **Imagify picture-wrapper sizing fixes for cards, Gallery and Category Navigation; Gallery lightbox supports nested images and WP Rocket lazyload placeholders. Already deployed according to the maintainer; desktop staging rechecked on 1 October 2026. PR #9 synchronises the source and compatibility metadata and fixes a missing translators comment without changing runtime behaviour.** |
 
 ## Technical terms — Reusable Product Labels (v2.7.1)
 

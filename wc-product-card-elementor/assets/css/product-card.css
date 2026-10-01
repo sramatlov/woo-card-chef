@@ -184,6 +184,16 @@ ul.products.wc-card-grid {
 	box-sizing: border-box;
 }
 
+/* Image optimizers such as Imagify may move the image classes and styles to a
+   generated <picture>. Keep the nested <img> filling that positioned wrapper. */
+.wc-card__media picture.wc-card__image > img {
+	display: block;
+	width: 100% !important;
+	height: 100% !important;
+	max-width: 100%;
+	object-fit: contain;
+}
+
 .wc-card__image--secondary {
 	opacity: 0;
 }

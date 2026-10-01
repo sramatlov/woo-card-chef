@@ -2,7 +2,7 @@
 
 ## What it is
 
-Woo Card Chef is a custom Elementor widget plugin for WooCommerce. The current release is **v2.8.0** and it ships ten widgets. This release adds a curated Product Category Navigation widget with WooCommerce-owned category data and Elementor-owned presentation overrides.
+Woo Card Chef is a custom Elementor widget plugin for WooCommerce. The current release is **v2.8.1** and it ships ten widgets. This maintenance release makes product cards, the PDP gallery and category navigation compatible with Imagify picture markup and WP Rocket lazyload placeholders.
 
 1. **Product Card widget** — renders product grids as richly designed product cards on category and archive pages. Replaces the default WooCommerce product loop and the EAEL product grid widget. Since v2.6.9, empty search/archive results always show the configured customer-facing message on the frontend while technical guidance remains editor-only. v2.7.1 adds reusable taxonomy-backed product labels with custom text, colour, position and priority; v2.7.2 can exclude selected product-category branches in Auto and Manual mode.
 2. **Product Category Navigation widget** *(new in v2.8.0)* — renders a manually curated and ordered horizontal list of WooCommerce categories. Editors can override the visible name and image per row while WooCommerce remains authoritative for the category identity, link and fallback presentation.

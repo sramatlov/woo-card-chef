@@ -177,6 +177,16 @@
 	-webkit-user-drag: none;
 }
 
+/* Imagify can move this class and its inline object-fit style to <picture>.
+   Inherit that configured fit on the nested image and beat theme img rules. */
+.wcpce-gallery__main-image-wrap picture.wcpce-gallery__image > img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: inherit;
+	-webkit-user-drag: none;
+}
+
 /* ===== VIDEO SLIDE ===== */
 
 .wcpce-gallery__video-slide {

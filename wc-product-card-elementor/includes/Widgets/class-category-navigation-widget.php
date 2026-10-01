@@ -1037,6 +1037,7 @@ class WCPCE_Category_Navigation_Widget extends \Elementor\Widget_Base {
 			? ' aria-labelledby="' . esc_attr( $heading_id ) . '"'
 			: ' aria-label="' . esc_attr__( 'Productcategorieën', 'woo-card-chef' ) . '"';
 
+		/* translators: 1: Current category page number, 2: Total category pages. */
 		$page_label = __( 'Pagina %1$d van %2$d', 'woo-card-chef' );
 		echo '<nav class="' . esc_attr( implode( ' ', $classes ) ) . '" data-wcpce-category-navigation data-smooth-scroll="' . esc_attr( $smooth_scroll ? 'yes' : 'no' ) . '" data-page-label="' . esc_attr( $page_label ) . '"' . $label_attribute . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $label_attribute is escaped while constructed.
 		echo '<div class="wcpce-category-nav__header">';

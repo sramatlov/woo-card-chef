@@ -707,10 +707,15 @@
 			}
 		} else {
 			// Image mode: clone the full-size image from the slide.
-			var img = slide.querySelector( '.wcpce-gallery__image' );
+			var img = slide.querySelector( 'img.wcpce-gallery__image, .wcpce-gallery__image img' );
 			if ( img ) {
+				var imageSrc = img.currentSrc || img.src;
+				if ( imageSrc && imageSrc.indexOf( 'data:' ) === 0 ) {
+					imageSrc = img.getAttribute( 'data-lazy-src' ) || imageSrc;
+				}
+
 				var lbImg       = document.createElement( 'img' );
-				lbImg.src       = img.currentSrc || img.src;
+				lbImg.src       = imageSrc;
 				lbImg.alt       = img.alt || '';
 				lbImg.className = 'wcpce-gallery__lb-image';
 				lbImg.style.cursor = this.zoomOn ? 'zoom-in' : 'default';

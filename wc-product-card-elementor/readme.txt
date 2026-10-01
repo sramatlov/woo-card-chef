@@ -4,7 +4,7 @@ Tags: woocommerce, elementor, product card, archive, category, lipscore, acf
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.8.0
+Stable tag: 2.8.1
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Requires Plugins: woocommerce, elementor
@@ -140,6 +140,11 @@ Check the "Minimum discount percentage" setting in the Discount Badge controls. 
 Yes. The plugin is generic and only its defaults are tuned to a specific brand palette. Install it on any shop and override colors via the Elementor controls.
 
 == Changelog ==
+
+= 2.8.1 =
+Fix compatibility with Imagify picture markup across product cards, the PDP gallery and category navigation. Nested images now retain full-size object-fit styling when Imagify moves the image class and inline style to the generated picture element. The gallery lightbox now finds images both directly and inside picture elements, and uses WP Rocket's data-lazy-src when currentSrc still contains a data URL placeholder.
+
+Repository synchronisation records the desktop staging check on WordPress 7.1.2, WooCommerce 11.1.2, Elementor 4.3.3 and Elementor Pro 4.3.1. Adds the missing translators comment for category pagination and updates compatibility metadata without changing runtime behaviour.
 
 = 2.8.0 =
 Add Product Category Navigation as the tenth Elementor widget. Editors can manually select and order WooCommerce categories, override each visible name and image, and style the responsive horizontal list, header, cards, arrows and dots. Category identity, destination URL and fallback thumbnail remain sourced from WooCommerce. Output is server-rendered and usable without JavaScript; a dependency-free deferred script adds overflow-aware navigation. Attachment metadata is bulk-primed and WordPress responsive image markup prevents full-size source images from being loaded unnecessarily. Validated on the Bourgini Kinsta staging homepage on desktop and mobile with ten curated categories, WP Rocket lazy loading and Imagify WebP variants.
