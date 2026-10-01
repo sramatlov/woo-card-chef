@@ -1,6 +1,6 @@
 # Roadmap - Woo Card Chef
 
-## Current release: 2.7.2
+## Current release: 2.8.1
 
 ---
 
@@ -77,11 +77,11 @@ R7 (class-assets.php) delivered in v2.0.0.
 
 ## Current status and next work
 
-De Product Card Grid-categorie-uitsluiting is na stagingacceptatie uitgebracht als v2.7.2. De eerder geleverde productlabelsarchitectuur uit v2.7.1 blijft ongewijzigd. De eerstvolgende geplande ontwikkeling is de toegankelijkheidsopschoning.
+De Product Category Navigation-widget is toegevoegd in v2.8.0. v2.8.1 voegt compatibiliteit toe voor Imagify picture-markup en WP Rocket-lazyload. De eerder geleverde categorie-uitsluiting en productlabelsarchitectuur blijven ongewijzigd. De eerstvolgende geplande ontwikkeling is de toegankelijkheidsopschoning.
 
 De resterende roadmap is bewust smal gehouden. Er worden geen nieuwe PDP widgets of multi-shop uitbreidingen meer gepland totdat daar een concrete businesscase voor is.
 
-### v2.8.0 - Accessibility cleanup - Gepland
+### v2.9.0 - Accessibility cleanup - Gepland
 
 Doel: de bestaande toegankelijkheidsbasis opschonen en naamconflicten met themes voorkomen, zonder visuele of functionele herbouw.
 
@@ -98,7 +98,7 @@ Acceptatiecriteria:
 - bestaande frontend output blijft visueel gelijk;
 - gallery, accordion en product cards blijven toetsenbordbedienbaar.
 
-### v2.9.0 - Analytics foundation - Gepland
+### v2.10.0 - Analytics foundation - Gepland
 
 Doel: een lichte, opt-in meetlaag toevoegen voor bestaande widgets, zodat interacties meetbaar worden zonder harde afhankelijkheid van GA4, GTM of een specifieke datalayer.
 
@@ -130,6 +130,27 @@ Acceptatiecriteria voor een vervolg:
 - card- en Gallery-presentatie hebben expliciete, niet-conflicterende positieregels;
 - bestaande producten met Nieuw/PFAS-vrij blijven zichtbaar tijdens een eventuele migratie;
 - frontend output blijft server-side en toegankelijk.
+
+### v2.8.1 - Imagify / WP Rocket compatibility - Voltooid
+
+- Imagify kan afbeeldingsklassen naar een `picture`-wrapper verplaatsen; Product Card, Gallery en Category Navigation behouden nu de bedoelde afmetingen en `object-fit` op de geneste afbeelding.
+- De Gallery-lightbox vindt afbeeldingen zowel direct als binnen `picture` en gebruikt WP Rocket `data-lazy-src` wanneer de actuele bron nog een data-placeholder is.
+- De gebruiker heeft bevestigd dat deze versie al op staging en productie draait; de aangeleverde ZIP bevatte exact dezelfde 38 pluginbestanden als de lokale 2.8.1-bron vóór de metadata- en commentaarcorrectie in PR #9.
+- Desktopcontrole op 1 oktober 2026: WordPress 7.1.2, WooCommerce 11.1.2, Elementor 4.3.3 en Elementor Pro 4.3.1; homepage, categoriecontrols, kaartafbeeldingen, Gallery/lightbox en Accordion werken.
+- PR #9 synchroniseert GitHub met 2.8.1, documenteert de bevestigde stack en voegt het ontbrekende translator-commentaar toe; er wordt geen nieuwe deployment uitgevoerd.
+- De aanvankelijke homepagefout kwam voor met een onvolledig WP Rocket Used CSS-blok. De hercontrole slaagde met reguliere CSS; regeneratie van Used CSS en mobiel/tablet/editor zijn nog niet hergetest. Volledige bewijsvoering en beperkingen staan in `TESTING.md`.
+
+### v2.8.0 - Product Category Navigation - Voltooid
+
+- Tiende Elementor-widget voor een handmatig samengestelde horizontale productcategorienavigatie.
+- Repeater bepaalt de exacte volgorde; iedere rij ondersteunt een lokale zichtbare naam en lokale Media Library-afbeelding als override.
+- WooCommerce blijft eigenaar van categorie-ID, archieflink, standaardnaam en standaardthumbnail; ACF is niet nodig.
+- Dubbele categorieën gebruiken first-occurrence-wins, verwijderde termen worden veilig overgeslagen en de editor geeft gerichte waarschuwingen.
+- Maximaal 24 items per instantie met een editorwaarschuwing boven de aanbevolen 12.
+- Server-rendered semantische lijst blijft zonder JavaScript touchscrollbaar; dependency-free deferred JS voegt alleen bij overflow pijlen en paginadots toe.
+- Responsive WordPress-afbeeldingen met `srcset/sizes`, vooraf geprimede attachmentcaches en per-widget assetloading beperken de netwerk- en querykosten.
+- Elementor-controls dekken header/shoplink, kaarten, responsive maten, typografie, hover, pijlen, dots en smooth scrolling.
+- Stagingacceptatie op 10 september 2026: tien handmatig geordende categorieën, correcte links, twee desktoppagina's, vier mobiele pagina's, responsive WebP-varianten en geen Woo Card Chef-consolefouten.
 
 ### v2.7.2 - Product Card Grid category exclusion - Voltooid
 
@@ -679,10 +700,10 @@ Alternatieven en aanvullende producten duidelijk tonen zonder de primaire koopac
 
 ## Remaining roadmap scope
 
-De actieve roadmap bestaat vanaf v2.7.2 uit:
+De actieve roadmap bestaat vanaf v2.8.1 uit:
 
-1. `v2.8.0 - Accessibility cleanup`
-2. `v2.9.0 - Analytics foundation`
+1. `v2.9.0 - Accessibility cleanup`
+2. `v2.10.0 - Analytics foundation`
 3. `Future - Product labels vervolg` (alleen bij concrete behoefte)
 
 Andere richtingen in dit document zijn historie, afgeronde fases, bewuste descopes of later opnieuw te beoordelen ideeen. Ze vormen geen actieve roadmap.

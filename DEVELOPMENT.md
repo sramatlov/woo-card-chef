@@ -26,7 +26,7 @@ wp-content/plugins/wc-product-card-elementor/
 Activeer daarna Woo Card Chef in WordPress. Voor volledige dekking zijn minimaal twee Elementor Theme Builder-templates nodig:
 
 1. Een Product Archive-template met de Product Card Grid-widget.
-2. Een Single Product-template met de zeven PDP-widgets of een representatieve selectie daarvan.
+2. Een Single Product-template met de acht PDP-widgets of een representatieve selectie daarvan.
 
 Gebruik testproducten met eenvoudige en variabele prijzen, sale- en niet-saleprijzen, verschillende voorraadstatussen, productafbeeldingen, video, USPs, FAQ, handleiding, upsells en cross-sells.
 
@@ -43,16 +43,16 @@ wc-product-card-elementor/
 │   ├── class-assets.php            Centrale registratie van CSS en JavaScript
 │   ├── class-acf-fields.php        Zes lokale ACF-veldgroepen
 │   ├── Helpers/                    Gedeelde stateless logica en card renderer
-│   └── Widgets/                    Acht Elementor-widgetklassen
+│   └── Widgets/                    Tien Elementor-widgetklassen
 ├── assets/css/                     Een stylesheet per widget
-├── assets/js/                      Gallery- en Accordion-interactie
+├── assets/js/                      Gallery-, Accordion- en Category Navigation-interactie
 └── templates/card.php              Gedeelde productkaartpartial
 ```
 
 ## Uitvoeringsmodel
 
 1. `wc-product-card-elementor.php` valideert de omgeving, definieert constants en start `WC_Product_Card_Elementor_Plugin`.
-2. `class-plugin.php` laadt helpers, registreert assets en ACF-velden en registreert negen widgets bij Elementor.
+2. `class-plugin.php` laadt helpers, registreert assets en ACF-velden en registreert tien widgets bij Elementor.
 3. Een widget haalt de huidige WooCommerce-context en gevalideerde Elementor-instellingen op.
 4. Belangrijke commerce-inhoud wordt server-side opgebouwd.
 5. Elementor laadt alleen de CSS-/JS-handles die de widget via `get_style_depends()` en `get_script_depends()` declareert.
@@ -78,7 +78,7 @@ Deze waarden moeten identiek zijn:
 - `WCPCE_VERSION` in hetzelfde bestand;
 - `Stable tag:` in `wc-product-card-elementor/readme.txt`.
 
-Gedeelde testbuilds gebruiken `X.Y.Z-rc.N`, bijvoorbeeld `2.7.3-rc.1` na release 2.7.2. De `X.Y.Z` moet hoger zijn dan de laatst geïnstalleerde definitieve versie. Verhoog `N` voor iedere nieuwe ZIP die buiten de lokale werkmap wordt getest en wijzig alle drie versievelden mee. Overschrijf nooit een eerder gedeelde RC-bestandsnaam. Na stagingacceptatie wordt de kandidaat de definitieve `X.Y.Z`; een bugfix daarna verhoogt de patchversie.
+Gedeelde testbuilds gebruiken `X.Y.Z-rc.N`, bijvoorbeeld `2.8.1-rc.1` na release 2.8.0. De `X.Y.Z` moet hoger zijn dan de laatst geïnstalleerde definitieve versie. Verhoog `N` voor iedere nieuwe ZIP die buiten de lokale werkmap wordt getest en wijzig alle drie versievelden mee. Overschrijf nooit een eerder gedeelde RC-bestandsnaam. Na stagingacceptatie wordt de kandidaat de definitieve `X.Y.Z`; een bugfix daarna verhoogt de patchversie.
 
 Werk bij iedere gedragswijziging ook bij:
 

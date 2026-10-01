@@ -32,6 +32,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WCPCE_Image_Helper {
 
 	/**
+	 * Bulk-primes attachment posts and metadata for a list of image IDs.
+	 *
+	 * Shared by widgets that render several WordPress attachments in one pass.
+	 * Invalid and duplicate IDs are discarded before the two cache-prime calls.
+	 *
+	 * @since 2.8.0
+	 * @param array $image_ids Raw attachment IDs.
+	 * @return void
+	 */
+	public static function prime_attachment_ids( array $image_ids ): void {
+		$image_ids = array_values( array_unique( array_filter( array_map( 'absint', $image_ids ) ) ) );
+		if ( empty( $image_ids ) ) {
+			return;
+		}
+
+		_prime_post_caches( $image_ids, false, false );
+		update_meta_cache( 'post', $image_ids );
+	}
+
+	/**
 	 * Bulk-primes attachment and product meta caches before the card render loop.
 	 *
 	 * Without priming, wp_get_attachment_image() and wp_attachment_is() each trigger

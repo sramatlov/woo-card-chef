@@ -1,5 +1,11 @@
 # Known Issues — Woo Card Chef
 
+## Solved bugs — Imagify and WP Rocket (v2.8.1)
+
+Imagify can move an image's class and inline style to a generated `picture` element. Cards, Gallery and Category Navigation now apply the required sizing and `object-fit` to its nested `img`. The Gallery lightbox also finds nested images and falls back to WP Rocket's `data-lazy-src` when the current image source is still a data URL placeholder.
+
+The 1 October 2026 desktop staging check confirmed category images, Gallery navigation and image lightbox operation. A separate homepage layout failure was observed with WP Rocket Used CSS missing Elementor page/template rules; the normal page worked on retry with regular CSS. Regenerated Used CSS has not been validated. See `TESTING.md` for scope and evidence.
+
 ## Solved bugs — Product Card widget
 
 See the v1.0.84 KNOWN_ISSUES for full pre-v1.0.84 history. Summary of key resolutions:
@@ -313,6 +319,14 @@ Intentional. The dedicated PDP content model is a repeater (`pdp_usps > usp_text
 Intentional. ACF stores only content. Icons, layout, columns, typography, colours, spacing, border, radius and shadow are controlled in Elementor at widget/template level.
 
 ---
+
+## Intentional integration behaviour — Product Category Navigation (v2.8.0)
+
+### WP Rocket can delay arrows and dots until the first interaction
+The server-rendered category list is immediately visible and horizontally scrollable, but WP Rocket's Delay JavaScript Execution rewrites `category-navigation.js` to `text/rocketlazyloadscript`. Consequently, overflow arrows and dots may appear only after the first keyboard, pointer or touch interaction. This is accepted because the complete linked category list remains usable before enhancement; excluding the script from delay would move non-critical interaction code back onto the initial execution path.
+
+### The rail is deliberately curated rather than automatic
+New WooCommerce categories do not appear until an editor adds them to the repeater. Duplicate selections use the first occurrence and deleted/incomplete terms are skipped. This prevents catalogue maintenance from silently changing homepage merchandising, but it means editors must update the widget when the desired selection changes.
 
 ## Intentional quirks - Product Delivery & Availability widget (v2.3.0)
 
