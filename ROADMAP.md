@@ -1,6 +1,6 @@
 # Roadmap - Woo Card Chef
 
-## Current release: 2.8.1
+## Current release: 2.8.2
 
 ---
 
@@ -77,9 +77,15 @@ R7 (class-assets.php) delivered in v2.0.0.
 
 ## Current status and next work
 
-De Product Category Navigation-widget is toegevoegd in v2.8.0. v2.8.1 voegt compatibiliteit toe voor Imagify picture-markup en WP Rocket-lazyload. De eerder geleverde categorie-uitsluiting en productlabelsarchitectuur blijven ongewijzigd. De eerstvolgende geplande ontwikkeling is de toegankelijkheidsopschoning.
+De Product Category Navigation-widget is toegevoegd in v2.8.0. v2.8.1 voegt compatibiliteit toe voor Imagify picture-markup en WP Rocket-lazyload. v2.8.2 voegt Product Card Grid Action Button style controls toe. De eerder geleverde categorie-uitsluiting en productlabelsarchitectuur blijven ongewijzigd. De eerstvolgende geplande ontwikkeling is de toegankelijkheidsopschoning.
 
 De resterende roadmap is bewust smal gehouden. Er worden geen nieuwe PDP widgets of multi-shop uitbreidingen meer gepland totdat daar een concrete businesscase voor is.
+
+### v2.8.2 - Product Card Grid Action Button styling - Voltooid
+
+- Nieuwe Style > Action Button-sectie voor Product Card Grid.
+- Editors kunnen typografie, normale en hover/focus-kleuren, padding, minimale hoogte, border width, radius en shadow instellen.
+- De Bourgini-defaults blijven gelijk; Elementor selectors gebruiken `!important` op kleur/background/border zodat WooCommerce- en themabuttonregels niet winnen.
 
 ### v2.9.0 - Accessibility cleanup - Gepland
 
@@ -700,7 +706,7 @@ Alternatieven en aanvullende producten duidelijk tonen zonder de primaire koopac
 
 ## Remaining roadmap scope
 
-De actieve roadmap bestaat vanaf v2.8.1 uit:
+De actieve roadmap bestaat vanaf v2.8.2 uit:
 
 1. `v2.9.0 - Accessibility cleanup`
 2. `v2.10.0 - Analytics foundation`

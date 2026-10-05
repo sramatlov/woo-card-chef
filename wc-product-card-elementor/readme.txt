@@ -4,7 +4,7 @@ Tags: woocommerce, elementor, product card, archive, category, lipscore, acf
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.8.1
+Stable tag: 2.8.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Requires Plugins: woocommerce, elementor
@@ -42,7 +42,7 @@ This plugin started as a custom "Product Card Grid" widget for WooCommerce categ
 
 = Elementor controls =
 
-The widget exposes 35+ controls across the Content and Style tabs, including:
+The widget exposes 40+ controls across the Content and Style tabs, including:
 
 * Source (auto archive query or manual category)
 * Multi-category picker, product limit, and order-by (manual mode)
@@ -57,6 +57,7 @@ The widget exposes 35+ controls across the Content and Style tabs, including:
 * Image aspect ratio
 * Typography groups for title, price, and USPs
 * Color controls for every text element, badges, pills, and icons
+* Action Button style controls for typography, normal/hover colours, padding, height, border radius, border width and shadow
 
 = PDP widgets =
 
@@ -140,6 +141,9 @@ Check the "Minimum discount percentage" setting in the Discount Badge controls. 
 Yes. The plugin is generic and only its defaults are tuned to a specific brand palette. Install it on any shop and override colors via the Elementor controls.
 
 == Changelog ==
+
+= 2.8.2 =
+Add a dedicated Action Button style section to the Product Card Grid. Editors can now adjust button typography, normal and hover/focus colours, padding, minimum height, border radius, border width and shadow from Elementor while existing Bourgini defaults remain unchanged.
 
 = 2.8.1 =
 Fix compatibility with Imagify picture markup across product cards, the PDP gallery and category navigation. Nested images now retain full-size object-fit styling when Imagify moves the image class and inline style to the generated picture element. The gallery lightbox now finds images both directly and inside picture elements, and uses WP Rocket's data-lazy-src when currentSrc still contains a data URL placeholder.

@@ -82,7 +82,7 @@ wc-product-card-elementor/
 ## Constants
 
 ```php
-WCPCE_VERSION       // current release: '2.8.1'
+WCPCE_VERSION       // current release: '2.8.2'
 WCPCE_PLUGIN_FILE   // __FILE__ of main plugin file
 WCPCE_PLUGIN_DIR    // plugin_dir_path()
 WCPCE_PLUGIN_URL    // plugin_dir_url()
@@ -374,7 +374,7 @@ Single `initAccordion(accordionEl)` helper guards on the `.wcpce-accordion` elem
 
 ## Product Card widget
 
-The widget file moved from `includes/class-product-card-widget.php` to `includes/Widgets/class-product-card-widget.php` in v2.0.0. Its widget name remains `wc_product_card`. Since v2.5.0 the render loop delegates sprite/card rendering to `WCPCE_Card_Renderer`. In v2.6.9 Auto mode's empty frontend state was corrected so shoppers see the configured customer-facing message while technical query guidance remains limited to Elementor editor/preview. Since v2.7.1 the shared card template can render reusable product labels, controlled by `show_custom_labels` and `custom_label_limit`.
+The widget file moved from `includes/class-product-card-widget.php` to `includes/Widgets/class-product-card-widget.php` in v2.0.0. Its widget name remains `wc_product_card`. Since v2.5.0 the render loop delegates sprite/card rendering to `WCPCE_Card_Renderer`. In v2.6.9 Auto mode's empty frontend state was corrected so shoppers see the configured customer-facing message while technical query guidance remains limited to Elementor editor/preview. Since v2.7.1 the shared card template can render reusable product labels, controlled by `show_custom_labels` and `custom_label_limit`. Since v2.8.2 the optional action button has a dedicated Style tab section for typography, normal/hover colours, padding, minimum height, border width, radius and shadow.
 
 The `exclude_categories` Select2 control is available in both Auto and Manual mode and excludes the complete selected category branches through a `product_cat NOT IN` tax clause. The exclusion picker includes empty categories so an empty parent with populated descendants remains selectable. `sanitize_category_ids()` accepts scalar or array input, keeps unique positive IDs and caps the selection at 200 terms. Manual mode adds the shared clause to its existing custom query and the editor fallback applies it as well.
 

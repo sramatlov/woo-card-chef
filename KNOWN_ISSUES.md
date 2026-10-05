@@ -277,8 +277,8 @@ If some products fail `is_visible()` after the query, the grid shows fewer cards
 ### Lipscore stars colour (real recolouring not done)
 True hue change requires Lipscore dashboard configuration or fragile shadow DOM manipulation. Optional CSS-filter control (saturate/brightness) available since v1.0.79.1 for light tint adjustment.
 
-### Brand-specific hardcoded colours (action button, overlay link focus ring, pagination)
-`.wc-card__button`, `.wc-card__overlay-link` focus ring, and pagination defaults use hardcoded Bourgini green `#3EC26D`. Will require CSS overrides or Phase 7 Elementor controls when deploying to PrincessTraveller or BourginiFitness.
+### Brand-specific hardcoded overlay-link focus colour
+`.wc-card__overlay-link` focus ring still uses hardcoded Bourgini green `#3EC26D`. Product Card Grid action buttons are editable from Style > Action Button since v2.8.2, and pagination already has Style > Pagination colour controls.
 
 ### `.sr-only` CSS class may clash with theme styles
 `.sr-only` is generic. Future rename to `.wcpce-sr-only` considered; deferred because Hello theme does not style it and risk is minimal on current deployment.

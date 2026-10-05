@@ -4,7 +4,7 @@
 
 Woo Card Chef is een custom WordPress-plugin met tien Elementor-widgets voor WooCommerce-productkaarten, productarchieven, categorienavigatie en productdetailpagina's. De plugin is primair gebouwd voor Bourgini.com en houdt productinhoud in WooCommerce, herbruikbare productlabels of ACF en presentatie in Elementor.
 
-**Huidige release:** 2.8.1
+**Huidige release:** 2.8.2
 
 **Pluginmap:** `wc-product-card-elementor/`
 
@@ -31,7 +31,7 @@ Product Card Grid, Product Upsells, Product Cross-sells / Related en de PDP Prod
 
 Vanaf v2.8.0 kan een beheerder in Elementor een compacte categoriecarrousel samenstellen. Iedere rij kiest één WooCommerce-productcategorie; de volgorde van de repeater is de zichtbare volgorde. De categorielink, standaardnaam en standaardafbeelding komen uit WooCommerce. Een zichtbare naam en Media Library-afbeelding kunnen per widgetrij handmatig worden overschreven zonder de centrale categorie te wijzigen. Dubbele categorieën worden na de eerste vermelding overgeslagen en verwijderde categorieën verschijnen alleen als waarschuwing in de editor. De lijst gebruikt touchscrolling en blijft zonder JavaScript werken; pijlen en paginadots verschijnen alleen bij echte overflow. WordPress levert responsive afbeeldingsvarianten via `srcset` en `sizes`.
 
-De basisuitvoer van 2.8.0 is op 10 september 2026 gevalideerd op de Bourgini Kinsta-staginghomepage. v2.8.1 maakt productkaarten, de PDP-galerij en categorienavigatie robuust voor de picture-markup van Imagify en de data-placeholder van WP Rocket-lazyload.
+De basisuitvoer van 2.8.0 is op 10 september 2026 gevalideerd op de Bourgini Kinsta-staginghomepage. v2.8.1 maakt productkaarten, de PDP-galerij en categorienavigatie robuust voor de picture-markup van Imagify en de data-placeholder van WP Rocket-lazyload. v2.8.2 voegt Elementor style controls toe voor de Action Button in Product Card Grid.
 
 ## Productcategorie uitsluiten
 
@@ -72,7 +72,7 @@ composer validate --strict --no-check-publish
 composer audit --locked
 composer check
 python tools/validate_plugin_metadata.py --plugin-dir wc-product-card-elementor --main-file wc-product-card-elementor.php
-python tools/build_wordpress_plugin_zip.py --source-dir wc-product-card-elementor --destination-zip dist/woo-card-chef-v2.8.1-wordpress-install.zip --plugin-slug wc-product-card-elementor --main-file wc-product-card-elementor.php
+python tools/build_wordpress_plugin_zip.py --source-dir wc-product-card-elementor --destination-zip dist/woo-card-chef-v2.8.2-wordpress-install.zip --plugin-slug wc-product-card-elementor --main-file wc-product-card-elementor.php
 ```
 
 Gebruik daarnaast [`TESTING.md`](TESTING.md) voor de handmatige regressiematrix en [`WORDPRESS_PLUGIN_RELEASE_CHECKLIST.md`](WORDPRESS_PLUGIN_RELEASE_CHECKLIST.md) voor iedere release.

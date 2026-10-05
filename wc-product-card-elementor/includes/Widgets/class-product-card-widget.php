@@ -140,6 +140,7 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 		$this->register_card_style_controls();
 		$this->register_typography_controls();
 		$this->register_color_controls();
+		$this->register_action_button_style_controls();
 		$this->register_badge_style_controls();
 		$this->register_custom_label_style_controls();
 		$this->register_pagination_style_controls();
@@ -1401,6 +1402,202 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 				'condition' => array(
 					'show_out_of_stock_label' => 'yes',
 				),
+			)
+		);
+
+		$this->end_controls_section();
+	}
+
+	/**
+	 * Style tab: optional action button appearance.
+	 *
+	 * @since 2.8.2
+	 * @return void
+	 */
+	private function register_action_button_style_controls(): void {
+		$this->start_controls_section(
+			'section_action_button_style',
+			array(
+				'label'     => esc_html__( 'Action Button', 'woo-card-chef' ),
+				'tab'       => \Elementor\Controls_Manager::TAB_STYLE,
+				'condition' => array(
+					'action_type!' => 'none',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			\Elementor\Group_Control_Typography::get_type(),
+			array(
+				'name'     => 'action_button_typography',
+				'label'    => esc_html__( 'Typography', 'woo-card-chef' ),
+				'selector' => '{{WRAPPER}} .wc-card__button',
+			)
+		);
+
+		$this->start_controls_tabs( 'action_button_style_tabs' );
+
+		$this->start_controls_tab(
+			'action_button_style_normal',
+			array(
+				'label' => esc_html__( 'Normal', 'woo-card-chef' ),
+			)
+		);
+
+		$this->add_control(
+			'action_button_text_color',
+			array(
+				'label'     => esc_html__( 'Text color', 'woo-card-chef' ),
+				'type'      => \Elementor\Controls_Manager::COLOR,
+				'default'   => '#ffffff',
+				'selectors' => array(
+					'{{WRAPPER}} .wc-card__button' => 'color: {{VALUE}} !important;',
+				),
+			)
+		);
+
+		$this->add_control(
+			'action_button_background',
+			array(
+				'label'     => esc_html__( 'Background color', 'woo-card-chef' ),
+				'type'      => \Elementor\Controls_Manager::COLOR,
+				'default'   => '#3EC26D',
+				'selectors' => array(
+					'{{WRAPPER}} .wc-card__button' => 'background: {{VALUE}} !important;',
+				),
+			)
+		);
+
+		$this->add_control(
+			'action_button_border_color',
+			array(
+				'label'     => esc_html__( 'Border color', 'woo-card-chef' ),
+				'type'      => \Elementor\Controls_Manager::COLOR,
+				'default'   => '',
+				'selectors' => array(
+					'{{WRAPPER}} .wc-card__button' => 'border-color: {{VALUE}} !important;',
+				),
+			)
+		);
+
+		$this->end_controls_tab();
+
+		$this->start_controls_tab(
+			'action_button_style_hover',
+			array(
+				'label' => esc_html__( 'Hover', 'woo-card-chef' ),
+			)
+		);
+
+		$this->add_control(
+			'action_button_hover_text_color',
+			array(
+				'label'     => esc_html__( 'Text color', 'woo-card-chef' ),
+				'type'      => \Elementor\Controls_Manager::COLOR,
+				'default'   => '#ffffff',
+				'selectors' => array(
+					'{{WRAPPER}} .wc-card__button:hover, {{WRAPPER}} .wc-card__button:focus-visible' => 'color: {{VALUE}} !important;',
+				),
+			)
+		);
+
+		$this->add_control(
+			'action_button_hover_background',
+			array(
+				'label'     => esc_html__( 'Background color', 'woo-card-chef' ),
+				'type'      => \Elementor\Controls_Manager::COLOR,
+				'default'   => '',
+				'selectors' => array(
+					'{{WRAPPER}} .wc-card__button:hover, {{WRAPPER}} .wc-card__button:focus-visible' => 'background: {{VALUE}} !important; filter: none;',
+				),
+			)
+		);
+
+		$this->add_control(
+			'action_button_hover_border_color',
+			array(
+				'label'     => esc_html__( 'Border color', 'woo-card-chef' ),
+				'type'      => \Elementor\Controls_Manager::COLOR,
+				'default'   => '',
+				'selectors' => array(
+					'{{WRAPPER}} .wc-card__button:hover, {{WRAPPER}} .wc-card__button:focus-visible' => 'border-color: {{VALUE}} !important;',
+				),
+			)
+		);
+
+		$this->end_controls_tab();
+
+		$this->end_controls_tabs();
+
+		$this->add_responsive_control(
+			'action_button_padding',
+			array(
+				'label'      => esc_html__( 'Padding', 'woo-card-chef' ),
+				'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', 'em' ),
+				'default'    => array( 'top' => '9', 'right' => '14', 'bottom' => '9', 'left' => '14', 'unit' => 'px', 'isLinked' => false ),
+				'selectors'  => array(
+					'{{WRAPPER}} .wc-card__button' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+				'separator'  => 'before',
+			)
+		);
+
+		$this->add_responsive_control(
+			'action_button_min_height',
+			array(
+				'label'      => esc_html__( 'Minimum height', 'woo-card-chef' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => array( 'px' ),
+				'range'      => array(
+					'px' => array( 'min' => 28, 'max' => 80, 'step' => 1 ),
+				),
+				'default'    => array( 'unit' => 'px', 'size' => 40 ),
+				'selectors'  => array(
+					'{{WRAPPER}} .wc-card__button' => 'min-height: {{SIZE}}{{UNIT}};',
+				),
+			)
+		);
+
+		$this->add_responsive_control(
+			'action_button_border_width',
+			array(
+				'label'      => esc_html__( 'Border width', 'woo-card-chef' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => array( 'px' ),
+				'range'      => array(
+					'px' => array( 'min' => 0, 'max' => 8, 'step' => 1 ),
+				),
+				'default'    => array( 'unit' => 'px', 'size' => 0 ),
+				'selectors'  => array(
+					'{{WRAPPER}} .wc-card__button' => 'border-width: {{SIZE}}{{UNIT}} !important; border-style: solid !important;',
+				),
+			)
+		);
+
+		$this->add_responsive_control(
+			'action_button_border_radius',
+			array(
+				'label'      => esc_html__( 'Border radius', 'woo-card-chef' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => array( 'px' ),
+				'range'      => array(
+					'px' => array( 'min' => 0, 'max' => 40, 'step' => 1 ),
+				),
+				'default'    => array( 'unit' => 'px', 'size' => 8 ),
+				'selectors'  => array(
+					'{{WRAPPER}} .wc-card__button' => 'border-radius: {{SIZE}}{{UNIT}};',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			\Elementor\Group_Control_Box_Shadow::get_type(),
+			array(
+				'name'      => 'action_button_shadow',
+				'label'     => esc_html__( 'Shadow', 'woo-card-chef' ),
+				'selector'  => '{{WRAPPER}} .wc-card__button',
+				'separator' => 'before',
 			)
 		);
 
