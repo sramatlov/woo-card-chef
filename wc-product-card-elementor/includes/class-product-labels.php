@@ -37,6 +37,17 @@ final class WCPCE_Product_Labels {
 	/** Default label colour. */
 	private const DEFAULT_COLOR = '#B4211C';
 
+	/** Supported card positions and their editor-facing names. */
+	public static function get_card_positions(): array {
+		return array(
+			'top-left'     => __( 'Linksboven', 'woo-card-chef' ),
+			'top-right'    => __( 'Rechtsboven', 'woo-card-chef' ),
+			'bottom-left'  => __( 'Linksonder', 'woo-card-chef' ),
+			'bottom-right' => __( 'Rechtsonder', 'woo-card-chef' ),
+			'below-image'  => __( 'Onder afbeelding (boven titel)', 'woo-card-chef' ),
+		);
+	}
+
 	/**
 	 * Visible label data cached per product for the current PHP request.
 	 *
@@ -130,8 +141,9 @@ final class WCPCE_Product_Labels {
 		<div class="form-field term-wcpce-label-position-wrap">
 			<label for="wcpce-label-position"><?php esc_html_e( 'Positie op productkaart', 'woo-card-chef' ); ?></label>
 			<select id="wcpce-label-position" name="wcpce_label_position">
-				<option value="top-left"><?php esc_html_e( 'Linksboven', 'woo-card-chef' ); ?></option>
-				<option value="top-right"><?php esc_html_e( 'Rechtsboven', 'woo-card-chef' ); ?></option>
+				<?php foreach ( self::get_card_positions() as $position_key => $position_label ) : ?>
+					<option value="<?php echo esc_attr( $position_key ); ?>"><?php echo esc_html( $position_label ); ?></option>
+				<?php endforeach; ?>
 			</select>
 			<p><?php esc_html_e( 'Meerdere labels op dezelfde positie worden onder elkaar gestapeld.', 'woo-card-chef' ); ?></p>
 		</div>
@@ -193,8 +205,9 @@ final class WCPCE_Product_Labels {
 			<th scope="row"><label for="wcpce-label-position"><?php esc_html_e( 'Positie op productkaart', 'woo-card-chef' ); ?></label></th>
 			<td>
 				<select id="wcpce-label-position" name="wcpce_label_position">
-					<option value="top-left" <?php selected( $position, 'top-left' ); ?>><?php esc_html_e( 'Linksboven', 'woo-card-chef' ); ?></option>
-					<option value="top-right" <?php selected( $position, 'top-right' ); ?>><?php esc_html_e( 'Rechtsboven', 'woo-card-chef' ); ?></option>
+					<?php foreach ( self::get_card_positions() as $position_key => $position_label ) : ?>
+						<option value="<?php echo esc_attr( $position_key ); ?>" <?php selected( $position, $position_key ); ?>><?php echo esc_html( $position_label ); ?></option>
+					<?php endforeach; ?>
 				</select>
 				<p class="description"><?php esc_html_e( 'Meerdere labels op dezelfde positie worden onder elkaar gestapeld.', 'woo-card-chef' ); ?></p>
 			</td>
@@ -308,7 +321,7 @@ final class WCPCE_Product_Labels {
 									<input type="checkbox" name="wcpce_product_label_ids[]" value="<?php echo esc_attr( $term->term_id ); ?>" <?php checked( in_array( $term->term_id, $selected_ids, true ) ); ?>>
 									<span aria-hidden="true" style="display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;background:<?php echo esc_attr( $color ); ?>;"></span>
 									<?php echo esc_html( $term->name ); ?>
-									<small>(<?php echo esc_html( 'top-left' === $position ? __( 'linksboven', 'woo-card-chef' ) : __( 'rechtsboven', 'woo-card-chef' ) ); ?><?php echo $active ? '' : ', ' . esc_html__( 'inactief', 'woo-card-chef' ); ?><?php echo '' === $schedule_status ? '' : ', ' . esc_html( $schedule_status ); ?><?php echo $has_pdp_details ? ', ' . esc_html__( 'PDP-uitleg', 'woo-card-chef' ) : ''; ?>)</small>
+									<small>(<?php echo esc_html( self::get_card_positions()[ $position ] ); ?><?php echo $active ? '' : ', ' . esc_html__( 'inactief', 'woo-card-chef' ); ?><?php echo '' === $schedule_status ? '' : ', ' . esc_html( $schedule_status ); ?><?php echo $has_pdp_details ? ', ' . esc_html__( 'PDP-uitleg', 'woo-card-chef' ) : ''; ?>)</small>
 								</label>
 							</li>
 						<?php endforeach; ?>
@@ -330,8 +343,9 @@ final class WCPCE_Product_Labels {
 					<p>
 						<label for="wcpce-new-label-position"><strong><?php esc_html_e( 'Positie', 'woo-card-chef' ); ?></strong></label><br>
 						<select id="wcpce-new-label-position" name="wcpce_new_label_position" class="widefat">
-							<option value="top-left"><?php esc_html_e( 'Linksboven', 'woo-card-chef' ); ?></option>
-							<option value="top-right"><?php esc_html_e( 'Rechtsboven', 'woo-card-chef' ); ?></option>
+							<?php foreach ( self::get_card_positions() as $position_key => $position_label ) : ?>
+								<option value="<?php echo esc_attr( $position_key ); ?>"><?php echo esc_html( $position_label ); ?></option>
+							<?php endforeach; ?>
 						</select>
 					</p>
 					<p>
@@ -606,7 +620,7 @@ final class WCPCE_Product_Labels {
 				return '<span style="display:inline-block;padding:4px 8px;border-radius:6px;background:' . esc_attr( $color ) . ';color:' . esc_attr( $text_color ) . ';font-weight:700;">' . esc_html( $term->name ) . '</span>';
 
 			case 'wcpce_position':
-				return 'top-left' === self::get_term_position( $term_id ) ? esc_html__( 'Linksboven', 'woo-card-chef' ) : esc_html__( 'Rechtsboven', 'woo-card-chef' );
+				return esc_html( self::get_card_positions()[ self::get_term_position( $term_id ) ] );
 
 			case 'wcpce_priority':
 				return esc_html( (string) self::get_term_priority( $term_id ) );
@@ -857,7 +871,7 @@ final class WCPCE_Product_Labels {
 
 	/** Sanitises a card position. */
 	private static function sanitise_position( $value ): string {
-		return 'top-right' === (string) $value ? 'top-right' : 'top-left';
+		return array_key_exists( (string) $value, self::get_card_positions() ) ? (string) $value : 'top-left';
 	}
 
 	/** Sanitises and bounds a label priority. */

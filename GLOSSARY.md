@@ -211,6 +211,8 @@
 | **v2.7.2** | **Final category-exclusion release after staging acceptance. Excludes selected product-category branches in Auto and Manual mode while preserving the existing no-persistent-global-override architecture.** |
 | **v2.8.0** | **Adds the staging-validated curated Product Category Navigation widget with manual order/name/image overrides, WooCommerce-owned destinations and responsive progressive enhancement.** |
 | **v2.8.1** | **Imagify picture-wrapper sizing fixes for cards, Gallery and Category Navigation; Gallery lightbox supports nested images and WP Rocket lazyload placeholders. Already deployed according to the maintainer; desktop staging rechecked on 1 October 2026. PR #9 synchronises the source and compatibility metadata and fixes a missing translators comment without changing runtime behaviour.** |
+| **v2.9.0** | **Five reusable-label positions and shared system/custom rows; approved candidate promoted after responsive Black Friday staging acceptance.** |
+| **v2.8.2** | **Adds Product Card Grid Action Button style controls for typography, normal/hover colours, padding, height, border, radius and shadow.** |
 
 ## Technical terms — Reusable Product Labels (v2.7.1)
 
@@ -258,3 +260,7 @@
 | **Ghost anchor** | A struck reference price the item never actually had. Avoided: variable products on sale show no single struck reference (the lowest variation never had the best-discount variation's regular price). |
 
 **Note on "zero-JS":** the term is scoped, not project-wide. The product card widget and purely presentational widgets (Price & Promo Block) ship no JS. Interactive widgets (Gallery; future Add to Cart) add scoped, deferred JS. The project principle is progressive enhancement — see DECISIONS_LOG.
+
+## Label positions (2.9.0)
+
+below-image: custom label stack in the card body before its title. Corner slots share system/custom label rows and wrap based on card width. Image sizing uses --wcpce-image-ratio and --wcpce-image-max-height while retaining existing Elementor control keys.

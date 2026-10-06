@@ -104,7 +104,7 @@ De automatische match gebruikt SKU en filterbare MPN-meta-keys. Houd bestandsnam
 
 Productlabels gebruiken de private taxonomy `wcpce_product_label` en hebben geen ACF-afhankelijkheid. De termnaam is de zichtbare tekst; kleur, positie, prioriteit en actieve status staan in termmeta. Bestaande termnamen of taxonomy-slugs mogen niet worden gewijzigd zonder migratieplan, omdat productrelaties hiernaar verwijzen.
 
-Labels worden server-side via de gedeelde card-template getoond in Product Card Grid, Upsells en Related. Houd `Nieuw`, `PFAS-vrij` en `Niet meer leverbaar` backwards-compatible. De Gallery-badgebar valt buiten de eerste implementatie en mag niet stilzwijgend dezelfde corner-positionering overnemen.
+Labels worden server-side via de gedeelde card-template getoond in Product Card Grid, Upsells en Related. Houd `Nieuw`, `PFAS-vrij` en `Niet meer leverbaar` backwards-compatible. De Gallery-badgebar gebruikt zijn eigen horizontale rij en neemt geen kaartposities over. Kaarten ondersteunen alle vier hoeken en onder de afbeelding. Regenerate Elementor CSS & Data is vereist na het wijzigen van de gegenereerde selectors voor afbeeldingsratio/-hoogte.
 
 De drie kaartwidgets gebruiken `WCPCE_Custom_Label_Controls` voor één identiek Elementor-stijlcontract. De trait mag uitsluitend `.wc-card__custom-label` en `.wc-card__labels` targeten. Breid deze selectors niet uit naar systeemlabels, prijs, gratis verzending of voorraadoutput. Per-label tekst/kleur/positie/prioriteit blijft taxonomydata; gedeelde typografie en vormgeving blijft widgetpresentatie.
 

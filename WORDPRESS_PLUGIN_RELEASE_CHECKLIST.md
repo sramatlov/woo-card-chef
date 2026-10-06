@@ -86,7 +86,7 @@ Gebruik bij voorkeur de installatiezip uit een geslaagde `main`-workflow. Voor e
 ```powershell
 python tools/build_wordpress_plugin_zip.py `
   --source-dir wc-product-card-elementor `
-  --destination-zip dist/woo-card-chef-v2.8.1-wordpress-install.zip `
+  --destination-zip dist/woo-card-chef-v2.9.0-wordpress-install.zip `
   --plugin-slug wc-product-card-elementor `
   --main-file wc-product-card-elementor.php
 ```

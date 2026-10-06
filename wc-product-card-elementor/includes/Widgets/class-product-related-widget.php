@@ -963,7 +963,7 @@ class WCPCE_Product_Related_Widget extends \Elementor\Widget_Base {
 					'16 / 9' => esc_html__( 'Wide', 'woo-card-chef' ),
 				),
 				'selectors' => array(
-					'{{WRAPPER}} .wc-card__media' => 'aspect-ratio: {{VALUE}};',
+					'{{WRAPPER}} .wc-card__media' => '--wcpce-image-ratio: {{VALUE}};',
 				),
 				'separator' => 'before',
 			)
@@ -980,7 +980,7 @@ class WCPCE_Product_Related_Widget extends \Elementor\Widget_Base {
 				),
 				'default'   => array( 'unit' => 'px', 'size' => 180 ),
 				'selectors' => array(
-					'{{WRAPPER}} .wc-card__media' => 'max-height: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .wc-card__media' => '--wcpce-image-max-height: {{SIZE}}{{UNIT}};',
 				),
 			)
 		);

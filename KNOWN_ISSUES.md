@@ -116,7 +116,7 @@ See the v1.0.84 KNOWN_ISSUES for full pre-v1.0.84 history. Summary of key resolu
 ## Intentional quirks — Product Card widget
 
 ### `position: absolute` on `.wc-card__badge` with no `position: relative` on its container
-Correct. Badge is positioned relative to `.wc-card__media`. Do not add `position: relative` to `.wc-card__badge`.
+Historical behaviour through 2.8.2. In 2.9.0 the shared label row owns corner placement and badges are static within their slot. Avoid reinstating absolute positioning or fixed custom-label offsets.
 
 ### `content_template()` is intentionally empty
 The Product Card widget declares `content_template(): void` with an empty body. This explicitly keeps the widget server-rendered in Elementor; do not add a second client-side template that can drift from `render()`.
@@ -256,8 +256,8 @@ Cosmetic only. Most widget/helper files contain a small number of CRLF lines wit
 ### PDP Gallery ignores the custom label's card-corner position
 Intentional. `wcpce_label_position` controls only Product Card Grid, Upsells and Related. The Gallery has one horizontal badgebar above or below the media and therefore renders custom labels after its system badges in priority order. This prevents one reusable label from needing a second, conflicting PDP position.
 
-### Product-label limit applies across both card corners
-Intentional. The Elementor limit (default 3, range 1-10) selects the highest-priority labels across the product first; the selected labels are then grouped into left/right stacks. This prevents assigning labels to both corners from silently doubling the configured maximum.
+### Product-label limit applies across all card positions
+Intentional. The Elementor limit (default 3, range 1-10) selects the highest-priority labels across the product first; the selected labels are then grouped into position stacks. This prevents assigning labels to multiple positions from silently doubling the configured maximum.
 
 ### Inactive product labels remain assigned
 Intentional. Turning a reusable label inactive hides it everywhere without destroying product relationships. Reactivating it restores the same assignments.
@@ -277,8 +277,8 @@ If some products fail `is_visible()` after the query, the grid shows fewer cards
 ### Lipscore stars colour (real recolouring not done)
 True hue change requires Lipscore dashboard configuration or fragile shadow DOM manipulation. Optional CSS-filter control (saturate/brightness) available since v1.0.79.1 for light tint adjustment.
 
-### Brand-specific hardcoded colours (action button, overlay link focus ring, pagination)
-`.wc-card__button`, `.wc-card__overlay-link` focus ring, and pagination defaults use hardcoded Bourgini green `#3EC26D`. Will require CSS overrides or Phase 7 Elementor controls when deploying to PrincessTraveller or BourginiFitness.
+### Brand-specific hardcoded overlay-link focus colour
+`.wc-card__overlay-link` focus ring still uses hardcoded Bourgini green `#3EC26D`. Product Card Grid action buttons are editable from Style > Action Button since v2.8.2, and pagination already has Style > Pagination colour controls.
 
 ### `.sr-only` CSS class may clash with theme styles
 `.sr-only` is generic. Future rename to `.wcpce-sr-only` considered; deferred because Hello theme does not style it and risk is minimal on current deployment.
@@ -341,3 +341,6 @@ Intentional. The widget uses WooCommerce stock status, existing `badge_niet_leve
 
 ### Variable-product free-shipping check is conservative
 Intentional. For variable products, the widget compares the threshold against the current/lowest display price first. If the product starts below the threshold, the widget shows the threshold line instead of claiming free shipping for the whole product family.
+
+### Dense corner labels can enlarge the image area (2.9.0)
+Intentional. When label rows exceed the preferred image height, the media grid grows to keep all labels visible. Use below-image for long campaign text and a small label limit to keep product photography clear. The normal cached Black Friday staging frontend was accepted on 6 October 2026. Other staging contexts and editor controls were not independently rechecked in that round.

@@ -60,6 +60,9 @@ jobs:
             php -l "$file"
           done
 
+      - name: Product label regression checks
+        run: php tools/test_product_label_layout.php
+
   code-quality:
     name: Security and PHP 7.4+ compatibility
     runs-on: ubuntu-latest
