@@ -268,3 +268,33 @@ De gebruiker heeft `wc-product-card-elementor.zip` aangewezen als de ZIP die liv
 Deze ronde was een read-only desktop-smoketest van de al geïnstalleerde plugin. De actuele PHP-runtime, admin/editor, WordPress-debuglog, mobiel/tablet, volledige filter-/pagineringmatrix en een nieuwe installatie/update zijn niet opnieuw gecontroleerd. De viewportoverride veranderde de effectieve browserbreedte niet en is hersteld; er wordt daarom geen mobiele acceptatie geclaimd. Een opnieuw gegenereerd Used CSS-blok is nog niet getest. De latere repositorycorrectie voegt alleen een translator-commentaar en compatibiliteitsmetadata toe en is niet op staging geïnstalleerd. Er zijn geen instellingen, plugins of productiegegevens gewijzigd.
 
 De bijgewerkte PR-bron is lokaal gecontroleerd met PHP 8.3.32: syntax van alle 24 PHP- en drie JavaScript-bestanden, Composer-configuratie en dependency-audit, WordPress-securitysniffs, PHP 7.4+-compatibiliteit, gerichte WordPress-i18n-controle van Category Navigation, de bestaande categorie-uitsluitingsregressietest en pluginmetadata slagen. Het Python-buildscript valideert de test-ZIP met één pluginroot, 47 entries (38 bestanden en negen mappen) en nul backslashpaden. PHP 7.4-syntax en de volledige WordPress Plugin Check worden afzonderlijk door de verplichte GitHub CI uitgevoerd.
+
+## 2026-10-06 — Local label-layout candidate 2.9.0-rc.1
+
+- PHP 8.3.35: all 25 plugin PHP files linted; WordPress security and PHP 7.4+ compatibility sniffs passed.
+- Standalone regression checks passed for all five positions, legacy/invalid-position fallback, global priority/limit, visibility toggle, discontinued-product suppression and text escaping. Existing category-exclusion regression checks also passed. The label checks now run in the CI PHP 7.4/8.3 matrix.
+- Chromium browser measurements of the actual card template with WordPress/WooCommerce stubs: 20 fixture cards at each viewport width 320, 390, 768 and 1280px (80 card renderings), zero label intersections, zero clipped labels and zero horizontal card overflow.
+- Fixtures include same/opposite corners, PFAS and stock, multiple labels, long unbroken text, large typography/padding and a 16:9 image with 120px cap. At a 260px card width the latter media height measured exactly 120px; dense rows grow instead of clipping.
+- Mobile comparison saved as dist/product-label-mobile.jpg. This local preview uses the shared template and the public product image; it is not a staging installation.
+- Metadata and canonical ZIP builder passed. Candidate: dist/woo-card-chef-v2.9.0-rc.1-wordpress-install.zip.
+- Still pending: WordPress installation/update, real Elementor editor/generated CSS, WP Rocket Used CSS regeneration and end-to-end Gallery/Upsells/Related acceptance on staging. Regenerate Elementor CSS & Data and clear caches after the update.
+
+
+## 2026-10-06 — Staging frontend acceptance: Black Friday labels
+
+The user reported the installed candidate working correctly. A subsequent read-only browser check of https://env-bourginicom-premium.kinsta.cloud/blackfriday/ confirmed the shared label-row markup and active grid sizing.
+
+- All 16 product cards, including both featured and full-deal grids, were measured at viewport widths 320, 390, 768 and 1440px. Nine custom labels were present at each width.
+- Across these 64 card renderings: zero badge/custom-label intersections, zero clipped badges or labels, zero horizontal card overflow, and zero page horizontal overflow.
+- The campaign labels currently use bottom-left; discount labels remain top-left. Desktop, mobile and tablet screenshots showed readable text and separate placement.
+- Evidence: dist/blackfriday-staging-mobile-2026-10-06.jpg and dist/blackfriday-staging-tablet-2026-10-06.jpg.
+- Scope: the current Black Friday frontend layout is accepted. This check does not cover all other selectable label positions, Elementor editor controls, Gallery, Upsells or Related on staging. No site settings, product data or plugin files were changed. The temporary viewport override was reset.
+
+
+## 2026-10-06 — Final release 2.9.0 promotion
+
+The maintainer approved promotion after the Black Friday staging check. Every plugin file was compared against the preserved 2.9.0-rc.1 ZIP; after normalizing the version string all files match. No runtime, stylesheet, control or template change was introduced during promotion.
+
+Local release checks passed: syntax for all 25 plugin PHP files with PHP 8.3.35, WordPress security sniffs, PHP 7.4+ compatibility sniffs, both standalone regression scripts, consistent 2.9.0 metadata and clean diff whitespace. CI separately checks PHP 7.4/8.3, Composer configuration/audit and WordPress Plugin Check.
+
+This promotion relies on the accepted candidate's targeted staging evidence above. Unchecked editor, debug-log and other widget scenarios remain explicitly outside that check; the final version has not been installed on production by this task.

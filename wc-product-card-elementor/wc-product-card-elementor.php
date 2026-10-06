@@ -3,7 +3,7 @@
  * Plugin Name:       Woo Card Chef
  * Plugin URI:        https://vaneekerenindustries.nl
  * Description:       Serving clean, customizable WooCommerce product cards, category navigation and PDP widgets in Elementor, with ACF-powered USPs, media, prices, badges and delivery status.
- * Version:           2.8.1
+ * Version:           2.9.0
  * Requires at least: 6.0
  * Tested up to:      7.1
  * Requires PHP:      7.4
@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants.
-define( 'WCPCE_VERSION', '2.8.1' );
+define( 'WCPCE_VERSION', '2.9.0' );
 define( 'WCPCE_PLUGIN_FILE', __FILE__ );
 define( 'WCPCE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WCPCE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

@@ -161,10 +161,25 @@ ul.products.wc-card-grid {
 
 /* ===== MEDIA ===== */
 .wc-card__media {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	grid-template-rows: auto minmax(0, 1fr) auto;
+	flex-shrink: 0;
 	position: relative;
 	background: #ffffff;
-	aspect-ratio: 1 / 1;
 	overflow: hidden;
+}
+
+/* The sizing cell supplies the preferred image height. Label rows may make
+   the grid taller without losing labels to a fixed ratio or maximum height. */
+.wc-card__media::before {
+	content: '';
+	grid-column: 1;
+	grid-row: 1 / 4;
+	width: 100%;
+	aspect-ratio: var(--wcpce-image-ratio, 1 / 1);
+	max-height: var(--wcpce-image-max-height, none);
+	pointer-events: none;
 }
 
 .wc-card__image {
@@ -220,9 +235,7 @@ ul.products.wc-card-grid {
 
 /* ===== BADGE ===== */
 .wc-card__badge {
-	position: absolute;
-	top: 12px;
-	left: 12px;
+	position: static;
 	background: #3EC26D;
 	color: #ffffff;
 	font-size: 13px;
@@ -238,12 +251,6 @@ ul.products.wc-card-grid {
 	line-height: 1.2;
 }
 
-/* Badge position modifier driven by prefix_class on the position select. */
-.wc-card-badge-pos-top-right .wc-card__badge {
-	left: auto;
-	right: 12px;
-}
-
 /* "Nieuw" badge — same position as discount badge (top-left) but Bourgini red.
    Only shows when no discount badge is active (priority logic in template). */
 .wc-card__badge--nieuw {
@@ -253,11 +260,6 @@ ul.products.wc-card-grid {
 /* PFAS-vrij badge — bottom-left, muted green with leaf icon.
    border-radius matches the sale/Nieuw badge (6px) for visual consistency. */
 .wc-card__badge--pfas {
-	/* top: auto overrides the inherited top: 12px from .wc-card__badge,
-	   allowing bottom: 8px to position this badge at the bottom-left corner. */
-	top: auto;
-	left: 8px;
-	bottom: 8px;
 	background: #57664d;
 	display: inline-flex;
 	align-items: center;
@@ -275,36 +277,72 @@ ul.products.wc-card-grid {
 	color: #ffffff;
 }
 
-/* Reusable taxonomy-backed product labels. Each corner is its own vertical
-   stack. The PHP renderer adds an offset only when the discount/Nieuw system
-   badge occupies the same corner. */
-.wc-card__labels {
-	position: absolute;
-	top: 12px;
+/* System badges and custom labels share flowing rows. Opposite corners wrap
+   onto separate lines when their intrinsic widths do not fit the card. */
+.wc-card__label-row {
+	grid-column: 1;
+	grid-row: 1;
+	position: relative;
 	z-index: 4;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	gap: 6px;
+	margin: 12px 12px 0;
+	pointer-events: none;
+}
+
+.wc-card__label-row--bottom {
+	grid-row: 3;
+	margin: 0 8px 8px;
+	padding-top: 6px;
+}
+
+.wc-card__label-slot {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 	gap: 6px;
-	max-width: calc(50% - 18px);
-	pointer-events: none;
+	width: max-content;
+	max-width: 100%;
+	min-width: 0;
 }
 
-.wc-card__labels--top-left {
-	left: 12px;
-}
-
-.wc-card__labels--top-right {
-	right: 12px;
+.wc-card__label-slot--top-right,
+.wc-card__label-slot--bottom-right {
+	margin-left: auto;
 	align-items: flex-end;
 }
 
-.wc-card__labels--single-position {
-	max-width: calc(100% - 24px);
+/* Keep existing Elementor typography/colour selectors intact; only placement
+   is owned by the shared row, including the stock and PFAS system badges. */
+.wc-card__label-slot > .wc-card__badge,
+.wc-card__label-slot > .wc-card__stock-label {
+	position: static;
+	max-width: 100%;
+	box-sizing: border-box;
+	white-space: normal;
+	overflow-wrap: anywhere;
 }
 
-.wc-card__labels--offset-system {
-	top: 48px;
+.wc-card__labels {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 6px;
+	max-width: 100%;
+	min-width: 0;
+	pointer-events: none;
+}
+
+.wc-card__label-slot--top-right .wc-card__labels,
+.wc-card__label-slot--bottom-right .wc-card__labels {
+	align-items: flex-end;
+}
+
+.wc-card__labels--below-image {
+	position: relative;
+	z-index: 4;
 }
 
 .wc-card__custom-label {
@@ -619,12 +657,9 @@ ul.products.wc-card-grid {
 	z-index: 4;
 }
 
-/* Stock label is position:absolute (defined below). It only needs z-index
-   elevation, not a position change. */
+/* Stock appearance; its bottom-right slot owns placement. */
 .wc-card__stock-label {
-	position: absolute;
-	right: 12px;
-	bottom: 12px;
+	position: static;
 	background: rgba(0, 0, 0, 0.62);
 	color: #ffffff;
 	font-size: 12px;
@@ -636,12 +671,7 @@ ul.products.wc-card-grid {
 	z-index: 4;
 }
 
-/* Note: the stock label always sits bottom-right regardless of the badge
-   position control. Earlier versions had a wc-card-badge-pos-top-right
-   .wc-card__stock-label rule that flipped the stock label to bottom-left
-   when the discount badge was set to top-right — an unintended side-effect.
-   Removed in v1.0.48 because the discount badge and the stock label live in
-   independent corners and shouldn't move together. */
+/* Stock remains in the bottom-right slot, independent of discount position. */
 
 .wc-card__actions {
 	margin-top: auto;
@@ -721,10 +751,6 @@ ul.products.wc-card-grid {
 
 	.wc-card__labels {
 		gap: 4px;
-	}
-
-	.wc-card__labels--offset-system {
-		top: 42px;
 	}
 
 	.wc-card__custom-label {

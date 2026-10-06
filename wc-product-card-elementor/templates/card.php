@@ -108,11 +108,14 @@ $show_badge_niet_leverbaar = $badge_state['show_niet_leverbaar'];
 
 // Reusable taxonomy-backed product labels. Commercial custom labels are hidden
 // when the permanent-unavailable overlay takes over, matching the existing
-// suppression of discount and Nieuw. The configured limit applies across both
+// suppression of discount and Nieuw. The configured limit applies across all
 // positions; priority determines which labels make the cut.
 $custom_labels_by_position = array(
-	'top-left'  => array(),
-	'top-right' => array(),
+	'top-left'     => array(),
+	'top-right'    => array(),
+	'bottom-left'  => array(),
+	'bottom-right' => array(),
+	'below-image'  => array(),
 );
 
 if ( ! $show_badge_niet_leverbaar && 'yes' === ( $settings['show_custom_labels'] ?? 'yes' ) && class_exists( 'WCPCE_Product_Labels' ) ) {
@@ -120,12 +123,11 @@ if ( ! $show_badge_niet_leverbaar && 'yes' === ( $settings['show_custom_labels']
 	$custom_labels      = WCPCE_Product_Labels::get_product_labels( $product_id, $custom_label_limit );
 
 	foreach ( $custom_labels as $custom_label ) {
-		$custom_position = 'top-right' === ( $custom_label['position'] ?? '' ) ? 'top-right' : 'top-left';
+		$custom_position = array_key_exists( $custom_label['position'] ?? '', $custom_labels_by_position ) ? $custom_label['position'] : 'top-left';
 		$custom_labels_by_position[ $custom_position ][] = $custom_label;
 	}
 }
 
-$custom_label_positions_used = count( array_filter( $custom_labels_by_position ) );
 $system_badge_position       = 'top-right' === ( $settings['badge_position'] ?? 'top-left' ) ? 'top-right' : 'top-left';
 $system_badge_visible        = $show_badge || $show_nieuw_badge_final;
 
@@ -240,36 +242,37 @@ $title_id = ! empty( $widget_id )
 
 	<div class="wc-card__media<?php echo $hover_swap_enabled ? ' wc-card__media--has-hover-swap' : ''; ?>">
 
-		<?php if ( $show_badge && ! empty( $badge_text ) ) : ?>
-			<span class="wc-card__badge" aria-label="<?php echo esc_attr( $badge_aria_label ); ?>"><?php echo esc_html( $badge_text ); ?></span>
-		<?php elseif ( $show_nieuw_badge_final ) : ?>
-			<span class="wc-card__badge wc-card__badge--nieuw"><?php echo esc_html( $label_nieuw ); ?></span>
-		<?php endif; ?>
-
-		<?php if ( $show_badge_pfas ) : ?>
-			<span class="wc-card__badge wc-card__badge--pfas">
-				<?php echo wp_kses( $leaf_icon, $allowed_svg ); ?>
-				<?php echo esc_html( $label_pfas ); ?>
-			</span>
-		<?php endif; ?>
-
-		<?php foreach ( $custom_labels_by_position as $custom_position => $position_labels ) : ?>
-			<?php if ( ! empty( $position_labels ) ) : ?>
-				<?php
-				$custom_stack_classes = array( 'wc-card__labels', 'wc-card__labels--' . $custom_position );
-				if ( 1 === $custom_label_positions_used ) {
-					$custom_stack_classes[] = 'wc-card__labels--single-position';
-				}
-				if ( $system_badge_visible && $system_badge_position === $custom_position ) {
-					$custom_stack_classes[] = 'wc-card__labels--offset-system';
-				}
-				?>
-				<div class="<?php echo esc_attr( implode( ' ', $custom_stack_classes ) ); ?>" role="group" aria-label="<?php esc_attr_e( 'Productlabels', 'woo-card-chef' ); ?>">
-					<?php foreach ( $position_labels as $custom_label ) : ?>
+		<?php foreach ( array( 'top', 'bottom' ) as $label_row ) : ?>
+			<?php
+			$left_position  = $label_row . '-left';
+			$right_position = $label_row . '-right';
+			$row_has_system = 'top' === $label_row ? $system_badge_visible : ( $show_badge_pfas || $show_stock_label );
+			?>
+			<?php if ( $row_has_system || $custom_labels_by_position[ $left_position ] || $custom_labels_by_position[ $right_position ] ) : ?>
+				<div class="wc-card__label-row wc-card__label-row--<?php echo esc_attr( $label_row ); ?>">
+					<?php foreach ( array( $left_position, $right_position ) as $custom_position ) : ?>
 						<?php
-						$custom_label_style = '--wcpce-label-bg:' . $custom_label['color'] . ';--wcpce-label-color:' . $custom_label['text_color'] . ';';
+						$slot_has_system = ( 'top' === $label_row && $system_badge_visible && $system_badge_position === $custom_position )
+							|| ( 'bottom-left' === $custom_position && $show_badge_pfas )
+							|| ( 'bottom-right' === $custom_position && $show_stock_label );
+						$position_labels = $custom_labels_by_position[ $custom_position ];
 						?>
-						<span class="wc-card__custom-label" style="<?php echo esc_attr( $custom_label_style ); ?>"><?php echo esc_html( $custom_label['text'] ); ?></span>
+						<?php if ( $slot_has_system || $position_labels ) : ?>
+							<div class="wc-card__label-slot wc-card__label-slot--<?php echo esc_attr( $custom_position ); ?>">
+								<?php if ( 'top' === $label_row && $slot_has_system ) : ?>
+									<?php if ( $show_badge && ! empty( $badge_text ) ) : ?>
+										<span class="wc-card__badge" aria-label="<?php echo esc_attr( $badge_aria_label ); ?>"><?php echo esc_html( $badge_text ); ?></span>
+									<?php elseif ( $show_nieuw_badge_final ) : ?>
+										<span class="wc-card__badge wc-card__badge--nieuw"><?php echo esc_html( $label_nieuw ); ?></span>
+									<?php endif; ?>
+								<?php elseif ( 'bottom-left' === $custom_position && $show_badge_pfas ) : ?>
+									<span class="wc-card__badge wc-card__badge--pfas"><?php echo wp_kses( $leaf_icon, $allowed_svg ); ?> <?php echo esc_html( $label_pfas ); ?></span>
+								<?php elseif ( 'bottom-right' === $custom_position && $show_stock_label ) : ?>
+									<span class="wc-card__stock-label"><?php echo esc_html( $out_of_stock_label ); ?></span>
+								<?php endif; ?>
+								<?php include __DIR__ . '/labels.php'; ?>
+							</div>
+						<?php endif; ?>
 					<?php endforeach; ?>
 				</div>
 			<?php endif; ?>
@@ -279,10 +282,6 @@ $title_id = ! empty( $widget_id )
 			<div class="wc-card__niet-leverbaar-overlay" aria-hidden="true">
 				<span class="wc-card__niet-leverbaar-label"><?php echo esc_html( $label_niet_leverbaar ); ?></span>
 			</div>
-		<?php endif; ?>
-
-		<?php if ( $show_stock_label ) : ?>
-			<span class="wc-card__stock-label"><?php echo esc_html( $out_of_stock_label ); ?></span>
 		<?php endif; ?>
 
 		<?php if ( $primary_image_id ) : ?>
@@ -356,6 +355,11 @@ $title_id = ! empty( $widget_id )
 	</div>
 
 	<div class="wc-card__body">
+		<?php
+		$custom_position = 'below-image';
+		$position_labels = $custom_labels_by_position[ $custom_position ];
+		include __DIR__ . '/labels.php';
+		?>
 
 		<h3 class="wc-card__title" id="<?php echo esc_attr( $title_id ); ?>"><?php echo esc_html( $card_title ); ?></h3>
 

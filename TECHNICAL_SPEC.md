@@ -82,7 +82,7 @@ wc-product-card-elementor/
 ## Constants
 
 ```php
-WCPCE_VERSION       // current release: '2.8.1'
+WCPCE_VERSION       // current release: '2.9.0'
 WCPCE_PLUGIN_FILE   // __FILE__ of main plugin file
 WCPCE_PLUGIN_DIR    // plugin_dir_path()
 WCPCE_PLUGIN_URL    // plugin_dir_url()
@@ -110,7 +110,7 @@ Content controls cover heading/tag, automatic or custom shop link, category repe
 |---|---|---|
 | Text | Taxonomy term name | Sanitised and limited to 60 characters when created inline |
 | Background colour | `wcpce_label_color` term meta | Six-digit hex; defaults to `#B4211C` |
-| Position | `wcpce_label_position` term meta | `top-left` or `top-right` |
+| Position | `wcpce_label_position` term meta | `top-left`, `top-right`, `bottom-left`, `bottom-right`, `below-image` |
 | Priority | `wcpce_label_priority` term meta | Integer 0-999; lower renders first |
 | Active | `wcpce_label_active` term meta | Inactive terms stay assigned but do not render |
 | Visible from | `wcpce_label_visible_from` term meta | Optional site-local `Y-m-d H:i:s`; start minute is inclusive |
@@ -374,7 +374,7 @@ Single `initAccordion(accordionEl)` helper guards on the `.wcpce-accordion` elem
 
 ## Product Card widget
 
-The widget file moved from `includes/class-product-card-widget.php` to `includes/Widgets/class-product-card-widget.php` in v2.0.0. Its widget name remains `wc_product_card`. Since v2.5.0 the render loop delegates sprite/card rendering to `WCPCE_Card_Renderer`. In v2.6.9 Auto mode's empty frontend state was corrected so shoppers see the configured customer-facing message while technical query guidance remains limited to Elementor editor/preview. Since v2.7.1 the shared card template can render reusable product labels, controlled by `show_custom_labels` and `custom_label_limit`.
+The widget file moved from `includes/class-product-card-widget.php` to `includes/Widgets/class-product-card-widget.php` in v2.0.0. Its widget name remains `wc_product_card`. Since v2.5.0 the render loop delegates sprite/card rendering to `WCPCE_Card_Renderer`. In v2.6.9 Auto mode's empty frontend state was corrected so shoppers see the configured customer-facing message while technical query guidance remains limited to Elementor editor/preview. Since v2.7.1 the shared card template can render reusable product labels, controlled by `show_custom_labels` and `custom_label_limit`. Since v2.8.2 the optional action button has a dedicated Style tab section for typography, normal/hover colours, padding, minimum height, border width, radius and shadow.
 
 The `exclude_categories` Select2 control is available in both Auto and Manual mode and excludes the complete selected category branches through a `product_cat NOT IN` tax clause. The exclusion picker includes empty categories so an empty parent with populated descendants remains selectable. `sanitize_category_ids()` accepts scalar or array input, keeps unique positive IDs and caps the selection at 200 terms. Manual mode adds the shared clause to its existing custom query and the editor fallback applies it as well.
 
@@ -454,7 +454,7 @@ Same control surface as Product Upsells: heading + heading tag, maximum products
 
 **Product Card:** `product-card.css`. BEM `.wc-card__*`. Unchanged.
 
-Reusable labels use `.wc-card__labels`, position modifiers `.wc-card__labels--top-left` / `--top-right`, and `.wc-card__custom-label`. One active corner may use the full media width; two active corners each receive a bounded half-width stack. The custom background/text colours are passed as sanitised CSS custom properties. Mobile uses smaller padding, type and stack gaps.
+Reusable labels use `.wc-card__labels`, position modifiers `.wc-card__labels--top-left` / `--top-right`, and `.wc-card__custom-label`. Corner stacks share flowing rows with system badges; opposite corners move onto separate lines when their intrinsic widths do not fit. A below-image stack lives in the card body before the title. The custom background/text colours are passed as sanitised CSS custom properties. Mobile uses smaller padding, type and stack gaps.
 
 **PDP Gallery:** `product-gallery.css`. BEM `.wcpce-gallery__*`. Key rules:
 - No `isolation: isolate` on the gallery wrapper (lightbox must escape to viewport).
@@ -491,3 +491,9 @@ Auto mode works natively. Three manual WBW settings required:
 3. Force Theme Templates → on
 
 The WBW / Elementor Pro sticky header conflict is resolved outside the plugin with `position: sticky` on the Bourgini header template. The plugin ships no sticky-related code.
+
+## Card label layout (2.9.0)
+
+The shared card template groups corner content into top/bottom rows with left/right slots. Discount/Nieuw, PFAS and stock badges lead their respective slot; custom stacks use templates/labels.php. Flex wrapping uses actual available card width, including Elementor padding and typography, rather than a viewport breakpoint or a fixed system-badge offset. The below-image position is normal body content before the title. The label limit and priority apply across all five positions. Gallery badgebar behaviour remains independent of card positioning.
+
+A spanning grid sizing cell sets the preferred image ratio and maximum height through --wcpce-image-ratio and --wcpce-image-max-height. Existing Elementor control keys/settings are retained in Grid, Upsells and Related; generated selectors now set these variables. Dense rows can increase media height to avoid clipping. Regenerate Elementor CSS & Data and clear Used CSS/page caches after the update so stored generated CSS uses the new selectors.

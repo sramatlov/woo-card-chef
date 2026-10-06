@@ -368,3 +368,7 @@ The WBW / Elementor Pro sticky header conflict is resolved with native CSS `posi
 **Originally chose:** Defer Phase 6 until there was capacity and a clear content brief.
 **Why at the time:** The Accordion widget covers product description, specs, FAQ, and manuals — content that required editorial decisions (what sections, what order, what content model) before the widget scope could be defined.
 **Status:** Superseded. The content brief was completed and the Product Accordion shipped in v2.4.0, followed by progressive-enhancement hardening in v2.4.1 and manual fallback matching in v2.6.8. The historical decision remains here to explain the roadmap sequence; it is no longer an active constraint.
+
+## 2026-10-06 — Flowing badge rows (2.9.0-rc.1)
+
+Use shared top/bottom rows with left/right slots, rather than independent absolute overlays and fixed offsets. This fixes collisions between opposite corners on narrow cards and between labels with configurable typography. Keep content positions on the reusable taxonomy label, preserve system badge priority, and offer below-image for longer campaign text. A grid sizing cell preserves preferred image proportions while allowing dense rows to grow. No frontend JavaScript or duplicate labels are needed.
