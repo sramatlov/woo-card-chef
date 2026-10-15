@@ -4,7 +4,7 @@ Tags: woocommerce, elementor, product card, archive, category, lipscore, acf
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.9.0
+Stable tag: 2.9.1
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Requires Plugins: woocommerce, elementor
@@ -141,6 +141,9 @@ Check the "Minimum discount percentage" setting in the Discount Badge controls. 
 Yes. The plugin is generic and only its defaults are tuned to a specific brand palette. Install it on any shop and override colors via the Elementor controls.
 
 == Changelog ==
+
+= 2.9.1 =
+* Fix "Sale products only" in Product Card Grid showing products whose sale has expired. Each candidate from WooCommerce's on-sale list is now re-checked live (is_on_sale() and a positive discount) before the limit and pagination are applied, so stale entries left behind by a missed wc_scheduled_sales run no longer appear and the grid still fills to the configured count.
 
 = 2.9.0 =
 * Add bottom-left, bottom-right and below-image reusable-label positions across label creation, editing and admin summaries.
