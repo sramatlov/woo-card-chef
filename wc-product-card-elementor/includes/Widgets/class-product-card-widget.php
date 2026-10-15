@@ -1411,7 +1411,7 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 	/**
 	 * Style tab: optional action button appearance.
 	 *
-	 * @since 2.8.2
+	 * @since 2.9.0
 	 * @return void
 	 */
 	private function register_action_button_style_controls(): void {
@@ -2293,6 +2293,48 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 	}
 
 	/**
+	 * Returns IDs of parent products that are verifiably on sale right now.
+	 *
+	 * wc_get_product_ids_on_sale() reads wc_product_meta_lookup plus a 30-day
+	 * transient, so products whose sale expired keep appearing when the daily
+	 * wc_scheduled_sales cron misses a run. Each candidate is re-checked live with
+	 * the same rule the card uses (is_on_sale() AND a positive discount), before
+	 * WP_Query applies the limit and pagination, so the grid still fills up.
+	 *
+	 * @since 2.9.1
+	 * @return int[]
+	 */
+	private function get_verified_sale_product_ids(): array {
+		$candidate_ids = array_map( 'absint', wc_get_product_ids_on_sale() );
+		if ( empty( $candidate_ids ) ) {
+			return array();
+		}
+
+		_prime_post_caches( $candidate_ids, false, true );
+
+		$verified = array();
+		foreach ( $candidate_ids as $product_id ) {
+			// Variations are listed alongside their parent; the grid only queries
+			// parent products, so skip them to save the price calculation.
+			if ( 'product' !== get_post_type( $product_id ) ) {
+				continue;
+			}
+
+			$product = wc_get_product( $product_id );
+			if ( ! $product || ! $product->is_on_sale() ) {
+				continue;
+			}
+
+			$prices = WCPCE_Price_Helper::get_product_price_data( $product );
+			if ( $prices['discount_percent'] > 0 ) {
+				$verified[] = $product_id;
+			}
+		}
+
+		return $verified;
+	}
+
+	/**
 	 * Runs a custom query based on the manual-source widget settings.
 	 *
 	 * When pagination is enabled, no_found_rows is set to false so WP_Query
@@ -2382,7 +2424,7 @@ class WC_Product_Card_Elementor_Widget extends \Elementor\Widget_Base {
 
 		// Q1: Sale only filter — restrict to products currently on sale.
 		if ( 'yes' === ( $settings['filter_sale_only'] ?? '' ) ) {
-			$sale_ids = wc_get_product_ids_on_sale();
+			$sale_ids = $this->get_verified_sale_product_ids();
 			if ( empty( $sale_ids ) ) {
 				// No products on sale: bail before running the query.
 				return array( 'products' => array(), 'max_num_pages' => 1, 'paged' => $paged );
