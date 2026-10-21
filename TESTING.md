@@ -2,6 +2,22 @@
 
 Woo Card Chef heeft nog geen PHPUnit-, browser- of visual-regression-suite. De repository automatiseert wel PHP-syntax, securitysniffs, PHP-compatibiliteit, dependency-audit, WordPress Plugin Check, metadata en ZIP-validatie. Iedere gedragswijziging vereist daarnaast gerichte widgettests en een staging smoke test.
 
+## 2026-10-21 — Private REST candidate 2.10.0-rc.1
+
+Local PHP 8.3.32 checks pass: all 27 plugin PHP files and the new test script lint; Composer strict validation and locked audit, WordPress security sniffs and PHP 7.4+ compatibility checks pass. The existing product-label and category-exclusion regressions pass. The private REST contract suite passes 130 assertions using captured real plugin ACF definitions and explicit WordPress/ACF persistence doubles; the workflow runs it in the PHP 7.4/8.3 matrix.
+
+The contracts cover every route's permission callbacks for anonymous/customer/editor/shop-manager accounts, product-specific rights, private responses, schema availability, all label settings, inclusive end minutes, invalid/DST planning, safe HTML, duplicate creation, complete hidden assignments, partial updates, first field references, repeaters shrinking/clearing, media/PDF types, native/custom nested validation, validation-before-write, absent ACF/Pro, no-op writes, quotes/backslashes, update-filter normalization/deletion, failed child writes with unchanged row counts and request-cache invalidation. These are contract regressions, not a real WordPress REST dispatch or ACF Pro installation test.
+
+```powershell
+php tools/test_rest_api.php
+php tools/test_product_label_layout.php
+php tools/test_product_card_category_exclusion.php
+```
+
+The candidate uses the canonical Python ZIP builder and metadata validator. The ZIP contains the client contract and executable curl/PowerShell examples in `wc-product-card-elementor/REST-API.md`. Compare ZIP entries against the current source before sharing. Frontend widget/helper/template/asset files are unchanged from stable 2.9.1 source.
+
+Pending user-operated staging acceptance: installation/update; actual HTTP authentication/dispatch including HEAD/OPTIONS/embeds and denied writes; real ACF Pro nested persistence and editor round trips; additional site-level form hooks; WooCommerce save events, WP Rocket/Kinsta/CDN/cache coverage; frontend/editor/device smoke matrix. No site was accessed or installed by this task. Do not promote this candidate to a stable release until acceptance.
+
 ## 1. PHP-syntaxcontrole
 
 Voer vanuit de projectroot uit:

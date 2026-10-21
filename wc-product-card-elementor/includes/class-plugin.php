@@ -49,6 +49,9 @@ final class WC_Product_Card_Elementor_Plugin {
 		// the product-editor management UI and the frontend label data contract.
 		require_once WCPCE_PLUGIN_DIR . 'includes/class-product-labels.php';
 		WCPCE_Product_Labels::register();
+		require_once WCPCE_PLUGIN_DIR . 'includes/class-product-fields.php';
+		require_once WCPCE_PLUGIN_DIR . 'includes/class-rest-api.php';
+		add_action( 'rest_api_init', array( 'WCPCE_REST_API', 'register_routes' ) );
 		require_once WCPCE_PLUGIN_DIR . 'includes/Traits/trait-custom-label-controls.php';
 
 		// Load shared helper classes. These are stateless static utilities used by

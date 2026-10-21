@@ -140,3 +140,8 @@ Een wijziging is klaar wanneer:
 - Site-specifieke WBW/Elementor sticky-headercorrecties.
 - Een eigen analyticsdashboard.
 - Exacte verzendkosten, kalendergestuurde leverdatums of countdown-urgentie.
+
+
+## Private REST development (2.10.0-rc.1)
+
+Run `php tools/test_rest_api.php` alongside the existing label/category regressions. These contracts use captured local ACF field definitions and persistence doubles; they do not establish WordPress/ACF Pro/site-hook acceptance. The CI syntax matrix runs the new script on PHP 7.4 and 8.3. Keep the REST field-key allowlist synchronized with owned registrations, derive limits from definitions, and do not expose dynamic data in generic route schemas. See `wc-product-card-elementor/REST-API.md` for the client contract and staging matrix.

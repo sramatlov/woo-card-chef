@@ -264,3 +264,15 @@
 ## Label positions (2.9.0)
 
 below-image: custom label stack in the card body before its title. Corner slots share system/custom label rows and wrap based on card width. Image sizing uses --wcpce-image-ratio and --wcpce-image-max-height while retaining existing Elementor control keys.
+
+
+## Private REST management (2.10.0-rc.1)
+
+| Term | Meaning |
+|---|---|
+| **wcpce/v1** | Private management namespace; labels, product plugin fields/assignments and field schema. |
+| **WCPCE_REST_API** | WordPress-authenticated controllers with explicit administrator/WooCommerce/product capability checks. |
+| **WCPCE_Product_Fields** | Allowlisted ACF definition, validation, JSON mapping and persistence adapter. |
+| **PATCH list replacement** | Only supplied properties change; an offered repeater/label list replaces its complete previous value. |
+| **ACF field reference** | The field-key metadata ACF needs to interpret a value, including its first save and repeater children. |
+| **2.10.0-rc.1** | REST staging candidate based on stable 2.9.1 source; no frontend change or migration, staging acceptance pending. |

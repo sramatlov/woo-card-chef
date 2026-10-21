@@ -1,6 +1,8 @@
 # Roadmap - Woo Card Chef
 
-## Current release: 2.9.0
+## Current candidate: 2.10.0-rc.1 — private REST management
+
+Last stable source: 2.9.1. Staging acceptance of this candidate is pending.
 
 ---
 
@@ -87,7 +89,7 @@ De resterende roadmap is bewust smal gehouden. Er worden geen nieuwe PDP widgets
 - Editors kunnen typografie, normale en hover/focus-kleuren, padding, minimale hoogte, border width, radius en shadow instellen.
 - De Bourgini-defaults blijven gelijk; Elementor selectors gebruiken `!important` op kleur/background/border zodat WooCommerce- en themabuttonregels niet winnen.
 
-### v2.9.0 - Accessibility cleanup - Gepland
+### vNext - Accessibility cleanup - Gepland
 
 Doel: de bestaande toegankelijkheidsbasis opschonen en naamconflicten met themes voorkomen, zonder visuele of functionele herbouw.
 
@@ -104,7 +106,7 @@ Acceptatiecriteria:
 - bestaande frontend output blijft visueel gelijk;
 - gallery, accordion en product cards blijven toetsenbordbedienbaar.
 
-### v2.10.0 - Analytics foundation - Gepland
+### vNext - Analytics foundation - Gepland
 
 Doel: een lichte, opt-in meetlaag toevoegen voor bestaande widgets, zodat interacties meetbaar worden zonder harde afhankelijkheid van GA4, GTM of een specifieke datalayer.
 
@@ -708,8 +710,8 @@ Alternatieven en aanvullende producten duidelijk tonen zonder de primaire koopac
 
 De actieve roadmap bestaat vanaf v2.8.2 uit:
 
-1. `v2.9.0 - Accessibility cleanup`
-2. `v2.10.0 - Analytics foundation`
+1. `vNext - Accessibility cleanup`
+2. `vNext - Analytics foundation`
 3. `Future - Product labels vervolg` (alleen bij concrete behoefte)
 
 Andere richtingen in dit document zijn historie, afgeronde fases, bewuste descopes of later opnieuw te beoordelen ideeen. Ze vormen geen actieve roadmap.
@@ -740,3 +742,8 @@ Andere richtingen in dit document zijn historie, afgeronde fases, bewuste descop
 ## v2.9.0 — Product label layout — Voltooid
 
 Vijf posities voor herbruikbare labels; gedeelde rijen voor systeemlabels en custom labels; afbeeldingshoogte past zich aan volle labelrijen aan. De kandidaat is op 6 oktober 2026 door de gebruiker geaccepteerd op staging. De frontendcontrole dekt 16 kaarten op 320, 390, 768 en 1440px zonder overlap, clipping of horizontale overflow. De definitieve release wijzigt alleen versiegegevens en documentatie ten opzichte van de geaccepteerde kandidaat.
+
+
+## v2.10.0-rc.1 — Private REST management — Candidate
+
+Add administrator-only REST management for complete reusable-label definitions, product assignments and plugin-owned ACF fields, plus a private schema endpoint. Reuse existing storage models and field validators, preserve partial-update semantics and finish product writes through the WP/WooCommerce lifecycle. No frontend or data-model migration. FAQ, Elementor settings and scheduled external cache purges remain outside this scope. Local regressions/quality/ZIP checks are recorded in TESTING.md; user-operated staging installation and acceptance are pending.

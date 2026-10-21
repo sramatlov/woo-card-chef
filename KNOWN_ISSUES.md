@@ -344,3 +344,12 @@ Intentional. For variable products, the widget compares the threshold against th
 
 ### Dense corner labels can enlarge the image area (2.9.0)
 Intentional. When label rows exceed the preferred image height, the media grid grows to keep all labels visible. Use below-image for long campaign text and a small label limit to keep product photography clear. The normal cached Black Friday staging frontend was accepted on 6 October 2026. Other staging contexts and editor controls were not independently rechecked in that round.
+
+
+## Private REST candidate (2.10.0-rc.1)
+
+- Installation/update, real WordPress REST dispatch/authentication, installed ACF Pro persistence and external site filters/cache integration still require staging acceptance. Standalone contracts exercise real local field definitions with WordPress/ACF persistence doubles.
+- PATCH arrays replace complete lists. There is no concurrent-write lock/version contract and no cross-hook database transaction. On a storage failure the API returns 500 and the client must reread state before retrying; earlier writes may have persisted.
+- ACF form-level handlers that require admin POST/nonces are not replayed. Field-level validators/update filters are reused. Site-specific form hooks may need an explicit adapter.
+- The original wp/v2 label route remains absent. New API access intentionally excludes shop managers without manage_options, while existing wp-admin rights are unchanged.
+- Existing full-page-cache schedule limitations remain. Changing a reusable label does not trigger saves for every linked product or a full hosting/CDN purge.

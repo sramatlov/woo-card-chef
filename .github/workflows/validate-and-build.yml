@@ -63,6 +63,9 @@ jobs:
       - name: Product label regression checks
         run: php tools/test_product_label_layout.php
 
+      - name: Private REST contract regression checks
+        run: php tools/test_rest_api.php
+
   code-quality:
     name: Security and PHP 7.4+ compatibility
     runs-on: ubuntu-latest

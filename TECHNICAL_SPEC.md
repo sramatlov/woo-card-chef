@@ -82,7 +82,7 @@ wc-product-card-elementor/
 ## Constants
 
 ```php
-WCPCE_VERSION       // current release: '2.9.0'
+WCPCE_VERSION       // current candidate: '2.10.0-rc.1'
 WCPCE_PLUGIN_FILE   // __FILE__ of main plugin file
 WCPCE_PLUGIN_DIR    // plugin_dir_path()
 WCPCE_PLUGIN_URL    // plugin_dir_url()
@@ -497,3 +497,16 @@ The WBW / Elementor Pro sticky header conflict is resolved outside the plugin wi
 The shared card template groups corner content into top/bottom rows with left/right slots. Discount/Nieuw, PFAS and stock badges lead their respective slot; custom stacks use templates/labels.php. Flex wrapping uses actual available card width, including Elementor padding and typography, rather than a viewport breakpoint or a fixed system-badge offset. The below-image position is normal body content before the title. The label limit and priority apply across all five positions. Gallery badgebar behaviour remains independent of card positioning.
 
 A spanning grid sizing cell sets the preferred image ratio and maximum height through --wcpce-image-ratio and --wcpce-image-max-height. Existing Elementor control keys/settings are retained in Grid, Upsells and Related; generated selectors now set these variables. Dense rows can increase media height to avoid clipping. Regenerate Elementor CSS & Data and clear Used CSS/page caches after the update so stored generated CSS uses the new selectors.
+
+
+## Private management REST API (2.10.0-rc.1)
+
+`WCPCE_REST_API` registers `wcpce/v1` routes on `rest_api_init`. All data permissions require `manage_options` and `manage_woocommerce`; product permissions also require `edit_post`. Product IDs are read from URL parameters. Taxonomy `show_in_rest` stays false. No properties are added to core/WooCommerce/Store API responses. Generic discovery contains only static route arguments; dynamic field availability/sitezone is returned only by the protected schema callback. Default batch opt-in is absent.
+
+`WCPCE_Product_Fields` allowlists eleven top-level field names/keys and obtains definitions from ACF after local registration. It maps API row names to ACF subfield keys, validates the entire supplied payload before any write, scopes/restores ACF validation state and invokes native field validation (including repeater children and installed value-validation filters). External form-level POST hooks are not synthesized. Unavailable fields are omitted from management values and reported in schema availability, never fabricated as empty repeaters.
+
+Writes use ACF field keys with WordPress-slashing semantics. A scoped `acf/pre_update_metadata` observer verifies the resulting metadata and references after native update filters, including child writes whose parent row count did not change. The observer is always removed in finally; no-op metadata returns are not automatically errors. REST input lists replace the whole list; omitted properties are preserved. After field/relationship persistence, a reloaded WooCommerce product receives an explicit modified-date change and a normal save. Plugin query and request-local label caches are invalidated even after a partial persistence error. No cross-hook database transaction or concurrency protocol is claimed.
+
+`WCPCE_Product_Labels::save_settings()` and `assign_labels()` are shared with admin storage, preserving the existing normalizers and taxonomy. `get_definition()` reads management state independently of frontend scheduling/limits; `clear_cache()` and badge-meta hooks cover same-request read-after-write. A label settings change does not resave every associated product. Native external caches must be verified on staging; no full-domain purge or schedule cron is introduced.
+
+See [REST-API.md](wc-product-card-elementor/REST-API.md) for routes, schema and executable examples. The canonical installation ZIP includes that document. Frontend templates/assets/widget controls are untouched.
