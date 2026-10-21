@@ -67,9 +67,87 @@ final class WCPCE_Product_Labels {
 		add_action( 'created_' . self::TAXONOMY, array( self::class, 'save_term_fields' ) );
 		add_action( 'edited_' . self::TAXONOMY, array( self::class, 'save_term_fields' ) );
 		add_action( 'save_post_product', array( self::class, 'save_product_labels' ), 20, 2 );
+		add_action( 'updated_post_meta', array( self::class, 'invalidate_meta_cache' ), 10, 3 );
+		add_action( 'added_post_meta', array( self::class, 'invalidate_meta_cache' ), 10, 3 );
+		add_action( 'deleted_post_meta', array( self::class, 'invalidate_meta_cache' ), 10, 3 );
 
 		add_filter( 'manage_edit-' . self::TAXONOMY . '_columns', array( self::class, 'register_admin_columns' ) );
 		add_filter( 'manage_' . self::TAXONOMY . '_custom_column', array( self::class, 'render_admin_column' ), 10, 3 );
+	}
+
+	/** Clears the request-local label cache after an owning product changes. */
+	public static function clear_cache( int $product_id = 0 ): void {
+		if ( $product_id > 0 ) {
+			unset( self::$visible_label_cache[ $product_id ] );
+		} else {
+			self::$visible_label_cache = array();
+		}
+	}
+
+	/** Keeps read-after-write correct when ACF or another writer changes badges. */
+	public static function invalidate_meta_cache( $meta_id, int $product_id, string $key ): void {
+		if ( in_array( $key, array( 'badge_nieuw', 'badge_pfas_vrij', 'badge_niet_leverbaar' ), true ) ) {
+			self::clear_cache( $product_id );
+		}
+	}
+
+	/** Returns management data, without frontend visibility filters or limits. */
+	public static function get_definition( \WP_Term $term ): array {
+		return array(
+			'id'            => (int) $term->term_id,
+			'name'          => $term->name,
+			'color'         => self::get_term_color( $term->term_id ),
+			'position'      => self::get_term_position( $term->term_id ),
+			'priority'      => self::get_term_priority( $term->term_id ),
+			'active'        => self::is_term_active( $term->term_id ),
+			'visible_from'  => self::get_term_datetime_input_value( $term->term_id, self::META_VISIBLE_FROM ),
+			'visible_until' => self::get_term_datetime_input_value( $term->term_id, self::META_VISIBLE_UNTIL ),
+			'pdp_details'   => self::get_term_pdp_details( $term->term_id ),
+		);
+	}
+
+	/**
+	 * Saves only supplied settings through the same normalizers for admin and REST.
+	 * False means an actual persistence mismatch, not an unchanged meta value.
+	 */
+	public static function save_settings( int $term_id, array $settings ): bool {
+		$values = array();
+		foreach ( $settings as $key => $value ) {
+			switch ( $key ) {
+				case 'color': $values[ self::META_COLOR ] = self::sanitise_color( $value ); break;
+				case 'position': $values[ self::META_POSITION ] = self::sanitise_position( $value ); break;
+				case 'priority': $values[ self::META_PRIORITY ] = self::sanitise_priority( $value ); break;
+				case 'active': $values[ self::META_ACTIVE ] = $value ? '1' : '0'; break;
+				case 'visible_from': $values[ self::META_VISIBLE_FROM ] = self::sanitise_datetime_local( $value, false ); break;
+				case 'visible_until': $values[ self::META_VISIBLE_UNTIL ] = self::sanitise_datetime_local( $value, true ); break;
+				case 'pdp_details': $values[ self::META_PDP_DETAILS ] = self::sanitise_pdp_details( $value ); break;
+			}
+		}
+		$success = true;
+		foreach ( $values as $meta_key => $value ) {
+			if ( in_array( $meta_key, array( self::META_VISIBLE_FROM, self::META_VISIBLE_UNTIL, self::META_PDP_DETAILS ), true ) ) {
+				self::update_optional_term_meta( $term_id, $meta_key, (string) $value );
+			} else {
+				update_term_meta( $term_id, $meta_key, wp_slash( $value ) );
+			}
+			$success = ( (string) get_term_meta( $term_id, $meta_key, true ) === (string) $value ) && $success;
+		}
+		self::clear_cache();
+		return $success;
+	}
+
+	/** Assigns validated existing label IDs; reports storage failures to callers. */
+	public static function assign_labels( int $product_id, array $ids ): bool {
+		$ids = array_values( array_unique( array_map( 'absint', $ids ) ) );
+		$result = wp_set_object_terms( $product_id, $ids, self::TAXONOMY, false );
+		self::clear_cache( $product_id );
+		if ( is_wp_error( $result ) ) { return false; }
+		$actual = wp_get_object_terms( $product_id, self::TAXONOMY, array( 'fields' => 'ids' ) );
+		if ( is_wp_error( $actual ) ) { return false; }
+		$actual = array_map( 'intval', $actual );
+		sort( $actual );
+		sort( $ids );
+		return $actual === $ids;
 	}
 
 	/**
@@ -273,18 +351,15 @@ final class WCPCE_Product_Labels {
 		$position = isset( $_POST['wcpce_label_position'] ) ? self::sanitise_position( sanitize_key( wp_unslash( $_POST['wcpce_label_position'] ) ) ) : 'top-left';
 		$priority = isset( $_POST['wcpce_label_priority'] ) ? self::sanitise_priority( absint( wp_unslash( $_POST['wcpce_label_priority'] ) ) ) : 10;
 		$active   = isset( $_POST['wcpce_label_active'] ) ? '1' : '0';
-		$visible_from  = isset( $_POST['wcpce_label_visible_from'] ) ? self::sanitise_datetime_local( sanitize_text_field( wp_unslash( $_POST['wcpce_label_visible_from'] ) ), false ) : '';
-		$visible_until = isset( $_POST['wcpce_label_visible_until'] ) ? self::sanitise_datetime_local( sanitize_text_field( wp_unslash( $_POST['wcpce_label_visible_until'] ) ), true ) : '';
+		$visible_from  = isset( $_POST['wcpce_label_visible_from'] ) ? sanitize_text_field( wp_unslash( $_POST['wcpce_label_visible_from'] ) ) : '';
+		$visible_until = isset( $_POST['wcpce_label_visible_until'] ) ? sanitize_text_field( wp_unslash( $_POST['wcpce_label_visible_until'] ) ) : '';
 		$pdp_details   = isset( $_POST['wcpce_label_pdp_details'] ) ? trim( wp_kses_post( wp_unslash( $_POST['wcpce_label_pdp_details'] ) ) ) : '';
 
-		update_term_meta( $term_id, self::META_COLOR, $color );
-		update_term_meta( $term_id, self::META_POSITION, $position );
-		update_term_meta( $term_id, self::META_PRIORITY, $priority );
-		update_term_meta( $term_id, self::META_ACTIVE, $active );
-		self::update_optional_term_meta( $term_id, self::META_VISIBLE_FROM, $visible_from );
-		self::update_optional_term_meta( $term_id, self::META_VISIBLE_UNTIL, $visible_until );
-		self::update_optional_term_meta( $term_id, self::META_PDP_DETAILS, $pdp_details );
-		self::$visible_label_cache = array();
+		self::save_settings( $term_id, array(
+			'color' => $color, 'position' => $position, 'priority' => $priority,
+			'active' => '1' === $active, 'visible_from' => $visible_from,
+			'visible_until' => $visible_until, 'pdp_details' => $pdp_details,
+		) );
 	}
 
 	/**
@@ -418,24 +493,21 @@ final class WCPCE_Product_Labels {
 				$color       = isset( $_POST['wcpce_new_label_color'] ) ? self::sanitise_color( sanitize_hex_color( wp_unslash( $_POST['wcpce_new_label_color'] ) ) ) : self::DEFAULT_COLOR;
 				$position    = isset( $_POST['wcpce_new_label_position'] ) ? self::sanitise_position( sanitize_key( wp_unslash( $_POST['wcpce_new_label_position'] ) ) ) : 'top-left';
 				$priority    = isset( $_POST['wcpce_new_label_priority'] ) ? self::sanitise_priority( absint( wp_unslash( $_POST['wcpce_new_label_priority'] ) ) ) : 10;
-				$visible_from  = isset( $_POST['wcpce_new_label_visible_from'] ) ? self::sanitise_datetime_local( sanitize_text_field( wp_unslash( $_POST['wcpce_new_label_visible_from'] ) ), false ) : '';
-				$visible_until = isset( $_POST['wcpce_new_label_visible_until'] ) ? self::sanitise_datetime_local( sanitize_text_field( wp_unslash( $_POST['wcpce_new_label_visible_until'] ) ), true ) : '';
+				$visible_from  = isset( $_POST['wcpce_new_label_visible_from'] ) ? sanitize_text_field( wp_unslash( $_POST['wcpce_new_label_visible_from'] ) ) : '';
+				$visible_until = isset( $_POST['wcpce_new_label_visible_until'] ) ? sanitize_text_field( wp_unslash( $_POST['wcpce_new_label_visible_until'] ) ) : '';
 				$pdp_details   = isset( $_POST['wcpce_new_label_pdp_details'] ) ? trim( wp_kses_post( wp_unslash( $_POST['wcpce_new_label_pdp_details'] ) ) ) : '';
 
-				update_term_meta( $new_term_id, self::META_COLOR, $color );
-				update_term_meta( $new_term_id, self::META_POSITION, $position );
-				update_term_meta( $new_term_id, self::META_PRIORITY, $priority );
-				update_term_meta( $new_term_id, self::META_ACTIVE, '1' );
-				self::update_optional_term_meta( $new_term_id, self::META_VISIBLE_FROM, $visible_from );
-				self::update_optional_term_meta( $new_term_id, self::META_VISIBLE_UNTIL, $visible_until );
-				self::update_optional_term_meta( $new_term_id, self::META_PDP_DETAILS, $pdp_details );
+				self::save_settings( $new_term_id, array(
+					'color' => $color, 'position' => $position, 'priority' => $priority,
+					'active' => true, 'visible_from' => $visible_from,
+					'visible_until' => $visible_until, 'pdp_details' => $pdp_details,
+				) );
 				$term_ids[] = $new_term_id;
 			}
 		}
 
 		$term_ids = array_values( array_unique( array_map( 'absint', $term_ids ) ) );
-		wp_set_object_terms( $post_id, $term_ids, self::TAXONOMY, false );
-		unset( self::$visible_label_cache[ $post_id ] );
+		self::assign_labels( $post_id, $term_ids );
 	}
 
 	/**
@@ -793,7 +865,7 @@ final class WCPCE_Product_Labels {
 			return;
 		}
 
-		update_term_meta( $term_id, $meta_key, $value );
+		update_term_meta( $term_id, $meta_key, wp_slash( $value ) );
 	}
 
 	/** Returns a human-readable current schedule state for admin screens. */

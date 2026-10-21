@@ -2,6 +2,22 @@
 
 Woo Card Chef heeft nog geen PHPUnit-, browser- of visual-regression-suite. De repository automatiseert wel PHP-syntax, securitysniffs, PHP-compatibiliteit, dependency-audit, WordPress Plugin Check, metadata en ZIP-validatie. Iedere gedragswijziging vereist daarnaast gerichte widgettests en een staging smoke test.
 
+## 2026-10-21 — Private REST candidate 2.10.0-rc.1
+
+Local PHP 8.3.32 checks pass: all 27 plugin PHP files and the new test script lint; Composer strict validation and locked audit, WordPress security sniffs and PHP 7.4+ compatibility checks pass. The existing product-label and category-exclusion regressions pass. The private REST contract suite passes 130 assertions using captured real plugin ACF definitions and explicit WordPress/ACF persistence doubles; the workflow runs it in the PHP 7.4/8.3 matrix.
+
+The contracts cover every route's permission callbacks for anonymous/customer/editor/shop-manager accounts, product-specific rights, private responses, schema availability, all label settings, inclusive end minutes, invalid/DST planning, safe HTML, duplicate creation, complete hidden assignments, partial updates, first field references, repeaters shrinking/clearing, media/PDF types, native/custom nested validation, validation-before-write, absent ACF/Pro, no-op writes, quotes/backslashes, update-filter normalization/deletion, failed child writes with unchanged row counts and request-cache invalidation. These are contract regressions, not a real WordPress REST dispatch or ACF Pro installation test.
+
+```powershell
+php tools/test_rest_api.php
+php tools/test_product_label_layout.php
+php tools/test_product_card_category_exclusion.php
+```
+
+The candidate uses the canonical Python ZIP builder and metadata validator. The ZIP contains the client contract and executable curl/PowerShell examples in `wc-product-card-elementor/REST-API.md`. Compare ZIP entries against the current source before sharing. Frontend widget/helper/template/asset files are unchanged from stable 2.9.1 source.
+
+Pending user-operated staging acceptance: installation/update; actual HTTP authentication/dispatch including HEAD/OPTIONS/embeds and denied writes; real ACF Pro nested persistence and editor round trips; additional site-level form hooks; WooCommerce save events, WP Rocket/Kinsta/CDN/cache coverage; frontend/editor/device smoke matrix. No site was accessed or installed by this task. Do not promote this candidate to a stable release until acceptance.
+
 ## 1. PHP-syntaxcontrole
 
 Voer vanuit de projectroot uit:
@@ -298,3 +314,52 @@ The maintainer approved promotion after the Black Friday staging check. Every pl
 Local release checks passed: syntax for all 25 plugin PHP files with PHP 8.3.35, WordPress security sniffs, PHP 7.4+ compatibility sniffs, both standalone regression scripts, consistent 2.9.0 metadata and clean diff whitespace. CI separately checks PHP 7.4/8.3, Composer configuration/audit and WordPress Plugin Check.
 
 This promotion relies on the accepted candidate's targeted staging evidence above. Unchecked editor, debug-log and other widget scenarios remain explicitly outside that check; the final version has not been installed on production by this task.
+
+
+## 2026-10-21 — Staging REST verification and candidate 2.10.0-rc.2
+
+Staging assets confirm rc.1. Anonymous GET/HEAD and invalid POST requests to the management routes return 401; the original core taxonomy route returns 404. OPTIONS exposes only static route metadata. An authenticated administrator can read the schema (Europe/Amsterdam, all eleven fields including Pro repeaters) with private/no-store headers.
+
+Created hidden draft test product 46841 and inactive test label 520. Label creation returned 201, safe PDP HTML, priority zero, inactive state and site-local schedule correctly; a partial color PATCH returned 200 without clearing omitted settings. Duplicate creation returns 409 and an inverted date range returns 400. Incorrect PDF media and native overlength text validation returned 400; a subsequent product GET confirmed no values/assignments changed.
+
+A valid rich-field PATCH failed on rc.1 with a fabricated null error because the adapter cast ACF's false no-error sentinel to array. Fixed explicitly in rc.2; the persistence double now uses native false and all 131 assertions pass locally. The successful write/clear/shorten/media/editor round trip requires installation of rc.2. No plugin code was installed or edited on staging by the agent.
+
+Additional staging checks:
+
+- Assigning duplicate label IDs to draft 46841 returned one unique ID; removing the assignment returned an empty list. Both writes returned 200. The test label remains inactive and unassigned; the product remains a hidden draft for the rc.2 retest.
+- The native label editor displays the REST-written color, inactive state, position, priority and dates correctly. Evidence: `dist/staging-label-rest-proof-2026-10-21.png`; request/response evidence: `dist/staging-rest-test-2026-10-21.json` (no credentials).
+- The private taxonomy is absent from the public taxonomy collection, and the WooCommerce Store API product response exposes none of the new management properties. Authenticated schema responses include private/no-store cache headers.
+- Homepage and Power Blender PDP checked at desktop width 1920px and mobile width 390px: no horizontal page overflow or broken loaded images; Gallery advances and Accordion opens with the correct expanded state. Browser messages observed came from external Lipscore and Trusted Shops scripts. The viewport override was reset.
+- rc.2 CI passed the PHP 7.4/8.3 matrix, regression/security/compatibility checks, dependency audit, Plugin Check and ZIP build: https://github.com/sramatlov/woo-card-chef/actions/runs/39588262939 . ZIP SHA-256: `1BEDF65327FEE1CFEAF1AC6A19598CDB1E6CE4111F8EF31A00C62ADCF64AF5A9`.
+- Final authenticated plugin metadata still reports active rc.1; draft readback remains empty after rejected writes. Application-password authentication, real non-admin accounts, full host/page-cache invalidation, Elementor editor and server logs were not independently tested in this round. Anonymous batch testing was blocked upstream and does not prove the route's batch opt-out.
+
+Staging acceptance remains pending the successful rc.2 product-field round trip. Existing products and active labels were not modified, and no product was published.
+
+### Installed rc.2 retest (completed 21 October 2026)
+
+The maintainer installed rc.2; authenticated WordPress plugin metadata confirms version `2.10.0-rc.2`, active. The previously failing rich PATCH now returns 200. All eleven fields read back exactly, including an apostrophe/backslash title, true/false badges, image/PDF IDs, two USP rows, a video row with thumbnail and the deduplicated label assignment.
+
+- Native wp-admin displays all saved fields and the assignment correctly. Save Draft completes with “Product draft updated”; a subsequent independent REST read matches every field, including escaped text.
+- Repeating the same write returns 200. A partial update shortens the USP repeater, clears text/media and sets a badge false while preserving all omitted fields and label IDs.
+- Gallery videos grow from one to two rows, shorten to one changed row, and clear successfully. Both cleared repeaters return empty lists; WooCommerce metadata confirms no leftover row/subfield metadata, only the root values and ACF field references.
+- Incorrect image/PDF types, a missing required child URL, native ACF maximum text length and a string boolean each return 400. Comparing the complete product response before/after all rejected requests proves no field or label assignment changed.
+- Cookie-free browser requests return 401 for schema, labels and product management. The core taxonomy route remains 404; the public Store API returns 200 without the new management properties. A separate Python HTTP client was blocked upstream with 403 and was not used as application-level evidence.
+- All test product fields were restored to their empty initial values and label IDs cleared; independent REST readback matches, and reloaded wp-admin shows the cleared fields and unchecked test label. Product 46841 remains a hidden draft, and label 520 remains inactive/unassigned. No existing product or active campaign label changed.
+
+Evidence: `dist/staging-rest-rc2-test-2026-10-21.json` and `dist/staging-product-rest-proof-2026-10-21.png` (the screenshot records the successful rich write before restoration). The rc.1 ACF validation blocker is resolved on staging. Targeted REST persistence/validation/privacy and native product-editor round trips pass. This used the existing administrator session; application-password authentication, a real non-admin account, host/page-cache purges, server logs and Elementor template editing were not independently exercised. The frontend checks recorded above remain scoped to the tested pages/viewports. No software was installed by the agent.
+
+### External agent HTTP test (reported 21 October 2026)
+
+The maintainer supplied an external agent's rc.2 staging report and local `results.json`. The result file was independently read: 32 checks, 32 passed, zero failures. A minimal copy retaining only test name, status and success is saved as `dist/external-agent-rest-results-2026-10-21.json`. These are supplied agent results, not a second execution by this task; the file contains result summaries rather than raw request/response captures and does not identify the authentication mechanism.
+
+The report covers authenticated and anonymous reads, anonymous PATCH rejection, private/no-store headers, private taxonomy exclusion, full/partial label updates, schedule rejection, duplicate-name conflict, deduplicated assignments, all eleven fields, special characters, repeated and partial writes, repeater growth/shrink/clear, boolean resets and invalid media/required-child/length/type/unknown-field rejection. Invalid writes included valid field and assignment changes; the report confirms complete before/after equality. Product and label restoration each have a passing result and were reported checked by independent GETs. The product remained a hidden draft; label 520 remained inactive. No extra labels were created.
+
+The reported `bad()` text in test label 520 originated in the earlier deliberate unsafe-HTML test: `wp_kses_post()` removed script tags and retained their text. It is expected test content, not evidence of executable script or an rc.2 regression. The equal start/end minute also originated in that test. The external round does not cover frontend/admin rendering, hosting caches, successful label creation or an actual lower-privilege account. Successful label creation and native editor/frontend evidence are recorded in the earlier rounds above. Functional external REST checks pass; stable promotion remains a maintainer decision.
+
+### Final 2.10.0 promotion (21 October 2026)
+
+The maintainer approved promotion following the installed rc.2 and external-agent results. Compared every packaged file against the preserved rc.2 ZIP: identical file sets (42 files); only the main plugin's version strings and the two documentation files (`readme.txt`, `REST-API.md`) differ. No runtime behavior, frontend asset, template, widget control or content model changed during promotion.
+
+Local PHP 8.3 checks passed for all 27 PHP files, 131 REST contract assertions, label-layout and category-exclusion regressions, Composer validation/audit, WordPress security and PHP 7.4+ compatibility. Metadata values consistently report 2.10.0; the canonical ZIP validator reports 51 entries and zero backslash paths. GitHub CI separately covers PHP 7.4/8.3, Plugin Check and the installation artifact.
+
+This promotion carries forward the targeted staging evidence and explicit scope limits above. No clean-site installation, actual lower-privilege account, full host-cache purge, server-log inspection or full Elementor editor/widget matrix is claimed. The final ZIP has not been installed on a site by this task; site installation remains the maintainer's responsibility.

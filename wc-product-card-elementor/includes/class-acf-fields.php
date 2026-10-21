@@ -84,6 +84,7 @@ final class WC_Product_Card_Elementor_ACF_Fields {
 				'instruction_placement' => 'label',
 				'hide_on_screen'        => '',
 				'active'                => true,
+				'show_in_rest'          => false,
 				'description'           => __( 'Optionele verkorte producttitel die alleen op productkaarten en categoriepagina\'s wordt getoond.', 'woo-card-chef' ),
 			)
 		);
@@ -138,6 +139,7 @@ final class WC_Product_Card_Elementor_ACF_Fields {
 				'instruction_placement' => 'label',
 				'hide_on_screen'        => '',
 				'active'                => true,
+				'show_in_rest'          => false,
 				'description'           => __( 'Three short USPs displayed on the custom product card on category pages.', 'woo-card-chef' ),
 			)
 		);
@@ -201,6 +203,7 @@ final class WC_Product_Card_Elementor_ACF_Fields {
 				'instruction_placement' => 'label',
 				'hide_on_screen'        => '',
 				'active'                => true,
+				'show_in_rest'          => false,
 				'description'           => __( 'Badge instellingen voor de productkaart op categoriepagina\'s.', 'woo-card-chef' ),
 			)
 		);
@@ -263,6 +266,7 @@ final class WC_Product_Card_Elementor_ACF_Fields {
 				'instruction_placement' => 'label',
 				'hide_on_screen'        => '',
 				'active'                => true,
+				'show_in_rest'          => false,
 				'description'           => __( 'Handleiding voor de PDP Accordion widget. Het PDF-bestand is downloadbaar via de Handleiding-sectie.', 'woo-card-chef' ),
 			)
 		);
@@ -324,6 +328,7 @@ final class WC_Product_Card_Elementor_ACF_Fields {
 				'instruction_placement' => 'label',
 				'hide_on_screen'        => '',
 				'active'                => true,
+				'show_in_rest'          => false,
 				'description'           => __( 'PDP-specifieke USP-regels. Styling en layout worden in Elementor ingesteld.', 'woo-card-chef' ),
 			)
 		);
@@ -395,6 +400,7 @@ final class WC_Product_Card_Elementor_ACF_Fields {
 				'instruction_placement' => 'label',
 				'hide_on_screen'        => '',
 				'active'                => true,
+				'show_in_rest'          => false,
 				'description'           => __( 'Extra media voor de PDP Gallery widget. Vereist ACF Pro.', 'woo-card-chef' ),
 			)
 		);
