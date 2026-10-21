@@ -323,3 +323,14 @@ Staging assets confirm rc.1. Anonymous GET/HEAD and invalid POST requests to the
 Created hidden draft test product 46841 and inactive test label 520. Label creation returned 201, safe PDP HTML, priority zero, inactive state and site-local schedule correctly; a partial color PATCH returned 200 without clearing omitted settings. Duplicate creation returns 409 and an inverted date range returns 400. Incorrect PDF media and native overlength text validation returned 400; a subsequent product GET confirmed no values/assignments changed.
 
 A valid rich-field PATCH failed on rc.1 with a fabricated null error because the adapter cast ACF's false no-error sentinel to array. Fixed explicitly in rc.2; the persistence double now uses native false and all 131 assertions pass locally. The successful write/clear/shorten/media/editor round trip requires installation of rc.2. No plugin code was installed or edited on staging by the agent.
+
+Additional staging checks:
+
+- Assigning duplicate label IDs to draft 46841 returned one unique ID; removing the assignment returned an empty list. Both writes returned 200. The test label remains inactive and unassigned; the product remains a hidden draft for the rc.2 retest.
+- The native label editor displays the REST-written color, inactive state, position, priority and dates correctly. Evidence: `dist/staging-label-rest-proof-2026-10-21.png`; request/response evidence: `dist/staging-rest-test-2026-10-21.json` (no credentials).
+- The private taxonomy is absent from the public taxonomy collection, and the WooCommerce Store API product response exposes none of the new management properties. Authenticated schema responses include private/no-store cache headers.
+- Homepage and Power Blender PDP checked at desktop width 1920px and mobile width 390px: no horizontal page overflow or broken loaded images; Gallery advances and Accordion opens with the correct expanded state. Browser messages observed came from external Lipscore and Trusted Shops scripts. The viewport override was reset.
+- rc.2 CI passed the PHP 7.4/8.3 matrix, regression/security/compatibility checks, dependency audit, Plugin Check and ZIP build: https://github.com/sramatlov/woo-card-chef/actions/runs/39588262939 . ZIP SHA-256: `1BEDF65327FEE1CFEAF1AC6A19598CDB1E6CE4111F8EF31A00C62ADCF64AF5A9`.
+- Final authenticated plugin metadata still reports active rc.1; draft readback remains empty after rejected writes. Application-password authentication, real non-admin accounts, full host/page-cache invalidation, Elementor editor and server logs were not independently tested in this round. Anonymous batch testing was blocked upstream and does not prove the route's batch opt-out.
+
+Staging acceptance remains pending the successful rc.2 product-field round trip. Existing products and active labels were not modified, and no product was published.
