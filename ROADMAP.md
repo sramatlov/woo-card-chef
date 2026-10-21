@@ -2,7 +2,7 @@
 
 ## Current candidate: 2.10.0-rc.2 — private REST management
 
-Last stable source: 2.9.1. Staging acceptance of this candidate is pending.
+Last stable source: 2.9.1. Targeted staging REST and native product-editor checks passed on 21 October 2026; see TESTING.md for evidence and scope limits. Stable promotion remains pending maintainer approval.
 
 ---
 
@@ -746,4 +746,4 @@ Vijf posities voor herbruikbare labels; gedeelde rijen voor systeemlabels en cus
 
 ## v2.10.0-rc.2 — Private REST management — Candidate
 
-Add administrator-only REST management for complete reusable-label definitions, product assignments and plugin-owned ACF fields, plus a private schema endpoint. Reuse existing storage models and field validators, preserve partial-update semantics and finish product writes through the WP/WooCommerce lifecycle. No frontend or data-model migration. FAQ, Elementor settings and scheduled external cache purges remain outside this scope. Local regressions/quality/ZIP checks are recorded in TESTING.md; user-operated staging installation and acceptance are pending.
+Add administrator-only REST management for complete reusable-label definitions, product assignments and plugin-owned ACF fields, plus a private schema endpoint. Reuse existing storage models and field validators, preserve partial-update semantics and finish product writes through the WP/WooCommerce lifecycle. No frontend or data-model migration. FAQ, Elementor settings and scheduled external cache purges remain outside this scope. Local regressions/quality/ZIP checks and successful installed rc.2 REST/product-editor round trips are recorded in TESTING.md. Stable promotion remains pending maintainer approval.

@@ -334,3 +334,16 @@ Additional staging checks:
 - Final authenticated plugin metadata still reports active rc.1; draft readback remains empty after rejected writes. Application-password authentication, real non-admin accounts, full host/page-cache invalidation, Elementor editor and server logs were not independently tested in this round. Anonymous batch testing was blocked upstream and does not prove the route's batch opt-out.
 
 Staging acceptance remains pending the successful rc.2 product-field round trip. Existing products and active labels were not modified, and no product was published.
+
+### Installed rc.2 retest (completed 21 October 2026)
+
+The maintainer installed rc.2; authenticated WordPress plugin metadata confirms version `2.10.0-rc.2`, active. The previously failing rich PATCH now returns 200. All eleven fields read back exactly, including an apostrophe/backslash title, true/false badges, image/PDF IDs, two USP rows, a video row with thumbnail and the deduplicated label assignment.
+
+- Native wp-admin displays all saved fields and the assignment correctly. Save Draft completes with “Product draft updated”; a subsequent independent REST read matches every field, including escaped text.
+- Repeating the same write returns 200. A partial update shortens the USP repeater, clears text/media and sets a badge false while preserving all omitted fields and label IDs.
+- Gallery videos grow from one to two rows, shorten to one changed row, and clear successfully. Both cleared repeaters return empty lists; WooCommerce metadata confirms no leftover row/subfield metadata, only the root values and ACF field references.
+- Incorrect image/PDF types, a missing required child URL, native ACF maximum text length and a string boolean each return 400. Comparing the complete product response before/after all rejected requests proves no field or label assignment changed.
+- Cookie-free browser requests return 401 for schema, labels and product management. The core taxonomy route remains 404; the public Store API returns 200 without the new management properties. A separate Python HTTP client was blocked upstream with 403 and was not used as application-level evidence.
+- All test product fields were restored to their empty initial values and label IDs cleared; independent REST readback matches, and reloaded wp-admin shows the cleared fields and unchecked test label. Product 46841 remains a hidden draft, and label 520 remains inactive/unassigned. No existing product or active campaign label changed.
+
+Evidence: `dist/staging-rest-rc2-test-2026-10-21.json` and `dist/staging-product-rest-proof-2026-10-21.png` (the screenshot records the successful rich write before restoration). The rc.1 ACF validation blocker is resolved on staging. Targeted REST persistence/validation/privacy and native product-editor round trips pass. This used the existing administrator session; application-password authentication, a real non-admin account, host/page-cache purges, server logs and Elementor template editing were not independently exercised. The frontend checks recorded above remain scoped to the tested pages/viewports. No software was installed by the agent.
