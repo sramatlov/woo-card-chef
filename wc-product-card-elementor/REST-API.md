@@ -1,4 +1,4 @@
-# Woo Card Chef REST API — 2.10.0-rc.1
+# Woo Card Chef REST API — 2.10.0-rc.2
 
 Deze kandidaat voegt besloten beheer toe onder `/wp-json/wcpce/v1`.
 Installeer de ZIP zelf op staging; deze versie is nog geen stagingacceptatie.

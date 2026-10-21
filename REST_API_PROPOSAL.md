@@ -1,6 +1,6 @@
 # Voorstel: besloten REST-beheer voor Woo Card Chef
 
-Datum: 21 oktober 2026. Status: ontwerpvastlegging; geïmplementeerd als 2.10.0-rc.1, stagingacceptatie volgt.
+Datum: 21 oktober 2026. Status: ontwerpvastlegging; geïmplementeerd als 2.10.0-rc.2, stagingacceptatie volgt.
 Onderzocht: repositorybron op commit `f116d8a`, pluginversie 2.9.1.
 Er is geen site benaderd of gewijzigd. De door de gebruiker gemelde staging-404
 is verklaard vanuit de bron, niet opnieuw op staging getest.

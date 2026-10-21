@@ -82,7 +82,7 @@ wc-product-card-elementor/
 ## Constants
 
 ```php
-WCPCE_VERSION       // current candidate: '2.10.0-rc.1'
+WCPCE_VERSION       // current candidate: '2.10.0-rc.2'
 WCPCE_PLUGIN_FILE   // __FILE__ of main plugin file
 WCPCE_PLUGIN_DIR    // plugin_dir_path()
 WCPCE_PLUGIN_URL    // plugin_dir_url()
@@ -499,7 +499,7 @@ The shared card template groups corner content into top/bottom rows with left/ri
 A spanning grid sizing cell sets the preferred image ratio and maximum height through --wcpce-image-ratio and --wcpce-image-max-height. Existing Elementor control keys/settings are retained in Grid, Upsells and Related; generated selectors now set these variables. Dense rows can increase media height to avoid clipping. Regenerate Elementor CSS & Data and clear Used CSS/page caches after the update so stored generated CSS uses the new selectors.
 
 
-## Private management REST API (2.10.0-rc.1)
+## Private management REST API (2.10.0-rc.2)
 
 `WCPCE_REST_API` registers `wcpce/v1` routes on `rest_api_init`. All data permissions require `manage_options` and `manage_woocommerce`; product permissions also require `edit_post`. Product IDs are read from URL parameters. Taxonomy `show_in_rest` stays false. No properties are added to core/WooCommerce/Store API responses. Generic discovery contains only static route arguments; dynamic field availability/sitezone is returned only by the protected schema callback. Default batch opt-in is absent.
 

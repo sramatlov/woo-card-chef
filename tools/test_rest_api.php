@@ -132,7 +132,8 @@ function mock_acf_write( $field, $value, $id ): bool {
 	return ! $failed && $original !== wp_unslash( $value );
 }
 function update_field( $key, $value, $id ): bool { return mock_acf_write( acf_get_field( $key ), $value, $id ); }
-function acf_get_validation_errors(): array { return $GLOBALS['validation_errors']; }
+// ACF returns false (not an empty array) when there are no validation errors.
+function acf_get_validation_errors() { return $GLOBALS['validation_errors'] ? $GLOBALS['validation_errors'] : false; }
 function acf_reset_validation_errors(): void { $GLOBALS['validation_errors'] = array(); }
 function acf_add_validation_error( $input, $message ): void { $GLOBALS['validation_errors'][] = array( 'input' => $input, 'message' => $message ); }
 function acf_validate_value( $value, $field, $input ): bool {
@@ -175,6 +176,7 @@ $GLOBALS['role'] = 'admin';
 check( WCPCE_REST_API::can_manage(), 'Admin access' );
 check( ! WCPCE_REST_API::can_manage_product( json_req( '{}', 101 ) ), 'Per-product capability' );
 check( 11 === count( WCPCE_Product_Fields::definitions() ), 'All owned fields registered' );
+check( false === acf_get_validation_errors(), 'Match native ACF no-error sentinel' );
 $before = $GLOBALS['writes'];
 $schema = WCPCE_REST_API::read_schema();
 check( 'Europe/Amsterdam' === $schema->data['site_timezone'], 'Schema timezone' );

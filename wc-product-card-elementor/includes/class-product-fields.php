@@ -149,7 +149,8 @@ final class WCPCE_Product_Fields {
 		}
 
 		// Preserve ACF validation state for nested REST dispatches in the same process.
-		$previous = acf_get_validation_errors();
+		$previous_errors = acf_get_validation_errors();
+		$previous        = is_array( $previous_errors ) ? $previous_errors : array();
 		acf_reset_validation_errors();
 		$has_form_data = function_exists( 'acf_get_form_data' ) && function_exists( 'acf_set_form_data' );
 		$previous_id   = $has_form_data ? acf_get_form_data( 'post_id' ) : null;
@@ -161,12 +162,13 @@ final class WCPCE_Product_Fields {
 				$field = acf_get_field( $key );
 				acf_validate_value( $value, $field, 'acf[' . $key . ']' );
 			}
-			foreach ( (array) acf_get_validation_errors() as $error ) {
+			$current_errors = acf_get_validation_errors();
+			foreach ( is_array( $current_errors ) ? $current_errors : array() as $error ) {
 				$errors->add( (string) $error['input'], $error['message'] );
 			}
 		} finally {
 			acf_reset_validation_errors();
-			foreach ( (array) $previous as $error ) {
+			foreach ( $previous as $error ) {
 				acf_add_validation_error( $error['input'], $error['message'] );
 			}
 			if ( $has_form_data ) {

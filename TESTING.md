@@ -314,3 +314,12 @@ The maintainer approved promotion after the Black Friday staging check. Every pl
 Local release checks passed: syntax for all 25 plugin PHP files with PHP 8.3.35, WordPress security sniffs, PHP 7.4+ compatibility sniffs, both standalone regression scripts, consistent 2.9.0 metadata and clean diff whitespace. CI separately checks PHP 7.4/8.3, Composer configuration/audit and WordPress Plugin Check.
 
 This promotion relies on the accepted candidate's targeted staging evidence above. Unchecked editor, debug-log and other widget scenarios remain explicitly outside that check; the final version has not been installed on production by this task.
+
+
+## 2026-10-21 — Staging REST verification and candidate 2.10.0-rc.2
+
+Staging assets confirm rc.1. Anonymous GET/HEAD and invalid POST requests to the management routes return 401; the original core taxonomy route returns 404. OPTIONS exposes only static route metadata. An authenticated administrator can read the schema (Europe/Amsterdam, all eleven fields including Pro repeaters) with private/no-store headers.
+
+Created hidden draft test product 46841 and inactive test label 520. Label creation returned 201, safe PDP HTML, priority zero, inactive state and site-local schedule correctly; a partial color PATCH returned 200 without clearing omitted settings. Duplicate creation returns 409 and an inverted date range returns 400. Incorrect PDF media and native overlength text validation returned 400; a subsequent product GET confirmed no values/assignments changed.
+
+A valid rich-field PATCH failed on rc.1 with a fabricated null error because the adapter cast ACF's false no-error sentinel to array. Fixed explicitly in rc.2; the persistence double now uses native false and all 131 assertions pass locally. The successful write/clear/shorten/media/editor round trip requires installation of rc.2. No plugin code was installed or edited on staging by the agent.

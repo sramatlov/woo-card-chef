@@ -1,6 +1,6 @@
 # Roadmap - Woo Card Chef
 
-## Current candidate: 2.10.0-rc.1 — private REST management
+## Current candidate: 2.10.0-rc.2 — private REST management
 
 Last stable source: 2.9.1. Staging acceptance of this candidate is pending.
 
@@ -744,6 +744,6 @@ Andere richtingen in dit document zijn historie, afgeronde fases, bewuste descop
 Vijf posities voor herbruikbare labels; gedeelde rijen voor systeemlabels en custom labels; afbeeldingshoogte past zich aan volle labelrijen aan. De kandidaat is op 6 oktober 2026 door de gebruiker geaccepteerd op staging. De frontendcontrole dekt 16 kaarten op 320, 390, 768 en 1440px zonder overlap, clipping of horizontale overflow. De definitieve release wijzigt alleen versiegegevens en documentatie ten opzichte van de geaccepteerde kandidaat.
 
 
-## v2.10.0-rc.1 — Private REST management — Candidate
+## v2.10.0-rc.2 — Private REST management — Candidate
 
 Add administrator-only REST management for complete reusable-label definitions, product assignments and plugin-owned ACF fields, plus a private schema endpoint. Reuse existing storage models and field validators, preserve partial-update semantics and finish product writes through the WP/WooCommerce lifecycle. No frontend or data-model migration. FAQ, Elementor settings and scheduled external cache purges remain outside this scope. Local regressions/quality/ZIP checks are recorded in TESTING.md; user-operated staging installation and acceptance are pending.
