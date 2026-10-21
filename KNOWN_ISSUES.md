@@ -346,9 +346,9 @@ Intentional. For variable products, the widget compares the threshold against th
 Intentional. When label rows exceed the preferred image height, the media grid grows to keep all labels visible. Use below-image for long campaign text and a small label limit to keep product photography clear. The normal cached Black Friday staging frontend was accepted on 6 October 2026. Other staging contexts and editor controls were not independently rechecked in that round.
 
 
-## Private REST candidate (2.10.0-rc.2)
+## Private REST management (2.10.0)
 
-- Installation/update, real WordPress REST dispatch/authentication, installed ACF Pro persistence and external site filters/cache integration still require staging acceptance. Standalone contracts exercise real local field definitions with WordPress/ACF persistence doubles.
+- Installed rc.2 staging checks passed for REST dispatch/privacy, ACF Pro persistence and native product-editor round trips; an external agent reported 32 passing HTTP checks. Authentication mechanism is not recorded in the external result file. Real lower-privilege accounts, arbitrary site form hooks and full hosting/page-cache purge were not independently verified. Standalone contracts exercise local field definitions with WordPress/ACF persistence doubles; see TESTING.md for live evidence and limits.
 - PATCH arrays replace complete lists. There is no concurrent-write lock/version contract and no cross-hook database transaction. On a storage failure the API returns 500 and the client must reread state before retrying; earlier writes may have persisted.
 - ACF form-level handlers that require admin POST/nonces are not replayed. Field-level validators/update filters are reused. Site-specific form hooks may need an explicit adapter.
 - The original wp/v2 label route remains absent. New API access intentionally excludes shop managers without manage_options, while existing wp-admin rights are unchanged.

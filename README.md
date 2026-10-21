@@ -4,7 +4,7 @@
 
 Woo Card Chef is een custom WordPress-plugin met tien Elementor-widgets voor WooCommerce-productkaarten, productarchieven, categorienavigatie en productdetailpagina's. De plugin is primair gebouwd voor Bourgini.com en houdt productinhoud in WooCommerce, herbruikbare productlabels of ACF en presentatie in Elementor.
 
-**Huidige releasecandidate:** 2.10.0-rc.2 (stagingacceptatie volgt). Laatste stabiele bron: 2.9.1.
+**Huidige release:** 2.10.0. De geteste kandidaat 2.10.0-rc.2 is op 21 oktober 2026 geaccepteerd voor definitieve uitgave.
 
 De labelindeling is op 6 oktober 2026 geaccepteerd op staging, op mobiel, tablet en desktop.
 
@@ -54,11 +54,11 @@ Elementor en WooCommerce zijn harde afhankelijkheden. ACF is optioneel, maar zon
 
 De desktop-frontendcontrole van 1 oktober 2026 dekt de homepage, categorienavigatie, productkaarten en een rijke PDP met Gallery, lightbox en Accordion. De WordPress-versie is via de paginametadata bevestigd; WooCommerce en Elementor Pro via hun versiegebonden assets. De actuele PHP-runtime, Elementor-editor, mobiel/tablet en een opnieuw gegenereerd WP Rocket Used CSS-blok zijn in die ronde niet geverifieerd. Zie [`TESTING.md`](TESTING.md) voor resultaten en de SHA-256 van de door de gebruiker als live aangeduide ZIP.
 
-## Besloten REST-beheer (2.10.0-rc.2)
+## Besloten REST-beheer (2.10.0)
 
 Labels en de door deze plugin geregistreerde productvelden kunnen via `/wp-json/wcpce/v1` worden gelezen en gewijzigd. Alle nieuwe gegevensroutes vereisen beheerdersrechten (`manage_options`), WooCommerce-beheerrechten en bij producten ook bewerkrechten op het betreffende product. De private taxonomie en ACF-groepen blijven buiten openbare REST-responses; bestaande frontendmarkup, styles en fallbacks blijven gelijk. Authenticatie wordt door WordPress verzorgd.
 
-Lees het [REST-contract en de stagingvoorbeelden](wc-product-card-elementor/REST-API.md). Labels werken zonder ACF; de PDP-repeaters vereisen ACF Pro. FAQ en Elementor-templatebeheer vallen buiten deze kandidaat. Lokale contracttests vervangen geen stagingacceptatie.
+Lees het [REST-contract en de stagingvoorbeelden](wc-product-card-elementor/REST-API.md). Labels werken zonder ACF; de PDP-repeaters vereisen ACF Pro. FAQ en Elementor-templatebeheer vallen buiten deze API. Stagingtests dekken labels, productvelden, validatie, privacy en het productscherm; de externe agent rapporteerde 32 geslaagde HTTP-controles. Zie `TESTING.md` voor bewijs en de grenzen van de controle.
 
 ## Installeren
 
@@ -80,7 +80,7 @@ composer validate --strict --no-check-publish
 composer audit --locked
 composer check
 python tools/validate_plugin_metadata.py --plugin-dir wc-product-card-elementor --main-file wc-product-card-elementor.php
-python tools/build_wordpress_plugin_zip.py --source-dir wc-product-card-elementor --destination-zip dist/woo-card-chef-v2.10.0-rc.2-wordpress-install.zip --plugin-slug wc-product-card-elementor --main-file wc-product-card-elementor.php
+python tools/build_wordpress_plugin_zip.py --source-dir wc-product-card-elementor --destination-zip dist/woo-card-chef-v2.10.0-wordpress-install.zip --plugin-slug wc-product-card-elementor --main-file wc-product-card-elementor.php
 ```
 
 Gebruik daarnaast [`TESTING.md`](TESTING.md) voor de handmatige regressiematrix en [`WORDPRESS_PLUGIN_RELEASE_CHECKLIST.md`](WORDPRESS_PLUGIN_RELEASE_CHECKLIST.md) voor iedere release.

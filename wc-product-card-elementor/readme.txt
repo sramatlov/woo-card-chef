@@ -4,7 +4,7 @@ Tags: woocommerce, elementor, product card, archive, category, lipscore, acf
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.10.0-rc.2
+Stable tag: 2.10.0
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Requires Plugins: woocommerce, elementor
@@ -141,6 +141,11 @@ Check the "Minimum discount percentage" setting in the Discount Badge controls. 
 Yes. The plugin is generic and only its defaults are tuned to a specific brand palette. Install it on any shop and override colors via the Elementor controls.
 
 == Changelog ==
+
+= 2.10.0 =
+* Release administrator-only REST management for reusable labels, label settings, product assignments and all eleven plugin-owned ACF fields under wcpce/v1. Keep taxonomy/ACF data private and preserve frontend rendering.
+* Reuse shared admin label persistence and native ACF field validation/update filters; support typed media IDs, repeaters, partial updates and explicit clearing. Complete product writes through WooCommerce and invalidate plugin caches.
+* Promote staging-tested 2.10.0-rc.2 with version and documentation changes only. Installed checks cover rich writes, native product-editor round trips, invalid input without partial writes and anonymous privacy; an external agent reported 32 passing HTTP checks. Include REST-API.md with client examples and limitations.
 
 = 2.10.0-rc.2 =
 * Fix valid product-field PATCH requests being rejected when native ACF returns false for an empty validation-error list. Normalize that sentinel explicitly and preserve outer validation state without fabricating a null error.

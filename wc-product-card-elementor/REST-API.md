@@ -1,7 +1,7 @@
-# Woo Card Chef REST API — 2.10.0-rc.2
+# Woo Card Chef REST API — 2.10.0
 
-Deze kandidaat voegt besloten beheer toe onder `/wp-json/wcpce/v1`.
-Installeer de ZIP zelf op staging; deze versie is nog geen stagingacceptatie.
+Deze release biedt besloten beheer onder `/wp-json/wcpce/v1`.
+Versie 2.10.0 promoveert de op staging geteste kandidaat 2.10.0-rc.2; alleen versiegegevens en documentatie zijn gewijzigd. Installeer de ZIP zelf.
 De taxonomie blijft privé. `/wp/v2/wcpce_product_label` blijft bewust afwezig.
 
 ## Toegang

@@ -1,8 +1,8 @@
 # Roadmap - Woo Card Chef
 
-## Current candidate: 2.10.0-rc.2 — private REST management
+## Current release: 2.10.0 — private REST management
 
-Last stable source: 2.9.1. Targeted staging REST and native product-editor checks passed on 21 October 2026; see TESTING.md for evidence and scope limits. Stable promotion remains pending maintainer approval.
+Promoted from staging-tested 2.10.0-rc.2 with maintainer approval on 21 October 2026. Targeted REST/native product-editor tests and 32 external-agent HTTP checks passed; see TESTING.md for evidence and scope limits. Only version and documentation change during promotion; site installation remains maintainer-operated.
 
 ---
 
@@ -744,6 +744,6 @@ Andere richtingen in dit document zijn historie, afgeronde fases, bewuste descop
 Vijf posities voor herbruikbare labels; gedeelde rijen voor systeemlabels en custom labels; afbeeldingshoogte past zich aan volle labelrijen aan. De kandidaat is op 6 oktober 2026 door de gebruiker geaccepteerd op staging. De frontendcontrole dekt 16 kaarten op 320, 390, 768 en 1440px zonder overlap, clipping of horizontale overflow. De definitieve release wijzigt alleen versiegegevens en documentatie ten opzichte van de geaccepteerde kandidaat.
 
 
-## v2.10.0-rc.2 — Private REST management — Candidate
+## v2.10.0 — Private REST management — Released
 
-Add administrator-only REST management for complete reusable-label definitions, product assignments and plugin-owned ACF fields, plus a private schema endpoint. Reuse existing storage models and field validators, preserve partial-update semantics and finish product writes through the WP/WooCommerce lifecycle. No frontend or data-model migration. FAQ, Elementor settings and scheduled external cache purges remain outside this scope. Local regressions/quality/ZIP checks and successful installed rc.2 REST/product-editor round trips are recorded in TESTING.md. Stable promotion remains pending maintainer approval.
+Add administrator-only REST management for complete reusable-label definitions, product assignments and plugin-owned ACF fields, plus a private schema endpoint. Reuse existing storage models and field validators, preserve partial-update semantics and finish product writes through the WP/WooCommerce lifecycle. No frontend or data-model migration. FAQ, Elementor settings and scheduled external cache purges remain outside this scope. Local regressions/quality/ZIP checks, successful installed rc.2 REST/product-editor round trips and 32 external-agent HTTP checks are recorded in TESTING.md. Maintainer approved final promotion on 21 October 2026; version/documentation changes only.

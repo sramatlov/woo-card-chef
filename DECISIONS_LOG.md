@@ -374,7 +374,7 @@ The WBW / Elementor Pro sticky header conflict is resolved with native CSS `posi
 Use shared top/bottom rows with left/right slots, rather than independent absolute overlays and fixed offsets. This fixes collisions between opposite corners on narrow cards and between labels with configurable typography. Keep content positions on the reusable taxonomy label, preserve system badge priority, and offer below-image for longer campaign text. A grid sizing cell preserves preferred image proportions while allowing dense rows to grow. No frontend JavaScript or duplicate labels are needed.
 
 
-## 2.10.0-rc.2 — Private REST management
+## 2.10.0 — Private REST management
 
 Choose a dedicated `wcpce/v1` namespace for one small management contract spanning private terms and plugin-owned ACF fields. Keep taxonomy/ACF public REST opt-in disabled. A secured custom core term controller is viable, but would still require a second adapter for product fields. Use WordPress authentication and capabilities; add no password system.
 
